@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Cpu, Plus, Trash2, CheckCircle, AlertCircle, Save, X } from 'lucide-react';
+import { Plus, Trash2, CheckCircle, AlertCircle, X, Sparkles } from 'lucide-react';
 import type { SkillGroup, SkillItem } from '../../types';
 import { getSkillGroups, saveSkillGroup, deleteSkillGroup } from '../../services/firestoreService';
+import {
+  IllustratorIcon,
+  PhotoshopIcon,
+  WordpressIcon,
+  GoogleIcon,
+  FacebookIcon,
+  YoutubeIcon,
+  YahooEmailIcon,
+  InstagramIcon
+} from '../../components/Icons';
 
 export const AdminSkills: React.FC = () => {
   const [skillGroups, setSkillGroups] = useState<SkillGroup[]>([]);
@@ -21,7 +31,7 @@ export const AdminSkills: React.FC = () => {
   const [newSkillName, setNewSkillName] = useState('');
   const [newSkillPercentage, setNewSkillPercentage] = useState('90%');
   const [newSkillLevel, setNewSkillLevel] = useState('Advanced');
-  const [newSkillIcon, setNewSkillIcon] = useState('');
+  const [newSkillIcon, setNewSkillIcon] = useState('illustrator');
 
   const loadSkills = async () => {
     try {
@@ -96,7 +106,7 @@ export const AdminSkills: React.FC = () => {
       setActiveGroupForSkill(null);
       setNewSkillName('');
       setNewSkillPercentage('90%');
-      setNewSkillIcon('');
+      setNewSkillIcon('illustrator');
       setStatus({ type: 'success', message: 'নতুন দক্ষতা যুক্ত হয়েছে!' });
       await loadSkills();
     } catch (err: any) {
@@ -117,6 +127,38 @@ export const AdminSkills: React.FC = () => {
     } catch (err: any) {
       alert(err.message || 'ডিলিট করতে সমস্যা হয়েছে।');
     }
+  };
+
+  // Helper to render correct SVG icon without text overlap
+  const renderSkillIcon = (skill: SkillItem) => {
+    const key = (skill.icon || skill.name || '').toLowerCase();
+
+    if (key.includes('illustrator') || key === 'ai') {
+      return <IllustratorIcon className="w-5 h-5 text-[#15803d]" />;
+    }
+    if (key.includes('photoshop') || key === 'ps') {
+      return <PhotoshopIcon className="w-5 h-5 text-[#15803d]" />;
+    }
+    if (key.includes('word') || key.includes('press') || key === 'wp') {
+      return <WordpressIcon className="w-5 h-5 text-[#15803d]" />;
+    }
+    if (key.includes('google')) {
+      return <GoogleIcon className="w-4 h-4 text-[#15803d]" />;
+    }
+    if (key.includes('facebook') || key === 'fb') {
+      return <FacebookIcon className="w-4 h-4 text-[#15803d]" />;
+    }
+    if (key.includes('youtube') || key === 'yt') {
+      return <YoutubeIcon className="w-5 h-5 text-[#15803d]" />;
+    }
+    if (key.includes('email') || key.includes('mail') || key.includes('yahoo')) {
+      return <YahooEmailIcon className="w-5 h-5 text-[#15803d]" />;
+    }
+    if (key.includes('instagram') || key.includes('insta')) {
+      return <InstagramIcon className="w-4 h-4 text-[#15803d]" />;
+    }
+
+    return <Sparkles className="w-4 h-4 text-[#15803d]" />;
   };
 
   return (
@@ -183,31 +225,34 @@ export const AdminSkills: React.FC = () => {
                   {group.skills.map((skill) => (
                     <div
                       key={skill.id}
-                      className="p-2.5 rounded-lg bg-slate-50 border border-slate-200/80 flex items-center justify-between"
+                      className="p-2.5 sm:p-3 rounded-xl bg-slate-50 border border-slate-200/80 hover:border-emerald-200 flex items-center justify-between transition-colors"
                     >
-                      <div className="flex items-center gap-2">
-                        {skill.icon && (
-                          <span className="w-6 h-6 rounded bg-emerald-50 border border-emerald-200 text-[10px] font-bold text-[#15803d] flex items-center justify-center">
-                            {skill.icon}
-                          </span>
-                        )}
-                        <span className="text-xs font-semibold text-slate-800">{skill.name}</span>
+                      {/* Left: Clean Icon Container + Single Clear Skill Name */}
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0">
+                          {renderSkillIcon(skill)}
+                        </div>
+                        <span className="text-xs sm:text-sm font-bold text-slate-900 truncate">
+                          {skill.name}
+                        </span>
                       </div>
 
-                      <div className="flex items-center gap-2">
+                      {/* Right: Percentage, Level & Delete */}
+                      <div className="flex items-center gap-2 shrink-0">
                         {skill.percentage && (
-                          <span className="text-xs font-bold text-[#15803d] px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200">
+                          <span className="text-xs font-bold text-[#15803d] px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 font-sans">
                             {skill.percentage}
                           </span>
                         )}
                         {skill.level && (
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600">
                             {skill.level}
                           </span>
                         )}
                         <button
                           onClick={() => handleDeleteSkill(group, skill.id)}
-                          className="text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
+                          className="text-slate-400 hover:text-rose-600 p-1 transition-colors cursor-pointer"
+                          title="মুছুন"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -223,7 +268,7 @@ export const AdminSkills: React.FC = () => {
 
               <button
                 onClick={() => setActiveGroupForSkill(group)}
-                className="w-full py-2 rounded-xl bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-[#15803d] border border-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-[#15803d] border border-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>দক্ষতা যুক্ত করুন</span>
@@ -254,7 +299,7 @@ export const AdminSkills: React.FC = () => {
                   required
                   value={newGroupName}
                   onChange={(e) => setNewGroupName(e.target.value)}
-                  placeholder="যেমন: Motion Graphics & Video"
+                  placeholder="যেমন: Design & Advertising"
                   className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
                 />
               </div>
@@ -302,7 +347,7 @@ export const AdminSkills: React.FC = () => {
                   required
                   value={newSkillName}
                   onChange={(e) => setNewSkillName(e.target.value)}
-                  placeholder="যেমন: Adobe InDesign"
+                  placeholder="যেমন: Illustrator"
                   className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
                 />
               </div>
@@ -310,13 +355,13 @@ export const AdminSkills: React.FC = () => {
               <div className="grid grid-cols-3 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    শতাংশ (Percentage)
+                    শতাংশ
                   </label>
                   <input
                     type="text"
                     value={newSkillPercentage}
                     onChange={(e) => setNewSkillPercentage(e.target.value)}
-                    placeholder="যেমন: 95%"
+                    placeholder="90%"
                     className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
                   />
                 </div>
@@ -338,15 +383,22 @@ export const AdminSkills: React.FC = () => {
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    আইকন কোড
+                    আইকন
                   </label>
-                  <input
-                    type="text"
+                  <select
                     value={newSkillIcon}
                     onChange={(e) => setNewSkillIcon(e.target.value)}
-                    placeholder="illustrator / ps / wp"
                     className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
-                  />
+                  >
+                    <option value="illustrator">Illustrator</option>
+                    <option value="photoshop">Photoshop</option>
+                    <option value="wordpress">WordPress</option>
+                    <option value="google">Google Ads</option>
+                    <option value="facebook">Facebook Ads</option>
+                    <option value="youtube">YouTube Ads</option>
+                    <option value="email">Email Marketing</option>
+                    <option value="instagram">Instagram Ads</option>
+                  </select>
                 </div>
               </div>
 
