@@ -7,12 +7,12 @@ interface HeroSectionProps {
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ profile }) => {
   return (
-    <section id="home" className="relative min-h-[82vh] flex items-center pt-10 pb-16 bg-[#FAF8F5] overflow-hidden">
+    <section id="home" className="relative min-h-[82vh] flex items-center pt-8 sm:pt-12 pb-12 sm:pb-16 bg-[#FAF8F5] overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
           
           {/* Left Column: Greeting, Headline, Bio, Buttons */}
-          <div className="lg:col-span-7 flex flex-col items-start text-left">
+          <div className="lg:col-span-7 flex flex-col items-start text-left z-10">
             
             {/* Greeting: "Hi There," */}
             <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-2">
@@ -55,42 +55,34 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ profile }) => {
 
           </div>
 
-          {/* Right Column: Murad Rahman's Portrait with Artistic Green Splash Backdrop */}
-          <div className="lg:col-span-5 flex justify-center items-center relative">
-            <div className="relative w-72 sm:w-88 md:w-96 flex items-center justify-center">
+          {/* Right Column: Murad Rahman's Cutout Standing Naturally Over Green Paint Splash (No Card / No Box) */}
+          <div className="lg:col-span-5 flex justify-center items-end relative pt-6 lg:pt-0">
+            <div className="relative w-80 sm:w-96 md:w-[440px] flex items-center justify-center">
               
-              {/* Green Brush Splash Artwork SVG behind the photo matching reference */}
-              <div className="absolute inset-0 -z-0 flex items-center justify-center pointer-events-none transform scale-125 sm:scale-135">
+              {/* Green Brush Paint Splash Graphic directly behind Murad's body matching Reference */}
+              <div className="absolute inset-0 -z-0 flex items-center justify-center pointer-events-none transform scale-110 sm:scale-125">
                 <svg
                   viewBox="0 0 500 500"
-                  className="w-full h-full text-[#4ade80] opacity-80"
+                  className="w-full h-full text-[#4ade80] opacity-90 filter drop-shadow-xs"
                   fill="currentColor"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path d="M432.5,296.5Q417,343,382,376.5Q347,410,298.5,427Q250,444,203,425Q156,406,116.5,373.5Q77,341,61.5,295.5Q46,250,67.5,205.5Q89,161,123.5,127.5Q158,94,204,74.5Q250,55,297.5,72.5Q345,90,381.5,124Q418,158,433,204Q448,250,432.5,296.5Z" />
                 </svg>
-                {/* Secondary accent splash */}
-                <div className="absolute w-72 h-72 bg-[#22c55e]/30 rounded-full blur-2xl" />
+                {/* Secondary accent soft glow */}
+                <div className="absolute w-72 h-72 bg-[#22c55e]/25 rounded-full blur-2xl" />
               </div>
 
-              {/* Murad Rahman's Portrait Container */}
-              <div className="relative z-10 w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-slate-900 group">
+              {/* Murad Rahman's Clean Transparent Cutout Portrait */}
+              <div className="relative z-10 w-full flex items-end justify-center">
                 <img
-                  src={profile.profileImage || "/images/murad-rahman.jpg"}
-                  alt={profile.name}
-                  className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                  src="/images/murad-rahman-transparent.png"
+                  alt={profile.name || "Murad Rahman"}
+                  className="w-full max-h-[460px] sm:max-h-[520px] object-contain drop-shadow-md select-none transition-transform duration-300 hover:scale-[1.02]"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = "/images/murad-rahman.jpg";
+                    (e.target as HTMLImageElement).src = profile.profileImage || "/images/murad-rahman.jpg";
                   }}
                 />
-
-                {/* Subtle soft gradient at bottom */}
-                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
-                  <div className="text-white">
-                    <p className="font-bold text-base">{profile.name}</p>
-                    <p className="text-xs text-emerald-300 font-medium">{profile.title}</p>
-                  </div>
-                </div>
               </div>
 
             </div>
