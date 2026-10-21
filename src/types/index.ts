@@ -7,6 +7,7 @@ export interface SiteProfile {
   aboutBio: string;
   aboutSecondaryBio?: string;
   profileImage: string;
+  aboutImage?: string;
   location: string;
   email: string;
   phone?: string;

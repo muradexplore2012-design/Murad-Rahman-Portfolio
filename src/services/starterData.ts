@@ -6,9 +6,10 @@ export const starterProfile: SiteProfile = {
   greeting: "আসসালামুয়ালাইকুম, আপনাকে স্বাগতম",
   heroHeadline: "হ্যালো, আমি মুরাদ রহমান — Graphics Design ও Web Development নিয়ে কাজ করি।",
   heroSubheadline: "ব্যক্তি ও ব্যবসার জন্য আধুনিক, আকর্ষণীয় গ্রাফিক্স এবং পরিচ্ছন্ন ও রেসপনসিভ ওয়েব ইন্টারফেস তৈরিতে নিবেদিত।",
-  aboutBio: "আমি ব্যক্তি, উদ্যোক্তা ও ছোট ব্যবসার জন্য পরিষ্কার, আধুনিক এবং ব্যবহারবান্ধব ডিজাইন ও ওয়েব অভিজ্ঞতা তৈরি করি। Graphics Design, Blogger-ভিত্তিক আধুনিক/custom website এবং responsive web interface নিয়ে কাজ করি। প্রতিটি প্রজেক্টে ব্যবহারকারীর অভিজ্ঞতা, পরিচ্ছন্ন ডিজাইন ও ধারাবাহিক উন্নতিকে গুরুত্ব দিই।",
-  aboutSecondaryBio: "আমার কাজের মূল লক্ষ্য হলো ক্লায়েন্টের প্রয়োজনীয়তা বুঝে সময়োপযোগী ও প্রফেশনাল ফলাফল উপহার দেওয়া। নতুন প্রযুক্তি শেখা ও ভিজ্যুয়াল ক্রিয়েটিভিটিকে বাস্তব রূপ দেওয়ার ক্ষেত্রে আমি সবসময় উদ্যমী।",
+  aboutBio: "মুরাদ রহমান একজন দক্ষ ও সৃজনশীল গ্রাফিক্স ডিজাইনার ও ওয়েব ডেভেলপার, যিনি আধুনিক ডিজাইন ও ওয়েব প্রযুক্তির মাধ্যমে ব্যক্তি ও ব্যবসার জন্য উচ্চমানের ভিজ্যুয়াল কনটেন্ট ও রেসপনসিভ ওয়েবসাইট তৈরিতে কাজ করছেন। এই সময়ে তিনি আধুনিক ডিজাইন কৌশল ও ওয়েব ডেভেলপমেন্ট সম্পর্কে গভীর দক্ষতা অর্জন করেছেন, যা ব্যবসাকে দ্রুত স্কেল করতে এবং অসাধারণ ফলাফল পেতে সাহায্য করে।",
+  aboutSecondaryBio: "তিনি পরিষ্কার, আধুনিক এবং ইউজার-ফ্রেন্ডলি ডিজাইন তৈরি করতে বিশেষ পারদর্শী, যা সঠিক অডিয়েন্সকে টার্গেট করে সর্বোচ্চ রিচ, এনগেজমেন্ট এবং ব্র্যান্ড ভ্যালু নিশ্চিত করে।",
   profileImage: "/images/murad-rahman.jpg",
+  aboutImage: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=1200&q=80",
   location: "Bangladesh",
   email: "muradrahman2026@gmail.com",
   phone: "",
@@ -27,8 +28,9 @@ export const starterProfile: SiteProfile = {
     twitter: ""
   },
   counters: [
-    { id: "1", label: "Completed Works", value: "4", suffix: "+", isVisible: true },
-    { id: "2", label: "Client Satisfaction", value: "100", suffix: "%", isVisible: false }
+    { id: "1", label: "Project Completed", value: "550", suffix: "+", isVisible: true },
+    { id: "2", label: "Satisfied Client", value: "450", suffix: "+", isVisible: true },
+    { id: "3", label: "Years of Experience", value: "04", suffix: "+", isVisible: true }
   ]
 };
 

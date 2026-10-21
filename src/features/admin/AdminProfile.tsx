@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Save, CheckCircle, AlertCircle, Upload, User, Globe, Mail, Phone, Link as LinkIcon } from 'lucide-react';
+import { Save, CheckCircle, AlertCircle, Upload, Eye } from 'lucide-react';
 import type { SiteProfile } from '../../types';
 import { getSiteProfile, saveSiteProfile } from '../../services/firestoreService';
 import { uploadAsset } from '../../services/storageService';
@@ -9,8 +9,8 @@ export const AdminProfile: React.FC = () => {
   const [profile, setProfile] = useState<SiteProfile>(starterProfile);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [isUploadingProfile, setIsUploadingProfile] = useState(false);
+  const [isUploadingAbout, setIsUploadingAbout] = useState(false);
   const [status, setStatus] = useState<{ type: 'idle' | 'success' | 'error'; message: string }>({
     type: 'idle',
     message: '',
@@ -30,22 +30,43 @@ export const AdminProfile: React.FC = () => {
     load();
   }, []);
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleProfileImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     try {
-      setIsUploading(true);
-      setUploadProgress(0);
-      const url = await uploadAsset(file, 'profile', (pct) => setUploadProgress(pct));
+      setIsUploadingProfile(true);
+      const url = await uploadAsset(file, 'profile');
       setProfile((prev) => ({ ...prev, profileImage: url }));
-      setStatus({ type: 'success', message: 'ছবি সফলভাবে আপলোড হয়েছে!' });
+      setStatus({ type: 'success', message: 'প্রোফাইল ছবি সফলভাবে আপলোড হয়েছে!' });
     } catch (err: any) {
-      console.error(err);
       setStatus({ type: 'error', message: err.message || 'ইমেজ আপলোড ব্যর্থ হয়েছে।' });
     } finally {
-      setIsUploading(false);
-      setUploadProgress(null);
+      setIsUploadingProfile(false);
+    }
+  };
+
+  const handleAboutImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploadingAbout(true);
+      const url = await uploadAsset(file, 'about');
+      setProfile((prev) => ({ ...prev, aboutImage: url }));
+      setStatus({ type: 'success', message: 'ওয়ার্কস্পেস ছবি সফলভাবে আপলোড হয়েছে!' });
+    } catch (err: any) {
+      setStatus({ type: 'error', message: err.message || 'ইমেজ আপলোড ব্যর্থ হয়েছে।' });
+    } finally {
+      setIsUploadingAbout(false);
+    }
+  };
+
+  const handleCounterChange = (index: number, field: string, value: any) => {
+    const newCounters = [...(profile.counters || [])];
+    if (newCounters[index]) {
+      newCounters[index] = { ...newCounters[index], [field]: value };
+      setProfile({ ...profile, counters: newCounters });
     }
   };
 
@@ -100,7 +121,7 @@ export const AdminProfile: React.FC = () => {
         {/* Profile Image & Avatar */}
         <div className="glass-card rounded-2xl p-6 border border-slate-800 bg-slate-900/60">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-4">
-            প্রোফাইল ছবি
+            ১. হিরো সেকশনের প্রোফাইল ছবি
           </h3>
           <div className="flex flex-col sm:flex-row items-center gap-6">
             <div className="w-24 h-24 rounded-2xl overflow-hidden border-2 border-slate-700 bg-slate-950 shrink-0">
@@ -121,23 +142,59 @@ export const AdminProfile: React.FC = () => {
                 placeholder="/images/murad-rahman.jpg"
                 className="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white"
               />
-              <div className="flex items-center gap-3 pt-1">
+              <div className="pt-1">
                 <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition-colors">
                   <Upload className="w-3.5 h-3.5 text-blue-400" />
-                  <span>নতুন ফটো আপলোড করুন</span>
+                  <span>{isUploadingProfile ? 'আপলোড হচ্ছে...' : 'নতুন ফটো আপলোড করুন'}</span>
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={handleImageUpload}
+                    onChange={handleProfileImageUpload}
                     className="hidden"
-                    disabled={isUploading}
+                    disabled={isUploadingProfile}
                   />
                 </label>
-                {isUploading && (
-                  <span className="text-xs text-blue-400">
-                    আপলোড হচ্ছে... {uploadProgress ? `${uploadProgress}%` : ''}
-                  </span>
-                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* About Section Workspace Photo */}
+        <div className="glass-card rounded-2xl p-6 border border-slate-800 bg-slate-900/60">
+          <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-4">
+            ২. 'আমার সম্পর্কে' সেকশনের ওয়ার্কস্পেস ছবি
+          </h3>
+          <div className="flex flex-col sm:flex-row items-center gap-6">
+            <div className="w-32 h-24 rounded-xl overflow-hidden border-2 border-slate-700 bg-slate-950 shrink-0">
+              <img
+                src={profile.aboutImage || "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=1200&q=80"}
+                alt="Workspace"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="flex-1 w-full space-y-2">
+              <label className="block text-xs font-semibold text-slate-300">
+                ওয়ার্কস্পেস ইমেজ URL অথবা আপলোড করুন
+              </label>
+              <input
+                type="text"
+                value={profile.aboutImage || ''}
+                onChange={(e) => setProfile({ ...profile, aboutImage: e.target.value })}
+                placeholder="https://images.unsplash.com/photo-1581291518857-4e27b48ff24e..."
+                className="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white"
+              />
+              <div className="pt-1">
+                <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition-colors">
+                  <Upload className="w-3.5 h-3.5 text-blue-400" />
+                  <span>{isUploadingAbout ? 'আপলোড হচ্ছে...' : 'ওয়ার্কস্পেস ছবি আপলোড'}</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAboutImageUpload}
+                    className="hidden"
+                    disabled={isUploadingAbout}
+                  />
+                </label>
               </div>
             </div>
           </div>
@@ -180,12 +237,13 @@ export const AdminProfile: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                স্বাগতম অভিবাদন (Greeting)
+                স্বাগতম সম্ভাষণ (Greeting)
               </label>
               <input
                 type="text"
                 value={profile.greeting}
                 onChange={(e) => setProfile({ ...profile, greeting: e.target.value })}
+                placeholder="Hi There,"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -205,68 +263,84 @@ export const AdminProfile: React.FC = () => {
 
           <div>
             <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-              হিরো সেকশন হেডলাইন
-            </label>
-            <input
-              type="text"
-              value={profile.heroHeadline}
-              onChange={(e) => setProfile({ ...profile, heroHeadline: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-              হিরো সাব-হেডলাইন / সংক্ষেপ
+              আমার সম্পর্কে অনুচ্ছেদ ১ (About Paragraph 1)
             </label>
             <textarea
-              rows={2}
-              value={profile.heroSubheadline}
-              onChange={(e) => setProfile({ ...profile, heroSubheadline: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-              আমার সম্পর্কে বিস্তারিত বায়োগ্রাফি (About Me)
-            </label>
-            <textarea
-              rows={4}
+              rows={3}
               value={profile.aboutBio}
               onChange={(e) => setProfile({ ...profile, aboutBio: e.target.value })}
               className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 leading-relaxed"
             />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+              আমার সম্পর্কে অনুচ্ছেদ ২ (About Paragraph 2)
+            </label>
+            <textarea
+              rows={3}
+              value={profile.aboutSecondaryBio || ''}
+              onChange={(e) => setProfile({ ...profile, aboutSecondaryBio: e.target.value })}
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 leading-relaxed"
+            />
+          </div>
+        </div>
+
+        {/* 3 Counter Statistics Boxes */}
+        <div className="glass-card rounded-2xl p-6 border border-slate-800 bg-slate-900/60 space-y-4">
+          <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-2">
+            ৩টি স্ট্যাটিস্টিকস কাউন্টার বক্স
+          </h3>
+          <p className="text-xs text-slate-400 mb-4">
+            'আমার সম্পর্কে' সেকশনের নিচে প্রদর্শিত ৩টি সবুজ বক্সের সংখ্যা ও লেবেল পরিবর্তন করুন।
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {(profile.counters || []).map((counter, idx) => (
+              <div key={counter.id} className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                <span className="text-[11px] font-bold text-emerald-400 block uppercase">
+                  বক্স {idx + 1}
+                </span>
+                <div>
+                  <label className="block text-[11px] text-slate-400 mb-1">কাউন্টার মান (Value)</label>
+                  <input
+                    type="text"
+                    value={counter.value}
+                    onChange={(e) => handleCounterChange(idx, 'value', e.target.value)}
+                    placeholder="550"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-sm text-white font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] text-slate-400 mb-1">সাফিক্স (যেমন +)</label>
+                  <input
+                    type="text"
+                    value={counter.suffix || '+'}
+                    onChange={(e) => handleCounterChange(idx, 'suffix', e.target.value)}
+                    placeholder="+"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-sm text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] text-slate-400 mb-1">লেবেল (Label)</label>
+                  <input
+                    type="text"
+                    value={counter.label}
+                    onChange={(e) => handleCounterChange(idx, 'label', e.target.value)}
+                    placeholder="Project Completed"
+                    className="w-full px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs text-white"
+                  />
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
         {/* Availability & Contact Channels */}
         <div className="glass-card rounded-2xl p-6 border border-slate-800 bg-slate-900/60 space-y-4">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-4">
-            উপলব্ধতা ও সরাসরি যোগাযোগ
+            যোগাযোগ ও জীবনবৃত্তান্ত (CV)
           </h3>
-
-          <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-950 border border-slate-800">
-            <input
-              type="checkbox"
-              id="isAvailable"
-              checked={profile.isAvailable}
-              onChange={(e) => setProfile({ ...profile, isAvailable: e.target.checked })}
-              className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 bg-slate-900 border-slate-700"
-            />
-            <div className="flex-1">
-              <label htmlFor="isAvailable" className="text-xs font-bold text-white block cursor-pointer">
-                কাজের জন্য উপলব্ধ (Available for Projects)
-              </label>
-              <input
-                type="text"
-                value={profile.availabilityText}
-                onChange={(e) => setProfile({ ...profile, availabilityText: e.target.value })}
-                className="mt-1 w-full sm:w-80 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
-                placeholder="প্রজেক্টের জন্য যোগাযোগ করতে পারেন"
-              />
-            </div>
-          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -297,7 +371,7 @@ export const AdminProfile: React.FC = () => {
 
           <div>
             <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-              জীবনবৃত্তান্ত (Resume / CV) লিঙ্ক
+              জীবনবৃত্তান্ত (Resume / CV) ড্রাইভ লিঙ্ক
             </label>
             <input
               type="url"
@@ -309,88 +383,12 @@ export const AdminProfile: React.FC = () => {
           </div>
         </div>
 
-        {/* Social Links */}
-        <div className="glass-card rounded-2xl p-6 border border-slate-800 bg-slate-900/60 space-y-4">
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-2">
-            সোশ্যাল মিডিয়া লিঙ্কস
-          </h3>
-          <p className="text-xs text-slate-400 mb-4">
-            যে লিঙ্কটি ফাঁকা রাখবেন, সেটি পাবলিক ওয়েবসাইটে স্বয়ংক্রিয়ভাবে লুকিয়ে থাকবে।
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Facebook</label>
-              <input
-                type="url"
-                value={profile.socialLinks?.facebook || ''}
-                onChange={(e) =>
-                  setProfile({
-                    ...profile,
-                    socialLinks: { ...profile.socialLinks, facebook: e.target.value },
-                  })
-                }
-                placeholder="https://facebook.com/..."
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">LinkedIn</label>
-              <input
-                type="url"
-                value={profile.socialLinks?.linkedin || ''}
-                onChange={(e) =>
-                  setProfile({
-                    ...profile,
-                    socialLinks: { ...profile.socialLinks, linkedin: e.target.value },
-                  })
-                }
-                placeholder="https://linkedin.com/in/..."
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">GitHub</label>
-              <input
-                type="url"
-                value={profile.socialLinks?.github || ''}
-                onChange={(e) =>
-                  setProfile({
-                    ...profile,
-                    socialLinks: { ...profile.socialLinks, github: e.target.value },
-                  })
-                }
-                placeholder="https://github.com/..."
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Behance / Dribbble</label>
-              <input
-                type="url"
-                value={profile.socialLinks?.behance || ''}
-                onChange={(e) =>
-                  setProfile({
-                    ...profile,
-                    socialLinks: { ...profile.socialLinks, behance: e.target.value },
-                  })
-                }
-                placeholder="https://behance.net/..."
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white"
-              />
-            </div>
-          </div>
-        </div>
-
         {/* Submit */}
         <div className="flex justify-end">
           <button
             type="submit"
             disabled={isSaving}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 disabled:opacity-50 text-white font-semibold rounded-xl shadow-lg shadow-blue-600/30 transition-all text-sm"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] disabled:opacity-50 text-white font-bold rounded-xl shadow-md transition-all text-sm"
           >
             <Save className="w-4 h-4" />
             <span>{isSaving ? 'সেভ হচ্ছে...' : 'পরিবর্তন সেভ করুন'}</span>

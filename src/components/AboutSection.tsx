@@ -1,5 +1,4 @@
 import React from 'react';
-import { User, Download, CheckCircle2, MapPin, Mail, Globe, Sparkles } from 'lucide-react';
 import type { SiteProfile } from '../types';
 
 interface AboutSectionProps {
@@ -7,156 +6,92 @@ interface AboutSectionProps {
 }
 
 export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
-  const visibleCounters = profile.counters?.filter((c) => c.isVisible && c.value) || [];
+  const counters = profile.counters && profile.counters.length > 0
+    ? profile.counters
+    : [
+        { id: "1", label: "Project Completed", value: "550", suffix: "+", isVisible: true },
+        { id: "2", label: "Satisfied Client", value: "450", suffix: "+", isVisible: true },
+        { id: "3", label: "Years of Experience", value: "04", suffix: "+", isVisible: true }
+      ];
+
+  const visibleCounters = counters.filter((c) => c.isVisible);
 
   return (
     <section id="about" className="py-20 relative bg-white border-t border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Header matching the screenshot title */}
+        {/* Centered Green Section Title (Exactly like screenshot) */}
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#15803d] tracking-tight">
+          <h2 className="text-4xl sm:text-5xl font-black text-[#15803d] tracking-tight">
             আমার সম্পর্কে
           </h2>
-          <div className="w-16 h-1 bg-[#15803d] mx-auto mt-3 rounded-full" />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        {/* 2-Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           
-          {/* Profile Photo & Quick Details */}
-          <div className="lg:col-span-5 flex flex-col items-center">
-            <div className="relative w-64 sm:w-72 aspect-square rounded-2xl overflow-hidden border-4 border-slate-100 shadow-xl mb-6 bg-slate-900">
+          {/* Left Column: Landscape Workspace Photo Card */}
+          <div className="lg:col-span-6 flex justify-center">
+            <div className="w-full max-w-lg aspect-[4/3] rounded-2xl overflow-hidden shadow-lg border border-slate-200 bg-slate-900">
               <img
-                src={profile.profileImage || "/images/murad-rahman.jpg"}
-                alt={profile.name}
-                className="w-full h-full object-cover object-top"
+                src={
+                  profile.aboutImage ||
+                  "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=1200&q=80"
+                }
+                alt="Murad Rahman Workspace"
+                className="w-full h-full object-cover"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = "/images/murad-rahman.jpg";
+                  (e.target as HTMLImageElement).src =
+                    "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=1200&q=80";
                 }}
               />
             </div>
-
-            {/* Quick Details Card */}
-            <div className="w-full max-w-sm card-light rounded-2xl p-5 space-y-3 bg-[#FAF8F5]">
-              <div className="flex items-center justify-between text-sm py-1.5 border-b border-slate-200">
-                <span className="text-slate-600 flex items-center gap-2 font-medium">
-                  <User className="w-4 h-4 text-[#15803d]" />
-                  <span>নাম</span>
-                </span>
-                <span className="font-bold text-slate-900">{profile.name}</span>
-              </div>
-
-              <div className="flex items-center justify-between text-sm py-1.5 border-b border-slate-200">
-                <span className="text-slate-600 flex items-center gap-2 font-medium">
-                  <Globe className="w-4 h-4 text-[#15803d]" />
-                  <span>পেশা</span>
-                </span>
-                <span className="font-bold text-slate-900 text-right">{profile.title}</span>
-              </div>
-
-              {profile.location && (
-                <div className="flex items-center justify-between text-sm py-1.5 border-b border-slate-200">
-                  <span className="text-slate-600 flex items-center gap-2 font-medium">
-                    <MapPin className="w-4 h-4 text-rose-500" />
-                    <span>অবস্থান</span>
-                  </span>
-                  <span className="font-bold text-slate-900">{profile.location}</span>
-                </div>
-              )}
-
-              {profile.email && (
-                <div className="flex items-center justify-between text-sm py-1.5">
-                  <span className="text-slate-600 flex items-center gap-2 font-medium">
-                    <Mail className="w-4 h-4 text-blue-600" />
-                    <span>ইমেইল</span>
-                  </span>
-                  <a
-                    href={`mailto:${profile.email}`}
-                    className="font-medium text-[#15803d] hover:underline truncate max-w-[180px]"
-                  >
-                    {profile.email}
-                  </a>
-                </div>
-              )}
-            </div>
           </div>
 
-          {/* Biography Text */}
-          <div className="lg:col-span-7 flex flex-col justify-center">
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-5 leading-snug">
-              পরিচ্ছন্ন ডিজাইন ও আধুনিক ওয়েব অভিজ্ঞতা
-            </h3>
+          {/* Right Column: Bio Copy, 'More About Me' Button, and 3 Counter Boxes */}
+          <div className="lg:col-span-6 flex flex-col justify-center">
+            
+            {/* Paragraph 1 */}
+            <p className="text-sm sm:text-base text-slate-800 leading-relaxed font-normal mb-5">
+              {profile.aboutBio ||
+                'মুরাদ রহমান একজন অভিজ্ঞ গ্রাফিক্স ডিজাইনার ও ওয়েব ডেভেলপার, যিনি ব্যক্তি ও ব্যবসার জন্য আধুনিক ও পরিচ্ছন্ন ডিজাইন এবং কার্যকর রেসপনসিভ ওয়েবসাইট তৈরিতে কাজ করছেন। এই সময়ে তিনি উন্নত ডিজাইন কৌশল এবং আধুনিক টুলস সম্পর্কে গভীর দক্ষতা অর্জন করেছেন, যা ব্যবসাকে দ্রুত স্কেল করতে এবং অসাধারণ ফলাফল পেতে সাহায্য করে।'}
+            </p>
 
-            <div className="space-y-4 text-slate-700 text-base sm:text-lg leading-relaxed mb-6 font-normal">
-              <p>
-                {profile.aboutBio ||
-                  'আমি ব্যক্তি, উদ্যোক্তা ও ছোট ব্যবসার জন্য পরিষ্কার, আধুনিক এবং ব্যবহারবান্ধব ডিজাইন ও ওয়েব অভিজ্ঞতা তৈরি করি। Graphics Design, Blogger-ভিত্তিক আধুনিক/custom website এবং responsive web interface নিয়ে কাজ করি। প্রতিটি প্রজেক্টে ব্যবহারকারীর অভিজ্ঞতা, পরিচ্ছন্ন ডিজাইন ও ধারাবাহিক উন্নতিকে গুরুত্ব দিই।'}
-              </p>
+            {/* Paragraph 2 */}
+            <p className="text-sm sm:text-base text-slate-800 leading-relaxed font-normal mb-8">
+              {profile.aboutSecondaryBio ||
+                'তিনি ব্যবহারবান্ধব ডিজিটাল সলিউশন তৈরি করতে বিশেষ পারদর্শী, যা সঠিক অডিয়েন্সকে টার্গেট করে সর্বোচ্চ রিচ, এনগেজমেন্ট এবং ব্র্যান্ডের প্রফেশনাল ইমেজ নিশ্চিত করে।'}
+            </p>
 
-              {profile.aboutSecondaryBio && (
-                <p className="text-slate-600">
-                  {profile.aboutSecondaryBio}
-                </p>
-              )}
+            {/* Button: "More About Me" (Outlined green, exactly like screenshot) */}
+            <div className="mb-8">
+              <a
+                href={profile.resumeUrl || "#contact"}
+                className="inline-flex items-center justify-center px-6 py-2.5 border-2 border-[#15803d] text-[#15803d] hover:bg-[#15803d] hover:text-white font-bold text-sm rounded-lg transition-all duration-200 shadow-2xs"
+              >
+                More About Me
+              </a>
             </div>
 
-            {/* Core Values Checklist */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-8">
-              <div className="flex items-start gap-2.5 text-sm text-slate-800 font-medium">
-                <CheckCircle2 className="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" />
-                <span>ব্যক্তিগত ও বাণিজ্যিক ব্র্যান্ডিং ও লোগো ডিজাইন</span>
-              </div>
-              <div className="flex items-start gap-2.5 text-sm text-slate-800 font-medium">
-                <CheckCircle2 className="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" />
-                <span>সোশ্যাল মিডিয়া ব্যানার ও প্রমোশনাল কনটেন্ট</span>
-              </div>
-              <div className="flex items-start gap-2.5 text-sm text-slate-800 font-medium">
-                <CheckCircle2 className="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" />
-                <span>ক্লিন কোড ও সম্পূর্ণ রেসপনসিভ ওয়েবসাইট</span>
-              </div>
-              <div className="flex items-start gap-2.5 text-sm text-slate-800 font-medium">
-                <CheckCircle2 className="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" />
-                <span>কাস্টম ব্লগার থিম সেটআপ ও এসইও ফ্রেন্ডলি কাঠামো</span>
-              </div>
-            </div>
-
-            {/* Counters (only shown if configured) */}
+            {/* 3 Counter Boxes in a Row (Bordered green boxes, exactly like screenshot) */}
             {visibleCounters.length > 0 && (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 rounded-xl bg-[#FAF8F5] border border-slate-200 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
                 {visibleCounters.map((counter) => (
-                  <div key={counter.id} className="text-center">
-                    <div className="text-2xl font-black text-[#15803d]">
+                  <div
+                    key={counter.id}
+                    className="border border-[#15803d] p-4 sm:p-5 bg-white text-left transition-transform hover:-translate-y-0.5 shadow-2xs"
+                  >
+                    <div className="text-2xl sm:text-3xl font-black text-[#15803d] leading-none mb-2">
                       {counter.value}
-                      {counter.suffix}
+                      {counter.suffix || '+'}
                     </div>
-                    <div className="text-xs text-slate-600 mt-1 font-semibold">{counter.label}</div>
+                    <div className="text-xs sm:text-sm font-bold text-slate-800">
+                      {counter.label}
+                    </div>
                   </div>
                 ))}
               </div>
             )}
-
-            {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-4">
-              {profile.resumeUrl ? (
-                <a
-                  href={profile.resumeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#15803d] hover:bg-[#166534] text-white font-bold rounded-lg shadow-sm transition-colors text-sm"
-                >
-                  <Download className="w-4 h-4" />
-                  <span>জীবনবৃত্তান্ত (CV) ডাউনলোড করুন</span>
-                </a>
-              ) : null}
-
-              <a
-                href="#contact"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-white hover:bg-slate-50 text-slate-800 font-bold rounded-lg border-2 border-slate-300 transition-colors text-sm"
-              >
-                <Sparkles className="w-4 h-4 text-[#15803d]" />
-                <span>প্রজেক্ট নিয়ে আলোচনা করুন</span>
-              </a>
-            </div>
 
           </div>
 
