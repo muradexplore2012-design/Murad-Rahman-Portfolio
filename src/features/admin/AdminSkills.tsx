@@ -19,6 +19,7 @@ export const AdminSkills: React.FC = () => {
   // Modal for adding a skill to a specific group
   const [activeGroupForSkill, setActiveGroupForSkill] = useState<SkillGroup | null>(null);
   const [newSkillName, setNewSkillName] = useState('');
+  const [newSkillPercentage, setNewSkillPercentage] = useState('90%');
   const [newSkillLevel, setNewSkillLevel] = useState('Advanced');
   const [newSkillIcon, setNewSkillIcon] = useState('');
 
@@ -81,6 +82,7 @@ export const AdminSkills: React.FC = () => {
       const newSkill: SkillItem = {
         id: `sk-${Date.now()}`,
         name: newSkillName.trim(),
+        percentage: newSkillPercentage.trim() || '90%',
         level: newSkillLevel,
         icon: newSkillIcon.trim() || undefined,
       };
@@ -93,6 +95,7 @@ export const AdminSkills: React.FC = () => {
 
       setActiveGroupForSkill(null);
       setNewSkillName('');
+      setNewSkillPercentage('90%');
       setNewSkillIcon('');
       setStatus({ type: 'success', message: 'নতুন দক্ষতা যুক্ত হয়েছে!' });
       await loadSkills();
@@ -120,17 +123,17 @@ export const AdminSkills: React.FC = () => {
     <div className="max-w-6xl mx-auto space-y-6">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
-          <h1 className="text-2xl font-extrabold text-white">দক্ষতা ও টুলস (Skills CMS)</h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <h1 className="text-2xl font-extrabold text-slate-900">দক্ষতা ও টুলস (Skills CMS)</h1>
+          <p className="text-xs text-slate-500 mt-1">
             এডোবি সফটওয়্যার এবং টেকনিক্যাল স্কিলস গ্রুপ অনুযায়ী পরিচালনা করুন।
           </p>
         </div>
 
         <button
           onClick={() => setIsGroupModalOpen(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow-md transition-colors self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>নতুন গ্রুপ তৈরি করুন</span>
@@ -141,8 +144,8 @@ export const AdminSkills: React.FC = () => {
         <div
           className={`p-4 rounded-xl text-xs flex items-center gap-2 ${
             status.type === 'success'
-              ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'
-              : 'bg-rose-500/10 border border-rose-500/30 text-rose-400'
+              ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
+              : 'bg-rose-50 border border-rose-200 text-rose-700'
           }`}
         >
           {status.type === 'success' ? (
@@ -156,20 +159,20 @@ export const AdminSkills: React.FC = () => {
 
       {/* Skill Groups Grid */}
       {isLoading ? (
-        <div className="p-8 text-center text-slate-400 text-sm">স্কিলস লোড হচ্ছে...</div>
+        <div className="p-8 text-center text-slate-500 text-sm">স্কিলস লোড হচ্ছে...</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {skillGroups.map((group) => (
             <div
               key={group.id}
-              className="glass-card rounded-2xl p-5 border border-slate-800 bg-slate-900/40 flex flex-col justify-between"
+              className="rounded-2xl p-5 border border-slate-200 bg-white shadow-xs flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
-                  <h3 className="text-sm font-bold text-white">{group.name}</h3>
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+                  <h3 className="text-sm font-bold text-slate-900">{group.name}</h3>
                   <button
                     onClick={() => handleDeleteGroup(group)}
-                    className="text-slate-500 hover:text-rose-400 p-1"
+                    className="text-slate-400 hover:text-rose-600 p-1 transition-colors cursor-pointer"
                     title="গ্রুপ মুছুন"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -180,26 +183,31 @@ export const AdminSkills: React.FC = () => {
                   {group.skills.map((skill) => (
                     <div
                       key={skill.id}
-                      className="p-2.5 rounded-lg bg-slate-950 border border-slate-800/80 flex items-center justify-between"
+                      className="p-2.5 rounded-lg bg-slate-50 border border-slate-200/80 flex items-center justify-between"
                     >
                       <div className="flex items-center gap-2">
                         {skill.icon && (
-                          <span className="w-6 h-6 rounded bg-slate-900 border border-slate-700 text-[10px] font-bold text-blue-400 flex items-center justify-center">
+                          <span className="w-6 h-6 rounded bg-emerald-50 border border-emerald-200 text-[10px] font-bold text-[#15803d] flex items-center justify-center">
                             {skill.icon}
                           </span>
                         )}
-                        <span className="text-xs font-semibold text-white">{skill.name}</span>
+                        <span className="text-xs font-semibold text-slate-800">{skill.name}</span>
                       </div>
 
                       <div className="flex items-center gap-2">
+                        {skill.percentage && (
+                          <span className="text-xs font-bold text-[#15803d] px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200">
+                            {skill.percentage}
+                          </span>
+                        )}
                         {skill.level && (
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-900 text-slate-400">
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
                             {skill.level}
                           </span>
                         )}
                         <button
                           onClick={() => handleDeleteSkill(group, skill.id)}
-                          className="text-slate-600 hover:text-rose-400"
+                          className="text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -208,14 +216,14 @@ export const AdminSkills: React.FC = () => {
                   ))}
 
                   {group.skills.length === 0 && (
-                    <p className="text-xs text-slate-500 italic py-2">কোনো স্কিল যোগ করা হয়নি</p>
+                    <p className="text-xs text-slate-400 italic py-2">কোনো স্কিল যোগ করা হয়নি</p>
                   )}
                 </div>
               </div>
 
               <button
                 onClick={() => setActiveGroupForSkill(group)}
-                className="w-full py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
+                className="w-full py-2 rounded-xl bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-[#15803d] border border-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>দক্ষতা যুক্ত করুন</span>
@@ -227,18 +235,18 @@ export const AdminSkills: React.FC = () => {
 
       {/* Modal: New Group */}
       {isGroupModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="relative w-full max-w-md glass-card rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+          <div className="relative w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl text-slate-800">
             <button
               onClick={() => setIsGroupModalOpen(false)}
-              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
-            <h2 className="text-lg font-bold text-white mb-4">নতুন স্কিল গ্রুপ</h2>
+            <h2 className="text-lg font-bold text-slate-900 mb-4">নতুন স্কিল গ্রুপ</h2>
             <form onSubmit={handleAddGroup} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
                   গ্রুপের নাম *
                 </label>
                 <input
@@ -247,21 +255,21 @@ export const AdminSkills: React.FC = () => {
                   value={newGroupName}
                   onChange={(e) => setNewGroupName(e.target.value)}
                   placeholder="যেমন: Motion Graphics & Video"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
                 />
               </div>
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setIsGroupModalOpen(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-400"
+                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer"
                 >
                   বাতিল
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl"
+                  className="px-5 py-2 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
                 >
                   গ্রুপ তৈরি করুন
                 </button>
@@ -273,20 +281,20 @@ export const AdminSkills: React.FC = () => {
 
       {/* Modal: Add Skill to Group */}
       {activeGroupForSkill && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="relative w-full max-w-md glass-card rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+          <div className="relative w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl text-slate-800">
             <button
               onClick={() => setActiveGroupForSkill(null)}
-              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
-            <h2 className="text-lg font-bold text-white mb-2">
+            <h2 className="text-lg font-bold text-slate-900 mb-2">
               "{activeGroupForSkill.name}" এ দক্ষতা যুক্ত করুন
             </h2>
             <form onSubmit={handleAddSkillToGroup} className="space-y-4 mt-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
                   টুল / সফটওয়্যার নাম *
                 </label>
                 <input
@@ -295,19 +303,32 @@ export const AdminSkills: React.FC = () => {
                   value={newSkillName}
                   onChange={(e) => setNewSkillName(e.target.value)}
                   placeholder="যেমন: Adobe InDesign"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    শতাংশ (Percentage)
+                  </label>
+                  <input
+                    type="text"
+                    value={newSkillPercentage}
+                    onChange={(e) => setNewSkillPercentage(e.target.value)}
+                    placeholder="যেমন: 95%"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
                     লেভেল
                   </label>
                   <select
                     value={newSkillLevel}
                     onChange={(e) => setNewSkillLevel(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
                   >
                     <option value="Advanced">Advanced</option>
                     <option value="Intermediate">Intermediate</option>
@@ -316,15 +337,15 @@ export const AdminSkills: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
-                    সংক্ষিপ্ত আইকন কোড
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    আইকন কোড
                   </label>
                   <input
                     type="text"
                     value={newSkillIcon}
                     onChange={(e) => setNewSkillIcon(e.target.value)}
-                    placeholder="যেমন: Id"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="illustrator / ps / wp"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
                   />
                 </div>
               </div>
@@ -333,14 +354,14 @@ export const AdminSkills: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setActiveGroupForSkill(null)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-400"
+                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer"
                 >
                   বাতিল
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl"
+                  className="px-5 py-2 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
                 >
                   যুক্ত করুন
                 </button>

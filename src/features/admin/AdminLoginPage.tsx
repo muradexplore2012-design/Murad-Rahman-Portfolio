@@ -49,35 +49,35 @@ export const AdminLoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center px-4 py-12">
-      {/* Background glow */}
-      <div className="absolute w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none -z-0" />
+    <div className="min-h-screen bg-[#FAF8F5] flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden">
+      {/* Background subtle green glow */}
+      <div className="absolute w-[500px] h-[500px] bg-emerald-400/10 rounded-full blur-[120px] pointer-events-none -z-0" />
 
       <div className="relative z-10 w-full max-w-md">
         
         {/* Back link */}
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white transition-colors mb-6"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-[#15803d] transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>পোর্টফোলিওতে ফিরে যান</span>
         </Link>
 
         {/* Card */}
-        <div className="glass-card rounded-2xl border border-slate-800 p-8 shadow-2xl bg-slate-900/90 backdrop-blur-xl">
-          <div className="flex items-center gap-3 mb-6 pb-6 border-b border-slate-800">
-            <div className="w-12 h-12 rounded-xl bg-blue-600/15 border border-blue-500/30 text-blue-400 flex items-center justify-center">
+        <div className="rounded-2xl border border-slate-200 p-8 shadow-xl bg-white backdrop-blur-xl">
+          <div className="flex items-center gap-3 mb-6 pb-6 border-b border-slate-100">
+            <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200 text-[#15803d] flex items-center justify-center">
               <Shield className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white">Admin CMS Portal</h1>
-              <p className="text-xs text-slate-400">Murad Rahman Portfolio Management</p>
+              <h1 className="text-xl font-bold text-slate-900">Admin CMS Portal</h1>
+              <p className="text-xs text-slate-500">Murad Rahman Portfolio Management</p>
             </div>
           </div>
 
           {errorMsg && (
-            <div className="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-start gap-3 text-sm">
+            <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 flex items-start gap-3 text-sm">
               <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
               <p>{errorMsg}</p>
             </div>
@@ -85,35 +85,35 @@ export const AdminLoginPage: React.FC = () => {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                 এডমিন ইমেইল
               </label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@example.com"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d] text-sm shadow-xs transition-colors"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                 পাসওয়ার্ড
               </label>
               <div className="relative">
-                <KeyRound className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <KeyRound className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d] text-sm shadow-xs transition-colors"
                 />
               </div>
             </div>
@@ -121,7 +121,7 @@ export const AdminLoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 disabled:opacity-50 text-white font-semibold rounded-xl shadow-lg shadow-blue-600/30 transition-all text-sm flex items-center justify-center gap-2 mt-2"
+              className="w-full py-3.5 px-4 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] disabled:opacity-50 text-white font-semibold rounded-xl shadow-md shadow-emerald-700/20 transition-all text-sm flex items-center justify-center gap-2 mt-2"
             >
               {isLoading ? (
                 <>
@@ -138,9 +138,9 @@ export const AdminLoginPage: React.FC = () => {
           </form>
 
           {/* Admin Email helper note */}
-          <div className="mt-6 pt-5 border-t border-slate-800/80 text-xs text-slate-400">
-            <span className="font-semibold text-slate-300">অনুমোদিত এডমিন: </span>
-            <span className="text-blue-400">{ADMIN_EMAIL}</span>
+          <div className="mt-6 pt-5 border-t border-slate-100 text-xs text-slate-500">
+            <span className="font-semibold text-slate-700">অনুমোদিত এডমিন: </span>
+            <span className="text-[#15803d] font-medium">{ADMIN_EMAIL}</span>
           </div>
         </div>
 

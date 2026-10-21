@@ -29,6 +29,7 @@ import {
   starterProjects,
   starterServices,
   starterSkillGroups,
+  starterTestimonials,
   starterSettings
 } from '../services/starterData';
 
@@ -37,7 +38,7 @@ export const HomePage: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>(starterProjects);
   const [services, setServices] = useState<Service[]>(starterServices);
   const [skillGroups, setSkillGroups] = useState<SkillGroup[]>(starterSkillGroups);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(starterTestimonials);
   const [settings, setSettings] = useState<SiteSettings>(starterSettings);
   const [isLoading, setIsLoading] = useState(true);
   const [prefilledSubject, setPrefilledSubject] = useState('');
@@ -109,7 +110,11 @@ export const HomePage: React.FC = () => {
         {sectionVisibility.hero && <HeroSection profile={profile} />}
         {sectionVisibility.about && <AboutSection profile={profile} />}
         {sectionVisibility.services && (
-          <ServicesSection services={services} onSelectService={handleSelectService} />
+          <ServicesSection
+            services={services}
+            onSelectService={handleSelectService}
+            whatsapp={profile.whatsapp || profile.phone}
+          />
         )}
         {sectionVisibility.projects && <ProjectsSection projects={projects} />}
         {sectionVisibility.skills && <SkillsSection skillGroups={skillGroups} />}

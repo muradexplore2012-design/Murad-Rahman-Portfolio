@@ -52,17 +52,17 @@ export const AdminSettings: React.FC = () => {
   };
 
   if (isLoading) {
-    return <div className="text-white text-sm">সেটিংস লোড হচ্ছে...</div>;
+    return <div className="text-slate-600 text-sm">সেটিংস লোড হচ্ছে...</div>;
   }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       
       {/* Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+      <div className="flex items-center justify-between pb-4 border-b border-slate-200">
         <div>
-          <h1 className="text-2xl font-extrabold text-white">এসইও ও সাইট সেটিংস</h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <h1 className="text-2xl font-extrabold text-slate-900">এসইও ও সাইট সেটিংস</h1>
+          <p className="text-xs text-slate-500 mt-1">
             ওয়েবসাইটের এসইও টাইটেল, মেটা ডেসক্রিপশন এবং সেকশন অন/অফ নিয়ন্ত্রণ করুন।
           </p>
         </div>
@@ -72,8 +72,8 @@ export const AdminSettings: React.FC = () => {
         <div
           className={`p-4 rounded-xl text-xs flex items-center gap-2 ${
             status.type === 'success'
-              ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'
-              : 'bg-rose-500/10 border border-rose-500/30 text-rose-400'
+              ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
+              : 'bg-rose-50 border border-rose-200 text-rose-700'
           }`}
         >
           {status.type === 'success' ? (
@@ -88,13 +88,13 @@ export const AdminSettings: React.FC = () => {
       <form onSubmit={handleSave} className="space-y-6">
         
         {/* SEO Settings */}
-        <div className="glass-card rounded-2xl p-6 border border-slate-800 bg-slate-900/60 space-y-4">
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-2">
+        <div className="rounded-2xl p-6 border border-slate-200 bg-white shadow-xs space-y-4">
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">
             এসইও ও মেটাডাটা
           </h3>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
               ওয়েবসাইট টাইটেল (Title Tag)
             </label>
             <input
@@ -102,24 +102,24 @@ export const AdminSettings: React.FC = () => {
               required
               value={settings.siteTitle}
               onChange={(e) => setSettings({ ...settings, siteTitle: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
               সার্চ ইঞ্জিন মেটা বিবরণ (Meta Description)
             </label>
             <textarea
               rows={3}
               value={settings.metaDescription}
               onChange={(e) => setSettings({ ...settings, metaDescription: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
               সোশ্যাল প্রিভিউ ইমেজ URL (Open Graph Image)
             </label>
             <input
@@ -127,17 +127,17 @@ export const AdminSettings: React.FC = () => {
               value={settings.ogImage || ''}
               onChange={(e) => setSettings({ ...settings, ogImage: e.target.value })}
               placeholder="/images/murad-rahman.jpg"
-              className="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white"
+              className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
             />
           </div>
         </div>
 
         {/* Section Visibility Controls */}
-        <div className="glass-card rounded-2xl p-6 border border-slate-800 bg-slate-900/60 space-y-4">
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-2">
+        <div className="rounded-2xl p-6 border border-slate-200 bg-white shadow-xs space-y-4">
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">
             হোমপেজ সেকশন নিয়ন্ত্রণ
           </h3>
-          <p className="text-xs text-slate-400 mb-4">
+          <p className="text-xs text-slate-500 mb-4">
             পাবলিক ওয়েবসাইটে কোন কোন সেকশন প্রদর্শন করা হবে তা এখান থেকে অন/অফ করতে পারেন।
           </p>
 
@@ -158,18 +158,18 @@ export const AdminSettings: React.FC = () => {
                   onClick={() => toggleSection(key as keyof SiteSettings['sectionVisibility'])}
                   className={`p-3.5 rounded-xl border cursor-pointer flex items-center justify-between transition-colors ${
                     isVisible
-                      ? 'bg-slate-950 border-blue-500/30'
-                      : 'bg-slate-950/40 border-slate-800 text-slate-500'
+                      ? 'bg-emerald-50/60 border-emerald-300 text-slate-900'
+                      : 'bg-slate-50 border-slate-200 text-slate-400'
                   }`}
                 >
-                  <span className="text-xs font-semibold text-white">{label}</span>
+                  <span className="text-xs font-semibold">{label}</span>
                   <div className="flex items-center gap-1.5 text-xs font-medium">
                     {isVisible ? (
-                      <span className="text-emerald-400 flex items-center gap-1">
+                      <span className="text-[#15803d] flex items-center gap-1 font-semibold">
                         <Eye className="w-3.5 h-3.5" /> অন
                       </span>
                     ) : (
-                      <span className="text-slate-500 flex items-center gap-1">
+                      <span className="text-slate-400 flex items-center gap-1">
                         <EyeOff className="w-3.5 h-3.5" /> অফ
                       </span>
                     )}
@@ -181,32 +181,32 @@ export const AdminSettings: React.FC = () => {
         </div>
 
         {/* Footer Settings */}
-        <div className="glass-card rounded-2xl p-6 border border-slate-800 bg-slate-900/60 space-y-4">
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-2">
+        <div className="rounded-2xl p-6 border border-slate-200 bg-white shadow-xs space-y-4">
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">
             ফুটার কনটেন্ট
           </h3>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
               ফুটার সংক্ষিপ্ত পরিচয়
             </label>
             <input
               type="text"
               value={settings.footerBio || ''}
               onChange={(e) => setSettings({ ...settings, footerBio: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
               কপিরাইট টেক্সট
             </label>
             <input
               type="text"
               value={settings.copyrightText}
               onChange={(e) => setSettings({ ...settings, copyrightText: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
             />
           </div>
         </div>
@@ -215,7 +215,7 @@ export const AdminSettings: React.FC = () => {
           <button
             type="submit"
             disabled={isSaving}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl shadow-lg shadow-blue-600/30 transition-all text-sm"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] text-white font-semibold rounded-xl shadow-md shadow-emerald-700/20 transition-all text-sm cursor-pointer"
           >
             <Save className="w-4 h-4" />
             <span>{isSaving ? 'সেভ হচ্ছে...' : 'সেটিংস সেভ করুন'}</span>

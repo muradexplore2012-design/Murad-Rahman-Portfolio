@@ -58,9 +58,12 @@ export interface Service {
   id: string;
   title: string;
   description: string;
-  iconName: string;
+  iconName?: string;
+  coverImage?: string;
+  badgeText?: string;
   startingPrice?: string;
   deliveryTime?: string;
+  ratingText?: string;
   features?: string[];
   isPublished: boolean;
   sortOrder: number;
@@ -70,6 +73,7 @@ export interface Service {
 export interface SkillItem {
   id: string;
   name: string;
+  percentage?: string;
   level?: string;
   icon?: string;
 }

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Quote, Star } from 'lucide-react';
 import type { Testimonial } from '../types';
 
 interface TestimonialsSectionProps {
@@ -7,9 +6,9 @@ interface TestimonialsSectionProps {
 }
 
 export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ testimonials }) => {
-  const approvedTestimonials = testimonials.filter((t) => t.isApproved);
+  const displayTestimonials = testimonials.filter((t) => t.isApproved);
 
-  if (approvedTestimonials.length === 0) {
+  if (displayTestimonials.length === 0) {
     return null;
   }
 
@@ -17,56 +16,72 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ testim
     <section id="testimonials" className="py-20 relative bg-white border-t border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#15803d] tracking-tight">
-            ক্লায়েন্ট প্রতিক্রিয়া ও রিভিউ
+        {/* Header matching exact reference screenshot */}
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          
+          {/* Top star ornament with lines: — ★ — */}
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <div className="w-12 sm:w-16 h-px bg-slate-400" />
+            <span className="text-[#15803d] text-base leading-none">★</span>
+            <div className="w-12 sm:w-16 h-px bg-slate-400" />
+          </div>
+
+          {/* Title */}
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#15803d] tracking-tight mb-2">
+            Customer Reviews
           </h2>
-          <div className="w-16 h-1 bg-[#15803d] mx-auto mt-3 rounded-full" />
+
+          {/* Subtitle */}
+          <p className="text-sm sm:text-base text-slate-600 font-normal">
+            See what our satisfied customers have to say about us
+          </p>
         </div>
 
-        {/* Testimonials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {approvedTestimonials.map((item) => (
+        {/* 3 Review Cards Grid (Matching exact screenshot layout) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          {displayTestimonials.map((item) => (
             <div
               key={item.id}
-              className="card-light rounded-2xl p-6 flex flex-col justify-between relative group border border-slate-200 bg-[#FAF8F5]"
+              className="bg-white rounded-xl border border-sky-100 p-6 sm:p-8 flex flex-col justify-between shadow-xs hover:shadow-md transition-all duration-300"
             >
-              <Quote className="w-10 h-10 text-emerald-200 absolute top-4 right-4 -z-0" />
+              <div>
+                {/* Large Green Double Quotes matching screenshot */}
+                <div className="text-5xl font-black text-[#15803d] leading-none mb-3 font-serif select-none">
+                  “
+                </div>
 
-              <div className="relative z-10 mb-6">
-                {item.rating && (
-                  <div className="flex items-center gap-1 mb-3 text-amber-500">
-                    {Array.from({ length: item.rating }).map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-amber-400" />
-                    ))}
-                  </div>
-                )}
-                <p className="text-sm text-slate-700 leading-relaxed italic font-medium">
-                  "{item.quote}"
+                {/* Review Text */}
+                <p className="text-sm text-slate-700 leading-relaxed font-normal mb-8">
+                  {item.quote}
                 </p>
               </div>
 
-              <div className="flex items-center gap-3 pt-4 border-t border-slate-200 relative z-10">
-                {item.clientPhoto ? (
-                  <img
-                    src={item.clientPhoto}
-                    alt={item.clientName}
-                    className="w-10 h-10 rounded-full object-cover border border-slate-300"
-                  />
-                ) : (
-                  <div className="w-10 h-10 rounded-full bg-emerald-100 text-[#15803d] font-bold flex items-center justify-center text-sm border border-emerald-300">
-                    {item.clientName.charAt(0)}
-                  </div>
-                )}
+              {/* Client Info: Avatar, Name & 5 Gold Stars */}
+              <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
+                <img
+                  src={
+                    item.clientPhoto ||
+                    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&h=200&q=80"
+                  }
+                  alt={item.clientName}
+                  className="w-11 h-11 rounded-full object-cover shrink-0 border border-slate-200"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src =
+                      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&h=200&q=80";
+                  }}
+                />
+
                 <div>
-                  <h4 className="text-sm font-bold text-slate-900">{item.clientName}</h4>
-                  {(item.clientRole || item.clientCompany) && (
-                    <p className="text-xs text-slate-500 font-medium">
-                      {item.clientRole}
-                      {item.clientCompany ? ` • ${item.clientCompany}` : ''}
-                    </p>
-                  )}
+                  <h4 className="text-sm font-black text-slate-900 leading-tight">
+                    {item.clientName}
+                  </h4>
+                  
+                  {/* 5 Gold Stars */}
+                  <div className="flex items-center gap-0.5 mt-1 text-amber-400 text-sm select-none">
+                    {Array.from({ length: item.rating || 5 }).map((_, i) => (
+                      <span key={i}>★</span>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

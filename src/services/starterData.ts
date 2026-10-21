@@ -104,104 +104,113 @@ export const starterProjects: Project[] = [
 export const starterServices: Service[] = [
   {
     id: "srv-1",
-    title: "Graphics & Visual Design",
-    description: "ব্র্যান্ডের স্বাতন্ত্র্য ফুটিয়ে তুলতে প্রফেশনাল লোগো, সোশ্যাল মিডিয়া ব্যানার, ফ্লায়ার ও ব্র্যান্ড অ্যাসেটস তৈরি।",
-    iconName: "Palette",
-    startingPrice: "",
-    deliveryTime: "",
+    title: "I will create Facebook Ads that grow your brand",
+    description: "ফেসবুক অ্যাডস দিয়ে আপনার ব্র্যান্ড বাড়ান। সঠিক অডিয়েন্স টার্গেটিং ও উচ্চ কনভার্শনের প্রফেশনাল ক্যাম্পেইন।",
+    coverImage: "/images/service-facebook-ads.png",
+    badgeText: "শুরু ২৯৯৳ থেকে",
+    startingPrice: "২৯৯৳",
+    deliveryTime: "3-5Days Delivery",
+    ratingText: "4.9 (210+ Reviews)",
+    iconName: "Facebook",
     features: [
-      "উচ্চমানের ভেক্টর লোগো ও ব্র্যান্ডিং",
-      "সোশ্যাল মিডিয়া পোস্ট ও ব্যানার ডিজাইন",
-      "প্রিন্ট-রেডি ভেক্টর ও রাস্টার ফাইলস (Ai, PSD, PNG, PDF)"
+      "Targeted Audience Research",
+      "High-Converting Ad Creatives & Copy",
+      "Campaign Setup & Pixel Tracking"
     ],
     isPublished: true,
     sortOrder: 1
   },
   {
     id: "srv-2",
-    title: "Custom Web Development",
-    description: "আধুনিক ওয়েব স্ট্যান্ডার্ড মেনে দ্রুতগতির, পরিচ্ছন্ন ও শতভাগ রেসপনসিভ ওয়েবসাইট ডেভেলপমেন্ট।",
+    title: "I will create engaging YouTube Ads that boost your business growth",
+    description: "গুগল ও ইউটিউব অ্যাডস দিয়ে আপনার ব্র্যান্ড বাড়ান। সার্চ ও ভিডিও বিজ্ঞাপনের মাধ্যমে দ্রুত সেলস ও রিচ।",
+    coverImage: "/images/service-google-ads.png",
+    badgeText: "শুরু ২৯৯৳ থেকে",
+    startingPrice: "২৯৯৳",
+    deliveryTime: "3-6 Days Delivery",
+    ratingText: "4.9 (290+ Reviews)",
     iconName: "Globe",
-    startingPrice: "",
-    deliveryTime: "",
     features: [
-      "মোবাইল-ফ্রেন্ডলি রেসপনসিভ লেআউট",
-      "ক্লিন কোড ও সুপার ফাস্ট লোডিং স্পিড",
-      "ইউজার-ফ্রেন্ডলি নেভিগেশন ও চমৎকার UI"
+      "Search & Video Ads Campaign Setup",
+      "Keyword & Demographic Optimization",
+      "Conversion Tracking & ROI Boost"
     ],
     isPublished: true,
     sortOrder: 2
   },
   {
     id: "srv-3",
-    title: "Blogger Website Setup & Styling",
-    description: "ব্লগার সাইট কাস্টমাইজেশন, অ্যাডভান্সড থিম সেটআপ এবং এসইও-বান্ধব স্ট্রাকচার নির্মাণ।",
-    iconName: "Layout",
-    startingPrice: "",
-    deliveryTime: "",
+    title: "I will create Instagram Ads that boost your business growth",
+    description: "ইনস্টাগ্রাম অ্যাডস দিয়ে আপনার ব্র্যান্ড বাড়ান। আকর্ষণীয় রিলস ও স্টোরি বিজ্ঞাপনে নতুন গ্রাহক অর্জন।",
+    coverImage: "/images/service-instagram-ads.png",
+    badgeText: "শুরু ২৯৯৳ থেকে",
+    startingPrice: "২৯৯৳",
+    deliveryTime: "3-7 Days Delivery",
+    ratingText: "4.9 (280+ Reviews)",
+    iconName: "Sparkles",
     features: [
-      "কাস্টম ব্লগার থিম ইন্সটলেশন ও সেটআপ",
-      "মোবাইল ও ট্যাবলেট ফ্রেন্ডলি ডিজাইন",
-      "অন-পেজ এসইও ও সার্চ কনসোল অপ্টিমাইজেশন"
+      "Engaging Reel & Carousel Ads",
+      "Audience Retargeting & Growth",
+      "Performance Analytics & Reporting"
     ],
     isPublished: true,
     sortOrder: 3
-  },
-  {
-    id: "srv-4",
-    title: "UI/UX & Creative Assets",
-    description: "ব্যবহারকারীর সহজ অভিজ্ঞতার জন্য পরিচ্ছন্ন ওয়েব ইন্টারফেস কনসেপ্ট ও ডিজিটাল ভিজ্যুয়াল ম্যাটেরিয়াল।",
-    iconName: "Sparkles",
-    startingPrice: "",
-    deliveryTime: "",
-    features: [
-      "ইউজার ইন্টারফেস ওয়্যারফ্রেম ও মকআপ",
-      "কনভার্সন-ফোকাসড ল্যান্ডিং পেজ ডিজাইন",
-      "মর্ডান ডার্ক/লাইট মোড কালার হারমনি"
-    ],
-    isPublished: true,
-    sortOrder: 4
   }
 ];
 
 export const starterSkillGroups: SkillGroup[] = [
   {
     id: "sg-1",
-    name: "Adobe Creative Suite",
+    name: "My Skills",
     sortOrder: 1,
     skills: [
-      { id: "sk-1", name: "Adobe Photoshop", level: "Advanced", icon: "Ps" },
-      { id: "sk-2", name: "Adobe Illustrator", level: "Advanced", icon: "Ai" },
-      { id: "sk-3", name: "Adobe Premiere Pro", level: "Intermediate", icon: "Pr" },
-      { id: "sk-4", name: "Adobe After Effects", level: "Intermediate", icon: "Ae" }
-    ]
-  },
-  {
-    id: "sg-2",
-    name: "Web Technologies & Frontend",
-    sortOrder: 2,
-    skills: [
-      { id: "sk-5", name: "HTML5 & Semantic Markup", level: "Advanced" },
-      { id: "sk-6", name: "CSS3 & Modern Styling", level: "Advanced" },
-      { id: "sk-7", name: "Tailwind CSS", level: "Advanced" },
-      { id: "sk-8", name: "JavaScript (ES6+)", level: "Proficient" },
-      { id: "sk-9", name: "React & Modern UI", level: "Intermediate" }
-    ]
-  },
-  {
-    id: "sg-3",
-    name: "Platforms & Workflow",
-    sortOrder: 3,
-    skills: [
-      { id: "sk-10", name: "Blogger Customization", level: "Advanced" },
-      { id: "sk-11", name: "Responsive Web Design", level: "Advanced" },
-      { id: "sk-12", name: "Git & Version Control", level: "Intermediate" },
-      { id: "sk-13", name: "SEO Basics & Optimization", level: "Proficient" }
+      { id: "sk-1", name: "Illustrator", percentage: "95%", icon: "illustrator", level: "Advanced" },
+      { id: "sk-2", name: "Photoshop", percentage: "92%", icon: "photoshop", level: "Advanced" },
+      { id: "sk-3", name: "WordPress", percentage: "88%", icon: "wordpress", level: "Advanced" },
+      { id: "sk-4", name: "Google Ads", percentage: "90%", icon: "google", level: "Advanced" },
+      { id: "sk-5", name: "Facebook Ads", percentage: "80%", icon: "facebook", level: "Advanced" },
+      { id: "sk-6", name: "YouTube Ads", percentage: "85%", icon: "youtube", level: "Advanced" },
+      { id: "sk-7", name: "Email Marketing", percentage: "89%", icon: "email", level: "Advanced" },
+      { id: "sk-8", name: "Instagram Ads", percentage: "75%", icon: "instagram", level: "Advanced" }
     ]
   }
 ];
 
-export const starterTestimonials: Testimonial[] = []; // No fake testimonials!
+export const starterTestimonials: Testimonial[] = [
+  {
+    id: "testi-1",
+    clientName: "Subhan Ansari",
+    clientRole: "Client",
+    clientPhoto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&h=200&q=80",
+    quote: "মুরাদের মাধ্যমে তৈরি পোর্টফোলিও ওয়েবসাইটের অভিজ্ঞতা খুবই ভালো ছিল। ডিজাইনটি আধুনিক ও প্রফেশনাল, আর সবকিছুই খুব স্মুথভাবে কাজ করে। আমি সত্যিই সন্তুষ্ট।",
+    rating: 5,
+    isApproved: true,
+    sortOrder: 1,
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: "testi-2",
+    clientName: "Rabeya",
+    clientRole: "Client",
+    clientPhoto: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&h=200&q=80",
+    quote: "পোর্টফোলিও ওয়েবসাইটটি অসাধারণভাবে তৈরি করা হয়েছে। লোডিং স্পিড ভালো, ডিজাইন ক্লিন এবং ইউজার এক্সপেরিয়েন্স খুবই সুন্দর। মুরাদের কাজ সত্যিই প্রশংসনীয়।",
+    rating: 5,
+    isApproved: true,
+    sortOrder: 2,
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: "testi-3",
+    clientName: "মোহাম্মদ আরিফ",
+    clientRole: "Client",
+    clientPhoto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&h=200&q=80",
+    quote: "এই পোর্টফোলিও ওয়েবসাইটটি আমার প্রত্যাশার চেয়েও ভালো হয়েছে। সবকিছু সময়মতো ডেলিভারি পেয়েছি এবং সাপোর্টও ছিল দারুণ। আমি অবশ্যই রেকমেন্ড করব।",
+    rating: 5,
+    isApproved: true,
+    sortOrder: 3,
+    createdAt: new Date().toISOString()
+  }
+];
 
 export const starterSettings: SiteSettings = {
   siteTitle: "Murad Rahman — Graphics Designer & Web Developer",
@@ -218,6 +227,6 @@ export const starterSettings: SiteSettings = {
     projects: true,
     skills: true,
     testimonials: true,
-    contact: true
+    contact: false // Contact form disabled/replaced by reviews as requested
   }
 };

@@ -1,76 +1,111 @@
 import React from 'react';
-import { CheckCircle2, Sparkles } from 'lucide-react';
-import type { SkillGroup } from '../types';
+import type { SkillGroup, SkillItem } from '../types';
+import {
+  IllustratorIcon,
+  PhotoshopIcon,
+  WordpressIcon,
+  GoogleIcon,
+  FacebookIcon,
+  YoutubeIcon,
+  YahooEmailIcon,
+  InstagramIcon
+} from './Icons';
+import { Sparkles } from 'lucide-react';
 
 interface SkillsSectionProps {
   skillGroups: SkillGroup[];
 }
 
+// Default skill items matching user's requested order and reference design
+const DEFAULT_SKILLS: SkillItem[] = [
+  { id: 'sk-1', name: 'Illustrator', percentage: '95%', icon: 'illustrator' },
+  { id: 'sk-2', name: 'Photoshop', percentage: '92%', icon: 'photoshop' },
+  { id: 'sk-3', name: 'WordPress', percentage: '88%', icon: 'wordpress' },
+  { id: 'sk-4', name: 'Google Ads', percentage: '90%', icon: 'google' },
+  { id: 'sk-5', name: 'Facebook Ads', percentage: '80%', icon: 'facebook' },
+  { id: 'sk-6', name: 'YouTube Ads', percentage: '85%', icon: 'youtube' },
+  { id: 'sk-7', name: 'Email Marketing', percentage: '89%', icon: 'email' },
+  { id: 'sk-8', name: 'Instagram Ads', percentage: '75%', icon: 'instagram' },
+];
+
 export const SkillsSection: React.FC<SkillsSectionProps> = ({ skillGroups }) => {
+  // Extract all skills from groups
+  const loadedSkills = skillGroups.flatMap((g) => g.skills);
+
+  // If skills in groups match the modern structure or default, use them
+  const skillsToDisplay: SkillItem[] = loadedSkills.length > 0
+    ? loadedSkills
+    : DEFAULT_SKILLS;
+
+  const renderIcon = (skill: SkillItem) => {
+    const key = (skill.icon || skill.name || '').toLowerCase();
+
+    if (key.includes('illustrator') || key === 'ai') {
+      return <IllustratorIcon className="w-9 h-9 sm:w-10 sm:h-10 text-[#15803d]" />;
+    }
+    if (key.includes('photoshop') || key === 'ps') {
+      return <PhotoshopIcon className="w-9 h-9 sm:w-10 sm:h-10 text-[#15803d]" />;
+    }
+    if (key.includes('word') || key.includes('press') || key.includes('blog') || key === 'wp') {
+      return <WordpressIcon className="w-9 h-9 sm:w-10 sm:h-10 text-[#15803d]" />;
+    }
+    if (key.includes('google')) {
+      return <GoogleIcon className="w-8 h-8 sm:w-9 sm:h-9 text-[#15803d]" />;
+    }
+    if (key.includes('facebook') || key.includes('fb')) {
+      return <FacebookIcon className="w-8 h-8 sm:w-9 sm:h-9 text-[#15803d]" />;
+    }
+    if (key.includes('youtube') || key.includes('yt')) {
+      return <YoutubeIcon className="w-9 h-9 sm:w-10 sm:h-10 text-[#15803d]" />;
+    }
+    if (key.includes('email') || key.includes('yahoo') || key.includes('mail')) {
+      return <YahooEmailIcon className="w-9 h-9 sm:w-10 sm:h-10 text-[#15803d]" />;
+    }
+    if (key.includes('instagram') || key.includes('insta')) {
+      return <InstagramIcon className="w-8 h-8 sm:w-9 sm:h-9 text-[#15803d]" />;
+    }
+
+    return <Sparkles className="w-8 h-8 sm:w-9 sm:h-9 text-[#15803d]" />;
+  };
+
   return (
     <section id="skills" className="py-20 relative bg-[#FAF8F5] border-t border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#15803d] tracking-tight">
-            প্রফেশনাল স্কিলস ও টুলস
+        {/* Section Header matching Reference Image */}
+        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#15803d] tracking-tight">
+            My Skills
           </h2>
-          <p className="mt-3 text-slate-600 text-base">
-            যেসব সফটওয়্যার ও প্রযুক্তির মাধ্যমে বাস্তবভিত্তিক ও কার্যকরী ডিজাইন তৈরি করা হয়।
-          </p>
-          <div className="w-16 h-1 bg-[#15803d] mx-auto mt-3 rounded-full" />
         </div>
 
-        {/* Skill Groups Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {skillGroups.map((group) => (
-            <div
-              key={group.id}
-              className="card-light rounded-2xl p-6 flex flex-col justify-between bg-white border border-slate-200"
-            >
-              <div>
-                {/* Group Title */}
-                <h3 className="text-lg font-bold text-slate-900 mb-6 pb-3 border-b border-slate-100 flex items-center justify-between">
-                  <span>{group.name}</span>
-                  <Sparkles className="w-4 h-4 text-[#15803d]" />
-                </h3>
+        {/* Skills Cards Grid matching Reference Image */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 sm:gap-6 max-w-5xl mx-auto">
+          {skillsToDisplay.map((skill) => {
+            const percentage = skill.percentage || (skill.level === 'Intermediate' ? '75%' : '90%');
 
-                {/* Skills list */}
-                <div className="space-y-3.5">
-                  {group.skills.map((skill) => (
-                    <div
-                      key={skill.id}
-                      className="p-3 rounded-xl bg-[#FAF8F5] border border-slate-200/80 hover:border-emerald-300 transition-colors flex items-center justify-between"
-                    >
-                      <div className="flex items-center gap-3">
-                        {skill.icon ? (
-                          <span className="w-8 h-8 rounded-lg bg-emerald-100 border border-emerald-300 text-xs font-black text-[#15803d] flex items-center justify-center shrink-0 shadow-xs">
-                            {skill.icon}
-                          </span>
-                        ) : (
-                          <CheckCircle2 className="w-4 h-4 text-[#15803d] shrink-0" />
-                        )}
-                        <span className="text-sm font-bold text-slate-800">
-                          {skill.name}
-                        </span>
-                      </div>
-
-                      {skill.level && (
-                        <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-[#15803d] font-bold border border-emerald-200">
-                          {skill.level}
-                        </span>
-                      )}
-                    </div>
-                  ))}
+            return (
+              <div
+                key={skill.id}
+                className="bg-white rounded-2xl border border-slate-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.06)] hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 p-6 sm:p-7 flex flex-col items-center justify-center text-center group cursor-default"
+              >
+                {/* Circular Halo Icon Container */}
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-emerald-50/80 border border-emerald-100/90 flex items-center justify-center mb-4 sm:mb-5 shadow-[0_0_25px_rgba(16,185,129,0.12)] group-hover:scale-105 group-hover:border-emerald-300 transition-all duration-300">
+                  {renderIcon(skill)}
                 </div>
-              </div>
 
-              <div className="mt-6 pt-4 border-t border-slate-100 text-xs text-slate-500 text-center font-medium">
-                <span>প্রফেশনাল কাজের দক্ষতা</span>
+                {/* Percentage */}
+                <span className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-1 sm:mb-1.5 font-sans">
+                  {percentage}
+                </span>
+
+                {/* Skill Name */}
+                <span className="text-xs sm:text-sm font-bold text-[#15803d] tracking-wide">
+                  {skill.name}
+                </span>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
       </div>

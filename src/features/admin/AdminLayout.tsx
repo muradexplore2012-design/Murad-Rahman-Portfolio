@@ -43,17 +43,17 @@ export const AdminLayout: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col md:flex-row">
+    <div className="min-h-screen bg-[#FAF8F5] text-slate-800 flex flex-col md:flex-row">
       
       {/* Mobile Header Bar */}
-      <div className="md:hidden flex items-center justify-between px-4 py-3 bg-slate-900 border-b border-slate-800">
+      <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-slate-200 shadow-xs">
         <div className="flex items-center gap-2">
-          <ShieldCheck className="w-5 h-5 text-blue-500" />
-          <span className="font-bold text-sm text-white">Murad Rahman CMS</span>
+          <ShieldCheck className="w-5 h-5 text-[#15803d]" />
+          <span className="font-bold text-sm text-slate-900">Murad Rahman CMS</span>
         </div>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-2 text-slate-400 hover:text-white"
+          className="p-2 text-slate-600 hover:text-slate-900"
           aria-label="Toggle menu"
         >
           {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -62,25 +62,25 @@ export const AdminLayout: React.FC = () => {
 
       {/* Sidebar (Desktop + Mobile Drawer) */}
       <aside
-        className={`fixed md:sticky top-0 z-40 h-screen w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between transition-transform duration-200 ${
+        className={`fixed md:sticky top-0 z-40 h-screen w-64 bg-white border-r border-slate-200 flex flex-col justify-between shadow-xs transition-transform duration-200 ${
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
         <div>
           {/* Brand header */}
-          <div className="p-6 border-b border-slate-800 flex items-center justify-between">
+          <div className="p-6 border-b border-slate-100 flex items-center justify-between">
             <div>
-              <h2 className="font-black text-base tracking-tight text-white flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-blue-500" />
+              <h2 className="font-black text-base tracking-tight text-slate-900 flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-[#15803d]" />
                 <span>Admin CMS</span>
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5 truncate max-w-[180px]">
+              <p className="text-xs text-slate-500 mt-0.5 truncate max-w-[180px]">
                 {auth?.currentUser?.email || 'Murad Rahman'}
               </p>
             </div>
             <button
               onClick={() => setMobileMenuOpen(false)}
-              className="md:hidden text-slate-400 hover:text-white"
+              className="md:hidden text-slate-400 hover:text-slate-700"
             >
               <X className="w-5 h-5" />
             </button>
@@ -97,10 +97,10 @@ export const AdminLayout: React.FC = () => {
                   end={item.path === '/admin'}
                   onClick={() => setMobileMenuOpen(false)}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors ${
+                    `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                       isActive
-                        ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
-                        : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                        ? 'bg-[#15803d] text-white shadow-md shadow-emerald-700/20'
+                        : 'text-slate-600 hover:text-[#15803d] hover:bg-emerald-50/70'
                     }`
                   }
                 >
@@ -113,11 +113,11 @@ export const AdminLayout: React.FC = () => {
         </div>
 
         {/* Sidebar Footer */}
-        <div className="p-4 border-t border-slate-800 space-y-2">
+        <div className="p-4 border-t border-slate-100 space-y-2">
           <Link
             to="/"
             target="_blank"
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700 hover:text-white rounded-xl transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-emerald-50 hover:text-[#15803d] border border-slate-200/60 rounded-xl transition-colors"
           >
             <span>পাবলিক সাইট দেখুন</span>
             <ExternalLink className="w-3.5 h-3.5" />
@@ -125,7 +125,7 @@ export const AdminLayout: React.FC = () => {
 
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold text-rose-400 hover:text-white hover:bg-rose-500/20 rounded-xl transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold text-rose-600 bg-rose-50/70 hover:bg-rose-100 hover:text-rose-700 border border-rose-200/50 rounded-xl transition-colors"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>লগআউট</span>
@@ -134,7 +134,7 @@ export const AdminLayout: React.FC = () => {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+      <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 overflow-y-auto bg-[#FAF8F5]">
         <Outlet />
       </main>
 

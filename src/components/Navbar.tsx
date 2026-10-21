@@ -46,10 +46,16 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
             ))}
           </nav>
 
-          {/* Right Action: Outlined Contact Me Button (Exactly matching screenshot) */}
+          {/* Right Action: Outlined Contact Me Button (Direct WhatsApp or Email) */}
           <div className="hidden md:flex items-center gap-4">
             <a
-              href="#contact"
+              href={
+                profile.whatsapp
+                  ? `https://wa.me/${profile.whatsapp.replace(/[^0-9]/g, '')}`
+                  : `mailto:${profile.email || 'muradrahman2026@gmail.com'}`
+              }
+              target="_blank"
+              rel="noopener noreferrer"
               className="px-5 py-2 text-sm font-semibold text-white border-2 border-white rounded-lg hover:bg-white hover:text-[#15803d] transition-all duration-200 shadow-sm"
             >
               Contact Me
@@ -83,7 +89,13 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
               </a>
             ))}
             <a
-              href="#contact"
+              href={
+                profile.whatsapp
+                  ? `https://wa.me/${profile.whatsapp.replace(/[^0-9]/g, '')}`
+                  : `mailto:${profile.email || 'muradrahman2026@gmail.com'}`
+              }
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => setMobileMenuOpen(false)}
               className="mt-3 text-center px-4 py-2.5 text-sm font-bold text-[#15803d] bg-white rounded-lg shadow-md transition-colors"
             >

@@ -101,10 +101,10 @@ export const AdminInbox: React.FC = () => {
     <div className="max-w-6xl mx-auto space-y-6">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
-          <h1 className="text-2xl font-extrabold text-white">মেসেজ ইনবক্স</h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <h1 className="text-2xl font-extrabold text-slate-900">মেসেজ ইনবক্স</h1>
+          <p className="text-xs text-slate-500 mt-1">
             পাবলিক পোর্টফোলিও ওয়েবসাইট থেকে আসা সকল ক্লায়েন্ট বার্তা।
           </p>
         </div>
@@ -112,7 +112,7 @@ export const AdminInbox: React.FC = () => {
         <button
           onClick={loadMessages}
           disabled={isLoading}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 hover:text-white rounded-xl text-xs font-semibold self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 hover:text-[#15803d] hover:bg-slate-50 rounded-xl text-xs font-semibold shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
           <span>রিফ্রেশ</span>
@@ -120,7 +120,7 @@ export const AdminInbox: React.FC = () => {
       </div>
 
       {status.type === 'error' && (
-        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2">
+        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{status.message}</span>
         </div>
@@ -128,55 +128,55 @@ export const AdminInbox: React.FC = () => {
 
       {/* Search Bar */}
       <div className="relative">
-        <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+        <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
         <input
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="নাম, ইমেইল অথবা বিষয়ের মাধ্যমে খুঁজুন..."
-          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d] shadow-xs"
         />
       </div>
 
       {/* Messages List */}
-      <div className="glass-card rounded-2xl border border-slate-800 overflow-hidden bg-slate-900/40">
+      <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white shadow-xs">
         {isLoading ? (
-          <div className="p-8 text-center text-slate-400 text-sm">ইনবক্স লোড হচ্ছে...</div>
+          <div className="p-8 text-center text-slate-500 text-sm">ইনবক্স লোড হচ্ছে...</div>
         ) : filtered.length === 0 ? (
           <div className="p-12 text-center text-slate-400 space-y-3">
-            <Inbox className="w-12 h-12 text-slate-600 mx-auto" />
-            <p className="text-sm font-semibold text-slate-300">কোনো মেসেজ নেই</p>
+            <Inbox className="w-12 h-12 text-slate-300 mx-auto" />
+            <p className="text-sm font-semibold text-slate-700">কোনো মেসেজ নেই</p>
             <p className="text-xs text-slate-500">পোর্টফোলিও সাইটের কন্টাক্ট ফর্ম থেকে মেসেজ পাঠানো হলে এখানে জমা হবে।</p>
           </div>
         ) : (
-          <div className="divide-y divide-slate-800">
+          <div className="divide-y divide-slate-100">
             {filtered.map((msg) => (
               <div
                 key={msg.id}
                 onClick={() => handleOpenMessage(msg)}
-                className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer hover:bg-slate-800/40 transition-colors ${
-                  !msg.isRead ? 'bg-blue-600/5 font-semibold' : ''
+                className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer hover:bg-slate-50/80 transition-colors ${
+                  !msg.isRead ? 'bg-emerald-50/40 font-semibold' : ''
                 }`}
               >
                 <div className="flex items-start sm:items-center gap-3">
                   <div
                     className={`w-2.5 h-2.5 rounded-full shrink-0 mt-1 sm:mt-0 ${
-                      !msg.isRead ? 'bg-blue-500 shadow-sm shadow-blue-500' : 'bg-transparent'
+                      !msg.isRead ? 'bg-[#15803d] shadow-xs' : 'bg-transparent'
                     }`}
                   />
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm text-white">{msg.name}</span>
-                      <span className="text-xs text-slate-400">&lt;{msg.email}&gt;</span>
+                      <span className="text-sm text-slate-900">{msg.name}</span>
+                      <span className="text-xs text-slate-500">&lt;{msg.email}&gt;</span>
                       {msg.phone && (
-                        <span className="text-[11px] px-2 py-0.5 rounded-md bg-slate-800 text-emerald-400">
+                        <span className="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 text-[#15803d] font-medium border border-slate-200">
                           {msg.phone}
                         </span>
                       )}
                     </div>
-                    <div className="text-xs text-slate-300 mt-1">
-                      <span className="font-bold text-blue-400 mr-2">[{msg.subject}]</span>
-                      <span className="text-slate-400 line-clamp-1 inline font-normal">
+                    <div className="text-xs text-slate-700 mt-1">
+                      <span className="font-bold text-[#15803d] mr-2">[{msg.subject}]</span>
+                      <span className="text-slate-500 line-clamp-1 inline font-normal">
                         {msg.message}
                       </span>
                     </div>
@@ -186,14 +186,14 @@ export const AdminInbox: React.FC = () => {
                 <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
                   <button
                     onClick={(e) => handleToggleRead(msg, e)}
-                    className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 text-xs"
+                    className="p-2 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 text-xs transition-colors"
                     title={msg.isRead ? 'অপঠিত হিসেবে চিহ্নিত করুন' : 'পঠিত হিসেবে চিহ্নিত করুন'}
                   >
-                    <CheckCircle2 className={`w-4 h-4 ${msg.isRead ? 'text-slate-600' : 'text-blue-400'}`} />
+                    <CheckCircle2 className={`w-4 h-4 ${msg.isRead ? 'text-slate-300' : 'text-[#15803d]'}`} />
                   </button>
                   <button
                     onClick={(e) => handleDelete(msg.id, e)}
-                    className="p-2 text-slate-400 hover:text-rose-400 rounded-lg hover:bg-slate-800"
+                    className="p-2 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 text-xs transition-colors"
                     title="মেসেজ মুছুন"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -207,39 +207,39 @@ export const AdminInbox: React.FC = () => {
 
       {/* Message Detail Modal */}
       {selectedMessage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="relative w-full max-w-2xl glass-card rounded-2xl border border-slate-700 bg-slate-900 p-6 sm:p-8 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+          <div className="relative w-full max-w-2xl rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-2xl text-slate-800">
             <button
               onClick={() => setSelectedMessage(null)}
-              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="pb-4 border-b border-slate-800 mb-6">
-              <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider block mb-1">
+            <div className="pb-4 border-b border-slate-100 mb-6">
+              <span className="text-xs font-semibold text-[#15803d] uppercase tracking-wider block mb-1">
                 মেসেজ বিবরণ
               </span>
-              <h2 className="text-xl font-bold text-white">{selectedMessage.subject}</h2>
-              <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400 mt-2">
-                <span>প্রেরক: <strong className="text-white">{selectedMessage.name}</strong></span>
-                <a href={`mailto:${selectedMessage.email}`} className="text-blue-400 hover:underline">
+              <h2 className="text-xl font-bold text-slate-900">{selectedMessage.subject}</h2>
+              <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 mt-2">
+                <span>প্রেরক: <strong className="text-slate-900">{selectedMessage.name}</strong></span>
+                <a href={`mailto:${selectedMessage.email}`} className="text-[#15803d] hover:underline">
                   {selectedMessage.email}
                 </a>
                 {selectedMessage.phone && (
-                  <span className="text-emerald-400">ফোন: {selectedMessage.phone}</span>
+                  <span className="text-[#15803d] font-medium">ফোন: {selectedMessage.phone}</span>
                 )}
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-950 border border-slate-800/80 text-sm text-slate-200 leading-relaxed whitespace-pre-wrap font-normal mb-6 max-h-96 overflow-y-auto">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-800 leading-relaxed whitespace-pre-wrap font-normal mb-6 max-h-96 overflow-y-auto">
               {selectedMessage.message}
             </div>
 
             <div className="flex justify-between items-center pt-2">
               <a
                 href={`mailto:${selectedMessage.email}?subject=Re: ${encodeURIComponent(selectedMessage.subject || '')}`}
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow-md transition-colors"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors"
               >
                 <Mail className="w-3.5 h-3.5" />
                 <span>ইমেইলে উত্তর দিন</span>
@@ -247,7 +247,7 @@ export const AdminInbox: React.FC = () => {
 
               <button
                 onClick={() => setSelectedMessage(null)}
-                className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white"
+                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer"
               >
                 বন্ধ করুন
               </button>

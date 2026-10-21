@@ -223,10 +223,10 @@ export async function deleteSkillGroup(id: string): Promise<void> {
 }
 
 /* =========================================================================
-   5. TESTIMONIALS (Empty by default - no fake reviews!)
+   5. TESTIMONIALS (Starter reviews matching Borbila, editable from Admin)
 ========================================================================= */
 export async function getTestimonials(onlyApproved = true): Promise<Testimonial[]> {
-  if (!db) return [];
+  if (!db) return starterTestimonials;
   try {
     const colRef = collection(db, COLLECTIONS.TESTIMONIALS);
     const q = onlyApproved
@@ -241,9 +241,9 @@ export async function getTestimonials(onlyApproved = true): Promise<Testimonial[
       })) as Testimonial[];
     }
   } catch (error) {
-    console.warn("Could not load testimonials from Firestore:", error);
+    console.warn("Could not load testimonials from Firestore, using starter testimonials:", error);
   }
-  return [];
+  return starterTestimonials;
 }
 
 export async function saveTestimonial(testimonial: Partial<Testimonial> & { id?: string }): Promise<string> {
@@ -392,6 +392,13 @@ export async function seedStarterContentToFirestore(): Promise<{ success: boolea
       const groupRef = doc(collection(db, COLLECTIONS.SKILLS));
       const { id: _ignored, ...groupData } = group;
       await setDoc(groupRef, { ...groupData, createdAt: serverTimestamp() });
+    }
+
+    // 6. Seed Testimonials
+    for (const testi of starterTestimonials) {
+      const testiRef = doc(collection(db, COLLECTIONS.TESTIMONIALS));
+      const { id: _ignored, ...testiData } = testi;
+      await setDoc(testiRef, { ...testiData, createdAt: serverTimestamp() });
     }
 
     return {

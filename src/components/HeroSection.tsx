@@ -33,7 +33,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ profile }) => {
             {/* Two Action Buttons side by side (Exactly like screenshot) */}
             <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
               <a
-                href="#contact"
+                href={
+                  profile.whatsapp
+                    ? `https://wa.me/${profile.whatsapp.replace(/[^0-9]/g, '')}`
+                    : `mailto:${profile.email || 'muradrahman2026@gmail.com'}`
+                }
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] text-white font-bold rounded-lg shadow-sm transition-all duration-200 text-sm"
               >
                 Contact Me

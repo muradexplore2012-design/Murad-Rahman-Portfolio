@@ -39,9 +39,9 @@ const AdminSettings = lazy(() =>
 );
 
 const AdminLoadingFallback = () => (
-  <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white">
-    <div className="w-10 h-10 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin mb-4" />
-    <p className="text-xs text-slate-400 font-semibold tracking-wider uppercase">
+  <div className="min-h-screen bg-[#FAF8F5] flex flex-col items-center justify-center text-slate-800">
+    <div className="w-10 h-10 border-4 border-emerald-500/20 border-t-[#15803d] rounded-full animate-spin mb-4" />
+    <p className="text-xs text-slate-500 font-semibold tracking-wider uppercase">
       লোড হচ্ছে...
     </p>
   </div>
