@@ -1,0 +1,7 @@
+# Murad Rahman Portfolio - Robots.txt
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/*
+
+Sitemap: /sitemap.xml

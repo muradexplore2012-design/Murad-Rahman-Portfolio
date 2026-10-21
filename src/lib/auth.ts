@@ -1,0 +1,65 @@
+import { onAuthStateChanged, signOut as firebaseSignOut, type User } from 'firebase/auth';
+import { auth } from './firebase';
+
+/* 
+=============================================================================
+🔶 ADMIN IDENTITY CONFIGURATION 🔶
+=============================================================================
+Configured in .env / .env.local:
+VITE_INITIAL_ADMIN_UID and VITE_INITIAL_ADMIN_EMAIL
+=============================================================================
+*/
+const ADMIN_UID = import.meta.env.VITE_INITIAL_ADMIN_UID || "VBYGRdOew4NAXcdKTmIgEXd79Sv2";
+const ADMIN_EMAIL = (import.meta.env.VITE_INITIAL_ADMIN_EMAIL || "muradexplore2012@gmail.com").toLowerCase();
+
+/**
+ * Checks if a given Firebase Auth user is an authorized administrator.
+ * Verifies UID, email, or custom claim (admin === true).
+ */
+export async function verifyAdminStatus(user: User | null): Promise<boolean> {
+  if (!user) return false;
+
+  // 1. Check configured initial UID
+  if (ADMIN_UID && user.uid === ADMIN_UID) {
+    return true;
+  }
+
+  // 2. Check configured admin email
+  if (ADMIN_EMAIL && user.email && user.email.toLowerCase() === ADMIN_EMAIL) {
+    return true;
+  }
+
+  // 3. Check custom claims if set via Firebase Admin SDK
+  try {
+    const idTokenResult = await user.getIdTokenResult();
+    if (idTokenResult.claims && idTokenResult.claims.admin === true) {
+      return true;
+    }
+  } catch (err) {
+    console.error("Error inspecting user ID token claims:", err);
+  }
+
+  return false;
+}
+
+/**
+ * Sign out helper
+ */
+export async function signOutAdmin(): Promise<void> {
+  if (auth) {
+    await firebaseSignOut(auth);
+  }
+}
+
+/**
+ * Listen to auth state changes
+ */
+export function subscribeToAuthState(callback: (user: User | null) => void) {
+  if (!auth) {
+    callback(null);
+    return () => {};
+  }
+  return onAuthStateChanged(auth, callback);
+}
+
+export { ADMIN_UID, ADMIN_EMAIL };
