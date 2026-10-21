@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, MapPin, Phone, MessageSquare, Send, CheckCircle2, AlertCircle, Clock, ShieldCheck } from 'lucide-react';
+import { Mail, MapPin, Phone, Send, CheckCircle2, AlertCircle, Clock, ShieldCheck } from 'lucide-react';
 import type { SiteProfile } from '../types';
 import { submitContactMessage } from '../services/firestoreService';
 
@@ -15,7 +15,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile, prefill
     phone: '',
     subject: prefilledSubject || '',
     message: '',
-    honeypot: '', // anti-spam trap
+    honeypot: '',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,7 +30,6 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile, prefill
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Spam honeypot detection
     if (formData.honeypot) {
       console.warn("Spam submission blocked.");
       return;
@@ -58,10 +57,9 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile, prefill
 
       setStatus({
         type: 'success',
-        message: 'ধন্যবাদ! আপনার মেসেজটি সফলভাবে পাঠানো হয়েছে। আমি দ্রুত আপনার সাথে যোগাযোগ করব ইনশাআল্লাহ।',
+        message: 'ধন্যবাদ! আপনার বার্তাটি সফলভাবে পাঠানো হয়েছে। আমি দ্রুত যোগাযোগ করব ইনশাআল্লাহ।',
       });
 
-      // Clear form on success
       setFormData({
         name: '',
         email: '',
@@ -82,30 +80,26 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile, prefill
   };
 
   return (
-    <section id="contact" className="py-20 relative">
+    <section id="contact" className="py-20 relative bg-[#FAF8F5] border-t border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold mb-3">
-            <Mail className="w-3.5 h-3.5" />
-            <span>যোগাযোগ</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            প্রজেক্ট নিয়ে কথা বলুন
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#15803d] tracking-tight">
+            যোগাযোগ করুন
           </h2>
-          <p className="mt-4 text-slate-400 text-base">
-            নতুন কোনো প্রজেক্ট, গ্রাফিক্স ডিজাইন বা ওয়েবসাইট নিয়ে আলোচনার জন্য সরাসরি মেসেজ দিন।
+          <p className="mt-3 text-slate-600 text-base">
+            নতুন কোনো প্রজেক্ট, গ্রাফিক্স ডিজাইন বা ওয়েবসাইট নিয়ে আলোচনার জন্য সরাসরি বার্তা পাঠান।
           </p>
-          <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto mt-4 rounded-full" />
+          <div className="w-16 h-1 bg-[#15803d] mx-auto mt-3 rounded-full" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           
           {/* Contact Information Cards (Left) */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="glass-card rounded-2xl p-6 sm:p-8 border border-slate-800">
-              <h3 className="text-xl font-bold text-white mb-6">
+            <div className="card-light rounded-2xl p-6 sm:p-8 bg-white border border-slate-200">
+              <h3 className="text-xl font-bold text-slate-900 mb-6">
                 সরাসরি যোগাযোগের ঠিকানা
               </h3>
 
@@ -113,16 +107,16 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile, prefill
                 {/* Email */}
                 {profile.email && (
                   <div className="flex items-start gap-4">
-                    <div className="w-11 h-11 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
+                    <div className="w-11 h-11 rounded-xl bg-emerald-50 border border-emerald-200 text-[#15803d] flex items-center justify-center shrink-0">
                       <Mail className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-                        অফিসিয়াল ইমেইল
+                      <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                        ইমেইল এড্রেস
                       </h4>
                       <a
                         href={`mailto:${profile.email}`}
-                        className="text-sm font-semibold text-white hover:text-blue-400 transition-colors"
+                        className="text-sm font-bold text-slate-900 hover:text-[#15803d] transition-colors"
                       >
                         {profile.email}
                       </a>
@@ -133,14 +127,14 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile, prefill
                 {/* Location */}
                 {profile.location && (
                   <div className="flex items-start gap-4">
-                    <div className="w-11 h-11 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center shrink-0">
+                    <div className="w-11 h-11 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center shrink-0">
                       <MapPin className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                      <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
                         অবস্থান
                       </h4>
-                      <p className="text-sm font-semibold text-white">
+                      <p className="text-sm font-bold text-slate-900">
                         {profile.location}
                       </p>
                     </div>
@@ -150,18 +144,18 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile, prefill
                 {/* WhatsApp / Phone if configured */}
                 {(profile.whatsapp || profile.phone) && (
                   <div className="flex items-start gap-4">
-                    <div className="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                    <div className="w-11 h-11 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center shrink-0">
                       <Phone className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                      <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
                         ফোন / হোয়াটসঅ্যাপ
                       </h4>
                       <a
                         href={`https://wa.me/${(profile.whatsapp || profile.phone || '').replace(/[^0-9]/g, '')}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm font-semibold text-white hover:text-emerald-400 transition-colors"
+                        className="text-sm font-bold text-slate-900 hover:text-emerald-600 transition-colors"
                       >
                         {profile.whatsapp || profile.phone}
                       </a>
@@ -170,16 +164,16 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile, prefill
                 )}
 
                 {/* Working Availability */}
-                <div className="flex items-start gap-4 pt-4 border-t border-slate-800">
-                  <div className="w-11 h-11 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
+                <div className="flex items-start gap-4 pt-4 border-t border-slate-100">
+                  <div className="w-11 h-11 rounded-xl bg-slate-50 border border-slate-200 text-[#15803d] flex items-center justify-center shrink-0">
                     <Clock className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-                      রেসপন্স সময়
+                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                      রেসপন্স সময়
                     </h4>
-                    <p className="text-sm font-medium text-slate-300">
-                      সাধারণত ২৪ ঘণ্টার মধ্যে মেসেজের উত্তর দেওয়া হয়।
+                    <p className="text-sm font-medium text-slate-600">
+                      সাধারণত দ্রুততম সময়ে মেসেজের উত্তর দেওয়া হয়।
                     </p>
                   </div>
                 </div>
@@ -188,8 +182,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile, prefill
             </div>
 
             {/* Privacy note */}
-            <div className="flex items-center gap-3 p-4 rounded-xl bg-slate-900/60 border border-slate-800/80 text-xs text-slate-400">
-              <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" />
+            <div className="flex items-center gap-3 p-4 rounded-xl bg-emerald-50/60 border border-emerald-200 text-xs text-slate-600">
+              <ShieldCheck className="w-5 h-5 text-[#15803d] shrink-0" />
               <span>
                 আপনার দেওয়া সকল তথ্য ও ইমেইল সুরক্ষিত রাখা হয় এবং স্প্যাম বা তৃতীয় কোনো পক্ষের সাথে শেয়ার করা হয় না।
               </span>
@@ -198,29 +192,29 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile, prefill
 
           {/* Contact Form (Right) */}
           <div className="lg:col-span-7">
-            <div className="glass-card rounded-2xl p-6 sm:p-8 border border-slate-800">
-              <h3 className="text-xl font-bold text-white mb-6">
+            <div className="card-light rounded-2xl p-6 sm:p-8 bg-white border border-slate-200">
+              <h3 className="text-xl font-bold text-slate-900 mb-6">
                 একটি বার্তা পাঠান
               </h3>
 
               {/* Status Alert */}
               {status.type === 'success' && (
-                <div className="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-start gap-3">
+                <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-[#15803d] flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" />
-                  <p className="text-sm leading-relaxed">{status.message}</p>
+                  <p className="text-sm font-medium leading-relaxed">{status.message}</p>
                 </div>
               )}
 
               {status.type === 'error' && (
-                <div className="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-start gap-3">
+                <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 flex items-start gap-3">
                   <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
-                  <p className="text-sm leading-relaxed">{status.message}</p>
+                  <p className="text-sm font-medium leading-relaxed">{status.message}</p>
                 </div>
               )}
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 
-                {/* Honeypot field (hidden from real users to trap spam bots) */}
+                {/* Honeypot field */}
                 <input
                   type="text"
                   name="honeypot"
@@ -234,8 +228,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile, prefill
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Name */}
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                      আপনার নাম <span className="text-rose-400">*</span>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                      আপনার নাম <span className="text-rose-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -243,14 +237,14 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile, prefill
                       placeholder="যেমন: মোঃ সাব্বির আহমেদ"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="w-full px-4 py-3 rounded-lg bg-[#FAF8F5] border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-transparent text-sm"
                     />
                   </div>
 
                   {/* Email */}
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                      ইমেইল এড্রেস <span className="text-rose-400">*</span>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                      ইমেইল এড্রেস <span className="text-rose-500">*</span>
                     </label>
                     <input
                       type="email"
@@ -258,7 +252,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile, prefill
                       placeholder="name@example.com"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="w-full px-4 py-3 rounded-lg bg-[#FAF8F5] border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-transparent text-sm"
                     />
                   </div>
                 </div>
@@ -266,7 +260,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile, prefill
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Phone */}
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
                       ফোন / হোয়াটসঅ্যাপ (ঐচ্ছিক)
                     </label>
                     <input
@@ -274,13 +268,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile, prefill
                       placeholder="017XXXXXXXX"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="w-full px-4 py-3 rounded-lg bg-[#FAF8F5] border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-transparent text-sm"
                     />
                   </div>
 
-                  {/* Subject / Service */}
+                  {/* Subject */}
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
                       বিষয় / সেবার নাম
                     </label>
                     <input
@@ -288,15 +282,15 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile, prefill
                       placeholder="যেমন: লোগো ডিজাইন / ওয়েবসাইট"
                       value={formData.subject}
                       onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      className="w-full px-4 py-3 rounded-lg bg-[#FAF8F5] border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-transparent text-sm"
                     />
                   </div>
                 </div>
 
                 {/* Message */}
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                    বিস্তারিত মেসেজ <span className="text-rose-400">*</span>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                    বিস্তারিত বার্তা <span className="text-rose-500">*</span>
                   </label>
                   <textarea
                     required
@@ -304,15 +298,15 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile, prefill
                     placeholder="আপনার প্রজেক্টের বিস্তারিত এবং কি ধরনের সাহায্য প্রয়োজন তা এখানে লিখুন..."
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-none"
+                    className="w-full px-4 py-3 rounded-lg bg-[#FAF8F5] border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-transparent text-sm resize-none"
                   />
                 </div>
 
-                {/* Submit button */}
+                {/* Submit button in solid green */}
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold rounded-xl shadow-lg shadow-blue-600/30 transition-all duration-200"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#15803d] hover:bg-[#166534] disabled:opacity-50 text-white font-bold rounded-lg shadow-sm transition-all duration-200 text-sm"
                 >
                   {isSubmitting ? (
                     <>

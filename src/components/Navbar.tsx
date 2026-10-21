@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Menu, X, ArrowRight, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+import { Menu, X } from 'lucide-react';
 import type { SiteProfile } from '../types';
 
 interface NavbarProps {
@@ -7,88 +7,52 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 30);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const navLinks = [
-    { label: 'হোম', href: '#home' },
-    { label: 'আমার সম্পর্কে', href: '#about' },
-    { label: 'সার্ভিসসমূহ', href: '#services' },
-    { label: 'পোর্টফোলিও', href: '#projects' },
-    { label: 'দক্ষতা', href: '#skills' },
-    { label: 'যোগাযোগ', href: '#contact' },
+    { label: 'Home', href: '#home' },
+    { label: 'About', href: '#about' },
+    { label: 'Service', href: '#services' },
+    { label: 'Portfolio', href: '#projects' },
+    { label: 'Skills', href: '#skills' },
+    { label: 'Reviews', href: '#testimonials' },
   ];
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'glass-nav border-b border-slate-800/80 py-3 shadow-lg shadow-black/20'
-          : 'bg-transparent py-5'
-      }`}
-    >
+    <header className="sticky top-0 z-50 bg-[#15803d] shadow-md transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
-          {/* Logo / Brand Name */}
+        <div className="flex items-center justify-between h-16 sm:h-20">
+          
+          {/* Brand / Logo */}
           <a
             href="#home"
-            className="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-1"
+            className="flex items-center gap-3 group focus:outline-none"
           >
-            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-blue-500/50 group-hover:border-blue-400 transition-colors shadow-md">
-              <img
-                src={profile.profileImage || "/images/murad-rahman.jpg"}
-                alt={profile.name}
-                className="w-full h-full object-cover object-top"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = "/images/murad-rahman.jpg";
-                }}
-              />
-            </div>
-            <div>
-              <span className="text-lg font-bold tracking-tight text-white group-hover:text-blue-400 transition-colors">
-                {profile.name}
-              </span>
-              <span className="hidden sm:block text-xs text-slate-400 font-medium">
-                {profile.title}
-              </span>
-            </div>
+            <span className="text-xl sm:text-2xl font-black tracking-wider text-white uppercase">
+              {profile.name || 'MURAD RAHMAN'}
+            </span>
           </a>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1 lg:gap-2">
+          {/* Desktop Navigation Links */}
+          <nav className="hidden md:flex items-center gap-6 lg:gap-8">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="px-3 py-1.5 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 rounded-md transition-all duration-200"
+                className="text-sm font-semibold text-white/95 hover:text-white hover:opacity-80 transition-opacity"
               >
                 {link.label}
               </a>
             ))}
           </nav>
 
-          {/* Action Button & Availability */}
-          <div className="hidden lg:flex items-center gap-4">
-            {profile.isAvailable && (
-              <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-xs font-medium text-emerald-400">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>{profile.availabilityText || 'Available for Work'}</span>
-              </div>
-            )}
+          {/* Right Action: Outlined Contact Me Button (Exactly matching screenshot) */}
+          <div className="hidden md:flex items-center gap-4">
             <a
               href="#contact"
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 active:bg-blue-700 rounded-lg transition-all shadow-md shadow-blue-600/25 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              className="px-5 py-2 text-sm font-semibold text-white border-2 border-white rounded-lg hover:bg-white hover:text-[#15803d] transition-all duration-200 shadow-sm"
             >
-              <span>মেসেজ দিন</span>
-              <ArrowRight className="w-4 h-4" />
+              Contact Me
             </a>
           </div>
 
@@ -96,7 +60,7 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="md:hidden p-2 rounded-lg text-white hover:bg-white/10 focus:outline-none"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -106,31 +70,24 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden glass-nav border-b border-slate-800 px-4 pt-3 pb-6 animate-in slide-in-from-top-2 duration-200">
+        <div className="md:hidden bg-[#166534] border-t border-white/10 px-4 pt-3 pb-6 animate-in slide-in-from-top-2 duration-200">
           <nav className="flex flex-col gap-2">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800/70 rounded-lg transition-colors"
+                className="px-3 py-2 text-base font-semibold text-white hover:bg-white/10 rounded-lg transition-colors"
               >
                 {link.label}
               </a>
             ))}
-            {profile.isAvailable && (
-              <div className="mt-2 flex items-center gap-2 px-3 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-xs font-medium text-emerald-400">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>{profile.availabilityText}</span>
-              </div>
-            )}
             <a
               href="#contact"
               onClick={() => setMobileMenuOpen(false)}
-              className="mt-3 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg shadow-md transition-colors"
+              className="mt-3 text-center px-4 py-2.5 text-sm font-bold text-[#15803d] bg-white rounded-lg shadow-md transition-colors"
             >
-              <span>যোগাযোগ করুন</span>
-              <ArrowRight className="w-4 h-4" />
+              Contact Me
             </a>
           </nav>
         </div>

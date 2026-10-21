@@ -1,5 +1,4 @@
 import React from 'react';
-import { ArrowRight, Eye, Sparkles, MapPin, Mail, ExternalLink } from 'lucide-react';
 import type { SiteProfile } from '../types';
 
 interface HeroSectionProps {
@@ -8,141 +7,84 @@ interface HeroSectionProps {
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ profile }) => {
   return (
-    <section id="home" className="relative min-h-[90vh] flex items-center pt-28 pb-16 overflow-hidden">
-      {/* Background ambient lighting */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-blue-600/15 via-purple-600/10 to-amber-500/10 blur-[130px] -z-10 rounded-full pointer-events-none" />
-      <div className="absolute top-1/2 right-10 w-[350px] h-[350px] bg-purple-600/15 blur-[120px] -z-10 rounded-full pointer-events-none" />
-
+    <section id="home" className="relative min-h-[82vh] flex items-center pt-10 pb-16 bg-[#FAF8F5] overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
           
-          {/* Left Column: Text & CTA */}
+          {/* Left Column: Greeting, Headline, Bio, Buttons */}
           <div className="lg:col-span-7 flex flex-col items-start text-left">
             
-            {/* Islamic Greeting & Availability Tag */}
-            <div className="inline-flex flex-wrap items-center gap-2 mb-4">
-              <span className="px-3 py-1 text-xs sm:text-sm font-medium bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-full flex items-center gap-1.5 shadow-sm">
-                <Sparkles className="w-3.5 h-3.5" />
-                {profile.greeting || 'আসসালামুয়ালাইকুম, আপনাকে স্বাগতম'}
-              </span>
+            {/* Greeting: "Hi There," */}
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-2">
+              {profile.greeting || 'Hi There,'}
+            </h3>
 
-              {profile.isAvailable && (
-                <span className="px-3 py-1 text-xs font-medium bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-full flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                  {profile.availabilityText || 'Available for Work'}
-                </span>
-              )}
-            </div>
-
-            {/* Main Headline */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight mb-5">
-              {profile.heroHeadline || (
-                <>
-                  হ্যালো, আমি <span className="text-gradient">মুরাদ রহমান</span> — Graphics Design ও Web Development নিয়ে কাজ করি।
-                </>
-              )}
+            {/* Main Headline: "I'm Murad Rahman" in bold green */}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#15803d] leading-none mb-6">
+              I'm {profile.name || 'Murad Rahman'}
             </h1>
 
-            {/* Subheadline / Intro */}
-            <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl mb-8 font-normal">
-              {profile.heroSubheadline ||
-                'আমি ব্যক্তি, উদ্যোক্তা ও ছোট ব্যবসার জন্য পরিষ্কার, আধুনিক এবং ব্যবহারবান্ধব ডিজাইন ও ওয়েব অভিজ্ঞতা তৈরি করি।'}
+            {/* Bio text in Bangla */}
+            <p className="text-base sm:text-lg text-slate-700 leading-relaxed max-w-xl mb-8 font-normal">
+              {profile.aboutBio ||
+                'মুরাদ রহমান একজন দক্ষ গ্রাফিক্স ডিজাইনার ও ওয়েব ডেভেলপার, যিনি ব্যক্তি ও ব্যবসার জন্য আধুনিক ও পরিচ্ছন্ন ডিজাইন এবং কার্যকর রেসপনসিভ ওয়েব ইন্টারফেস তৈরিতে প্রতিশ্রুতিবদ্ধ।'}
             </p>
 
-            {/* CTAs */}
-            <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto mb-8">
+            {/* Two Action Buttons side by side (Exactly like screenshot) */}
+            <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
               <a
                 href="#contact"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-600/30 transition-all duration-200 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] text-white font-bold rounded-lg shadow-sm transition-all duration-200 text-sm"
               >
-                <span>যোগাযোগ করুন</span>
-                <ArrowRight className="w-4 h-4" />
+                Contact Me
               </a>
 
               <a
-                href="#projects"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-slate-800/90 hover:bg-slate-700/90 text-slate-200 hover:text-white font-semibold rounded-xl border border-slate-700/80 transition-all duration-200 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-slate-500"
+                href="#services"
+                className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3 bg-transparent hover:bg-[#15803d]/5 text-[#15803d] font-bold rounded-lg border-2 border-[#15803d] transition-all duration-200 text-sm"
               >
-                <Eye className="w-4 h-4 text-blue-400" />
-                <span>পোর্টফোলিও দেখুন</span>
+                My Service
               </a>
             </div>
 
-            {/* Quick Details Pills */}
-            <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-slate-800/80 text-xs text-slate-400">
-              {profile.location && (
-                <div className="flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-rose-400" />
-                  <span>{profile.location}</span>
-                </div>
-              )}
-              {profile.email && (
-                <div className="flex items-center gap-1.5">
-                  <Mail className="w-3.5 h-3.5 text-blue-400" />
-                  <span>{profile.email}</span>
-                </div>
-              )}
-            </div>
           </div>
 
-          {/* Right Column: Murad Rahman's Real Photo with Creative Badges */}
+          {/* Right Column: Murad Rahman's Portrait with Artistic Green Splash Backdrop */}
           <div className="lg:col-span-5 flex justify-center items-center relative">
-            <div className="relative w-72 sm:w-84 md:w-96 aspect-square">
+            <div className="relative w-72 sm:w-88 md:w-96 flex items-center justify-center">
               
-              {/* Outer decorative glow ring */}
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-tr from-blue-600/30 via-purple-600/30 to-amber-500/20 blur-2xl transform scale-105" />
+              {/* Green Brush Splash Artwork SVG behind the photo matching reference */}
+              <div className="absolute inset-0 -z-0 flex items-center justify-center pointer-events-none transform scale-125 sm:scale-135">
+                <svg
+                  viewBox="0 0 500 500"
+                  className="w-full h-full text-[#4ade80] opacity-80"
+                  fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M432.5,296.5Q417,343,382,376.5Q347,410,298.5,427Q250,444,203,425Q156,406,116.5,373.5Q77,341,61.5,295.5Q46,250,67.5,205.5Q89,161,123.5,127.5Q158,94,204,74.5Q250,55,297.5,72.5Q345,90,381.5,124Q418,158,433,204Q448,250,432.5,296.5Z" />
+                </svg>
+                {/* Secondary accent splash */}
+                <div className="absolute w-72 h-72 bg-[#22c55e]/30 rounded-full blur-2xl" />
+              </div>
 
-              {/* Main Photo Card */}
-              <div className="relative w-full h-full rounded-3xl overflow-hidden border-2 border-slate-700/80 bg-slate-900 shadow-2xl">
+              {/* Murad Rahman's Portrait Container */}
+              <div className="relative z-10 w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-slate-900 group">
                 <img
                   src={profile.profileImage || "/images/murad-rahman.jpg"}
                   alt={profile.name}
-                  className="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-105"
+                  className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = "/images/murad-rahman.jpg";
                   }}
                 />
-                
-                {/* Overlay bottom subtle gradient */}
-                <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent flex items-end p-4">
-                  <div>
-                    <h3 className="text-white font-bold text-lg">{profile.name}</h3>
-                    <p className="text-blue-400 text-xs font-medium">{profile.title}</p>
+
+                {/* Subtle soft gradient at bottom */}
+                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
+                  <div className="text-white">
+                    <p className="font-bold text-base">{profile.name}</p>
+                    <p className="text-xs text-emerald-300 font-medium">{profile.title}</p>
                   </div>
                 </div>
-              </div>
-
-              {/* Floating Creative Software Badges matching Murad's Adobe skills */}
-              {/* Adobe Photoshop */}
-              <div className="absolute -top-3 -left-3 glass-card px-3 py-1.5 rounded-xl shadow-lg border border-blue-500/40 flex items-center gap-2 transform -rotate-3 hover:rotate-0 transition-transform">
-                <span className="w-7 h-7 rounded-lg bg-[#001e36] text-[#31a8ff] font-bold text-xs flex items-center justify-center border border-[#31a8ff]/40 shadow-sm">
-                  Ps
-                </span>
-                <span className="text-xs font-semibold text-white">Photoshop</span>
-              </div>
-
-              {/* Adobe Illustrator */}
-              <div className="absolute -top-3 -right-3 glass-card px-3 py-1.5 rounded-xl shadow-lg border border-amber-500/40 flex items-center gap-2 transform rotate-3 hover:rotate-0 transition-transform">
-                <span className="w-7 h-7 rounded-lg bg-[#330000] text-[#ff9a00] font-bold text-xs flex items-center justify-center border border-[#ff9a00]/40 shadow-sm">
-                  Ai
-                </span>
-                <span className="text-xs font-semibold text-white">Illustrator</span>
-              </div>
-
-              {/* Adobe Premiere Pro */}
-              <div className="absolute -bottom-3 -left-3 glass-card px-3 py-1.5 rounded-xl shadow-lg border border-purple-500/40 flex items-center gap-2 transform rotate-2 hover:rotate-0 transition-transform">
-                <span className="w-7 h-7 rounded-lg bg-[#00005b] text-[#ea77ff] font-bold text-xs flex items-center justify-center border border-[#ea77ff]/40 shadow-sm">
-                  Pr
-                </span>
-                <span className="text-xs font-semibold text-white">Premiere Pro</span>
-              </div>
-
-              {/* Web Development / Blogger */}
-              <div className="absolute -bottom-3 -right-3 glass-card px-3 py-1.5 rounded-xl shadow-lg border border-emerald-500/40 flex items-center gap-2 transform -rotate-2 hover:rotate-0 transition-transform">
-                <span className="w-7 h-7 rounded-lg bg-emerald-950 text-emerald-400 font-bold text-xs flex items-center justify-center border border-emerald-500/40 shadow-sm">
-                  &lt;/&gt;
-                </span>
-                <span className="text-xs font-semibold text-white">Web & Blogger</span>
               </div>
 
             </div>

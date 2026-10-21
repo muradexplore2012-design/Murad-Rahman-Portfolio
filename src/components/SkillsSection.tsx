@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cpu, CheckCircle2, Sparkles } from 'lucide-react';
+import { CheckCircle2, Sparkles } from 'lucide-react';
 import type { SkillGroup } from '../types';
 
 interface SkillsSectionProps {
@@ -8,22 +8,18 @@ interface SkillsSectionProps {
 
 export const SkillsSection: React.FC<SkillsSectionProps> = ({ skillGroups }) => {
   return (
-    <section id="skills" className="py-20 relative">
+    <section id="skills" className="py-20 relative bg-[#FAF8F5] border-t border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold mb-3">
-            <Cpu className="w-3.5 h-3.5" />
-            <span>দক্ষতা ও সফটওয়্যার</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            প্রফেশনাল স্কিলস ও টুলকিট
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#15803d] tracking-tight">
+            প্রফেশনাল স্কিলস ও টুলস
           </h2>
-          <p className="mt-4 text-slate-400 text-base">
+          <p className="mt-3 text-slate-600 text-base">
             যেসব সফটওয়্যার ও প্রযুক্তির মাধ্যমে বাস্তবভিত্তিক ও কার্যকরী ডিজাইন তৈরি করা হয়।
           </p>
-          <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto mt-4 rounded-full" />
+          <div className="w-16 h-1 bg-[#15803d] mx-auto mt-3 rounded-full" />
         </div>
 
         {/* Skill Groups Grid */}
@@ -31,13 +27,13 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ skillGroups }) => 
           {skillGroups.map((group) => (
             <div
               key={group.id}
-              className="glass-card rounded-2xl p-6 border border-slate-800 flex flex-col justify-between"
+              className="card-light rounded-2xl p-6 flex flex-col justify-between bg-white border border-slate-200"
             >
               <div>
                 {/* Group Title */}
-                <h3 className="text-lg font-bold text-white mb-6 pb-3 border-b border-slate-800/80 flex items-center justify-between">
+                <h3 className="text-lg font-bold text-slate-900 mb-6 pb-3 border-b border-slate-100 flex items-center justify-between">
                   <span>{group.name}</span>
-                  <Sparkles className="w-4 h-4 text-amber-400" />
+                  <Sparkles className="w-4 h-4 text-[#15803d]" />
                 </h3>
 
                 {/* Skills list */}
@@ -45,23 +41,23 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ skillGroups }) => 
                   {group.skills.map((skill) => (
                     <div
                       key={skill.id}
-                      className="p-3 rounded-xl bg-slate-800/50 hover:bg-slate-800/80 border border-slate-700/60 transition-colors flex items-center justify-between"
+                      className="p-3 rounded-xl bg-[#FAF8F5] border border-slate-200/80 hover:border-emerald-300 transition-colors flex items-center justify-between"
                     >
                       <div className="flex items-center gap-3">
                         {skill.icon ? (
-                          <span className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-700 text-xs font-bold text-blue-400 flex items-center justify-center shrink-0 shadow-inner">
+                          <span className="w-8 h-8 rounded-lg bg-emerald-100 border border-emerald-300 text-xs font-black text-[#15803d] flex items-center justify-center shrink-0 shadow-xs">
                             {skill.icon}
                           </span>
                         ) : (
-                          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                          <CheckCircle2 className="w-4 h-4 text-[#15803d] shrink-0" />
                         )}
-                        <span className="text-sm font-semibold text-slate-200">
+                        <span className="text-sm font-bold text-slate-800">
                           {skill.name}
                         </span>
                       </div>
 
                       {skill.level && (
-                        <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-900/80 text-blue-400 font-medium border border-blue-500/20">
+                        <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-[#15803d] font-bold border border-emerald-200">
                           {skill.level}
                         </span>
                       )}
@@ -70,7 +66,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ skillGroups }) => 
                 </div>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-slate-800/60 text-xs text-slate-400 text-center">
+              <div className="mt-6 pt-4 border-t border-slate-100 text-xs text-slate-500 text-center font-medium">
                 <span>প্রফেশনাল কাজের দক্ষতা</span>
               </div>
             </div>

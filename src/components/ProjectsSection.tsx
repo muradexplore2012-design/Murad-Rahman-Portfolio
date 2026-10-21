@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, ExternalLink, FolderGit2 } from 'lucide-react';
+import { Eye, ExternalLink } from 'lucide-react';
 import type { Project } from '../types';
 import { ProjectDetailModal } from './ProjectDetailModal';
 import { GithubIcon } from './Icons';
@@ -23,22 +23,18 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
       : publishedProjects.filter((p) => p.category === selectedCategory);
 
   return (
-    <section id="projects" className="py-20 relative bg-slate-900/40 border-y border-slate-800/80">
+    <section id="projects" className="py-20 relative bg-white border-t border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold mb-3">
-            <FolderGit2 className="w-3.5 h-3.5" />
-            <span>পোর্টফোলিও</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            সাম্প্রতিক কাজের প্রজেক্টসমূহ
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#15803d] tracking-tight">
+            সাম্প্রতিক কাজের পোর্টফোলিও
           </h2>
-          <p className="mt-4 text-slate-400 text-base">
+          <p className="mt-3 text-slate-600 text-base">
             গ্রাফিক্স ডিজাইন, ব্র্যান্ড আইডেন্টিটি এবং আধুনিক ওয়েব ডেভেলপমেন্ট কাজের কিছু নমুনা।
           </p>
-          <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto mt-4 rounded-full" />
+          <div className="w-16 h-1 bg-[#15803d] mx-auto mt-3 rounded-full" />
         </div>
 
         {/* Category Filter Tabs */}
@@ -49,10 +45,10 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
                 key={cat}
                 type="button"
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 ${
+                className={`px-5 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all duration-200 ${
                   selectedCategory === cat
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
-                    : 'bg-slate-800/70 text-slate-300 hover:text-white hover:bg-slate-700/80'
+                    ? 'bg-[#15803d] text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-700 hover:text-slate-900 hover:bg-slate-200'
                 }`}
               >
                 {cat === 'All' ? 'সব প্রজেক্ট' : cat}
@@ -66,10 +62,10 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
           {filteredProjects.map((project) => (
             <div
               key={project.id}
-              className="glass-card glass-card-hover rounded-2xl overflow-hidden border border-slate-800 flex flex-col group"
+              className="card-light card-light-hover rounded-2xl overflow-hidden flex flex-col group bg-white border border-slate-200"
             >
               {/* Project Image Container */}
-              <div className="relative aspect-video w-full overflow-hidden bg-slate-950">
+              <div className="relative aspect-video w-full overflow-hidden bg-slate-900">
                 <img
                   src={project.coverImage}
                   alt={project.title}
@@ -82,22 +78,22 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
 
                 {/* Badges Overlay */}
                 <div className="absolute top-3 left-3 flex gap-2">
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-950/80 text-blue-400 border border-slate-700 backdrop-blur-md">
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#15803d] text-white shadow-sm">
                     {project.category}
                   </span>
                   {project.isStarter && (
-                    <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30 backdrop-blur-md">
-                      Starter Sample
+                    <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-500 text-slate-950">
+                      Sample
                     </span>
                   )}
                 </div>
 
                 {/* Hover Quick Action */}
-                <div className="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 backdrop-blur-xs">
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 backdrop-blur-xs">
                   <button
                     type="button"
                     onClick={() => setActiveModalProject(project)}
-                    className="p-3 rounded-full bg-blue-600 text-white hover:bg-blue-500 transition-colors shadow-lg"
+                    className="p-3 rounded-full bg-[#15803d] text-white hover:bg-[#166534] transition-colors shadow-lg"
                     title="বিস্তারিত দেখুন"
                   >
                     <Eye className="w-5 h-5" />
@@ -107,7 +103,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
                       href={project.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-3 rounded-full bg-slate-800 text-white hover:bg-slate-700 transition-colors shadow-lg"
+                      className="p-3 rounded-full bg-white text-slate-900 hover:bg-slate-100 transition-colors shadow-lg"
                       title="লাইভ সাইট দেখুন"
                     >
                       <ExternalLink className="w-5 h-5" />
@@ -119,10 +115,10 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
               {/* Project Info */}
               <div className="p-6 flex-1 flex flex-col justify-between">
                 <div>
-                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">
+                  <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-[#15803d] transition-colors">
                     {project.title}
                   </h3>
-                  <p className="text-sm text-slate-300 leading-relaxed mb-4 line-clamp-2">
+                  <p className="text-sm text-slate-600 leading-relaxed mb-4 line-clamp-2">
                     {project.shortDescription}
                   </p>
 
@@ -132,7 +128,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
                       {project.tools.map((tool, idx) => (
                         <span
                           key={idx}
-                          className="px-2.5 py-0.5 rounded-md text-[11px] font-medium bg-slate-800/80 text-slate-300 border border-slate-700/60"
+                          className="px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-[#15803d] border border-emerald-100"
                         >
                           {tool}
                         </span>
@@ -142,11 +138,11 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
                 </div>
 
                 {/* Card Actions */}
-                <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                   <button
                     type="button"
                     onClick={() => setActiveModalProject(project)}
-                    className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1.5 transition-colors"
+                    className="text-xs font-bold text-[#15803d] hover:text-[#166534] flex items-center gap-1.5 transition-colors"
                   >
                     <span>বিস্তারিত পড়ুন</span>
                     <Eye className="w-3.5 h-3.5" />
@@ -158,7 +154,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
                         href={project.githubUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-slate-400 hover:text-white p-1 transition-colors"
+                        className="text-slate-500 hover:text-slate-900 p-1 transition-colors"
                         title="GitHub Repository"
                       >
                         <GithubIcon className="w-4 h-4" />
@@ -169,7 +165,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
                         href={project.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-slate-400 hover:text-blue-400 p-1 transition-colors"
+                        className="text-slate-500 hover:text-[#15803d] p-1 transition-colors"
                         title="Live Preview"
                       >
                         <ExternalLink className="w-4 h-4" />
