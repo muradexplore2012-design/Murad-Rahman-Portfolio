@@ -52,6 +52,35 @@ const QUICK_TOPICS = [
   'জরুরি প্রজেক্ট আলোচনা',
 ];
 
+/**
+ * Automatically formats message text into clean 2-3 line segments (max ~38 chars per line)
+ * so that Google Sheets cells auto-wrap and expand vertically without overflowing.
+ */
+function formatMessageForSheet(text: string, maxLineLength = 38): string {
+  if (!text) return '';
+  const paragraphs = text.split('\n');
+  const formattedParagraphs = paragraphs.map((p) => {
+    const trimmed = p.trim();
+    if (!trimmed) return '';
+    const words = trimmed.split(/\s+/);
+    let currentLine = '';
+    const lines: string[] = [];
+    for (const w of words) {
+      if (!currentLine) {
+        currentLine = w;
+      } else if (currentLine.length + 1 + w.length <= maxLineLength) {
+        currentLine += ' ' + w;
+      } else {
+        lines.push(currentLine);
+        currentLine = w;
+      }
+    }
+    if (currentLine) lines.push(currentLine);
+    return lines.join('\n');
+  });
+  return formattedParagraphs.join('\n');
+}
+
 interface SentMessageItem {
   id: string;
   subject: string;
@@ -183,7 +212,7 @@ export const ContactPage: React.FC = () => {
             email: finalEmail,
             phone: finalPhone || '-',
             subject: finalSubject,
-            message: finalMessage,
+            message: formatMessageForSheet(finalMessage, 38),
             userId: currentUser.uid,
           };
 
