@@ -74,12 +74,19 @@ export const AdminSkills: React.FC = () => {
 
   const handleDeleteGroup = async (group: SkillGroup) => {
     if (!window.confirm(`আপনি কি "${group.name}" গ্রুপটি সম্পূর্ণ মুছে ফেলতে চান?`)) return;
+
+    // Optimistic UI update
+    setSkillGroups((prev) => prev.filter((g) => g.id !== group.id));
+
     try {
-      await deleteSkillGroup(group.id);
-      setStatus({ type: 'success', message: 'গ্রুপ মুছে ফেলা হয়েছে।' });
-      await loadSkills();
+      if (!group.id.startsWith('sg-')) {
+        await deleteSkillGroup(group.id);
+      }
+      setStatus({ type: 'success', message: 'গ্রুপ সফলভাবে মুছে ফেলা হয়েছে।' });
     } catch (err: any) {
-      alert(err.message || 'ডিলিট করতে সমস্যা হয়েছে।');
+      console.error("Delete group error:", err);
+      await loadSkills();
+      setStatus({ type: 'error', message: err.message || 'ডিলিট করতে সমস্যা হয়েছে।' });
     }
   };
 
@@ -87,45 +94,79 @@ export const AdminSkills: React.FC = () => {
     e.preventDefault();
     if (!activeGroupForSkill || !newSkillName.trim()) return;
 
+    const newSkill: SkillItem = {
+      id: `sk-${Date.now()}`,
+      name: newSkillName.trim(),
+      percentage: newSkillPercentage.trim() || '90%',
+      level: newSkillLevel,
+      icon: newSkillIcon.trim() || undefined,
+    };
+
+    const updatedSkills = [...activeGroupForSkill.skills, newSkill];
+
+    // Optimistic UI update
+    setSkillGroups((prev) =>
+      prev.map((g) => (g.id === activeGroupForSkill.id ? { ...g, skills: updatedSkills } : g))
+    );
+
     try {
       setIsSaving(true);
-      const newSkill: SkillItem = {
-        id: `sk-${Date.now()}`,
-        name: newSkillName.trim(),
-        percentage: newSkillPercentage.trim() || '90%',
-        level: newSkillLevel,
-        icon: newSkillIcon.trim() || undefined,
-      };
-
-      const updatedSkills = [...activeGroupForSkill.skills, newSkill];
-      await saveSkillGroup({
-        id: activeGroupForSkill.id,
+      const savedId = await saveSkillGroup({
+        ...activeGroupForSkill,
         skills: updatedSkills,
       });
+
+      if (activeGroupForSkill.id !== savedId) {
+        setSkillGroups((prev) =>
+          prev.map((g) => (g.id === activeGroupForSkill.id ? { ...g, id: savedId, skills: updatedSkills } : g))
+        );
+      }
 
       setActiveGroupForSkill(null);
       setNewSkillName('');
       setNewSkillPercentage('90%');
       setNewSkillIcon('illustrator');
       setStatus({ type: 'success', message: 'নতুন দক্ষতা যুক্ত হয়েছে!' });
-      await loadSkills();
     } catch (err: any) {
-      alert(err.message || 'স্কিল যুক্ত করতে সমস্যা হয়েছে।');
+      console.error(err);
+      await loadSkills();
+      setStatus({ type: 'error', message: err.message || 'স্কিল যুক্ত করতে সমস্যা হয়েছে।' });
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleDeleteSkill = async (group: SkillGroup, skillId: string) => {
+    const updatedSkills = group.skills.filter((s) => s.id !== skillId);
+
+    // 1. Optimistic instant UI update: skill disappears immediately without wait
+    setSkillGroups((prev) =>
+      prev.map((g) => (g.id === group.id ? { ...g, skills: updatedSkills } : g))
+    );
+
     try {
-      const updatedSkills = group.skills.filter((s) => s.id !== skillId);
-      await saveSkillGroup({
-        id: group.id,
+      setIsSaving(true);
+      // 2. Persist full group data to Firestore
+      const savedId = await saveSkillGroup({
+        ...group,
         skills: updatedSkills,
       });
-      await loadSkills();
+
+      // 3. Sync ID if starter group ID was converted to Firestore ID
+      if (group.id !== savedId) {
+        setSkillGroups((prev) =>
+          prev.map((g) => (g.id === group.id ? { ...g, id: savedId, skills: updatedSkills } : g))
+        );
+      }
+
+      setStatus({ type: 'success', message: 'দক্ষতা সফলভাবে মুছে ফেলা হয়েছে!' });
     } catch (err: any) {
-      alert(err.message || 'ডিলিট করতে সমস্যা হয়েছে।');
+      console.error("Delete skill failed:", err);
+      // Revert if error
+      await loadSkills();
+      setStatus({ type: 'error', message: err.message || 'ডিলিট করতে সমস্যা হয়েছে।' });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -213,9 +254,15 @@ export const AdminSkills: React.FC = () => {
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
                   <h3 className="text-sm font-bold text-slate-900">{group.name}</h3>
                   <button
-                    onClick={() => handleDeleteGroup(group)}
-                    className="text-slate-400 hover:text-rose-600 p-1 transition-colors cursor-pointer"
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleDeleteGroup(group);
+                    }}
+                    className="text-slate-400 hover:text-rose-600 p-1.5 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                     title="গ্রুপ মুছুন"
+                    aria-label={`গ্রুপ মুছুন ${group.name}`}
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -250,11 +297,17 @@ export const AdminSkills: React.FC = () => {
                           </span>
                         )}
                         <button
-                          onClick={() => handleDeleteSkill(group, skill.id)}
-                          className="text-slate-400 hover:text-rose-600 p-1 transition-colors cursor-pointer"
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleDeleteSkill(group, skill.id);
+                          }}
+                          className="text-slate-400 hover:text-rose-600 p-1.5 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                           title="মুছুন"
+                          aria-label={`মুছুন ${skill.name}`}
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </div>

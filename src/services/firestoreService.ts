@@ -199,13 +199,19 @@ export async function getSkillGroups(): Promise<SkillGroup[]> {
   if (!db) return starterSkillGroups;
   try {
     const colRef = collection(db, COLLECTIONS.SKILLS);
-    const q = query(colRef, orderBy('sortOrder', 'asc'));
-    const querySnapshot = await getDocs(q);
+    const querySnapshot = await getDocs(colRef);
     if (!querySnapshot.empty) {
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as SkillGroup[];
+      const items = querySnapshot.docs.map(doc => {
+        const data = doc.data() as any;
+        return {
+          id: doc.id,
+          name: data.name || 'My Skills',
+          sortOrder: typeof data.sortOrder === 'number' ? data.sortOrder : 1,
+          skills: Array.isArray(data.skills) ? data.skills : [],
+          ...data,
+        };
+      }) as SkillGroup[];
+      return items.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
     }
   } catch (error) {
     console.warn("Could not load skills from Firestore, using starter skills:", error);
@@ -217,19 +223,32 @@ export async function saveSkillGroup(group: Partial<SkillGroup> & { id?: string 
   if (!db) throw new Error("Firestore is not initialized.");
   const colRef = collection(db, COLLECTIONS.SKILLS);
 
+  const cleanData: any = {
+    name: group.name || 'My Skills',
+    sortOrder: typeof group.sortOrder === 'number' ? group.sortOrder : 1,
+    skills: group.skills || [],
+    updatedAt: serverTimestamp(),
+  };
+
   if (group.id && !group.id.startsWith('sg-')) {
     const docRef = doc(db, COLLECTIONS.SKILLS, group.id);
-    await setDoc(docRef, { ...group, updatedAt: serverTimestamp() }, { merge: true });
+    await setDoc(docRef, cleanData, { merge: true });
     return group.id;
   } else {
-    const { id: _ignored, ...data } = group;
-    const newDoc = await addDoc(colRef, { ...data, createdAt: serverTimestamp() });
+    // New group or saving starter data to Firestore
+    const newDoc = await addDoc(colRef, {
+      ...cleanData,
+      createdAt: serverTimestamp(),
+    });
     return newDoc.id;
   }
 }
 
 export async function deleteSkillGroup(id: string): Promise<void> {
   if (!db) throw new Error("Firestore is not initialized.");
+  if (id.startsWith('sg-')) {
+    return;
+  }
   const docRef = doc(db, COLLECTIONS.SKILLS, id);
   await deleteDoc(docRef);
 }
