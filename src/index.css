@@ -21,6 +21,17 @@
   }
 }
 
+/* Global Text Selection matching Website Primary Color */
+::selection {
+  background-color: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+::-moz-selection {
+  background-color: #0284c7 !important;
+  color: #ffffff !important;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
