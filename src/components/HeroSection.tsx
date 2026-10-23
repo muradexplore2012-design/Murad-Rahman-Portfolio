@@ -7,85 +7,70 @@ interface HeroSectionProps {
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ profile }) => {
   return (
-    <section id="home" className="relative pt-6 sm:pt-8 lg:pt-10 pb-4 sm:pb-6 lg:pb-0 bg-[#FAF8F5] overflow-hidden">
+    <section id="home" className="relative pt-12 sm:pt-16 lg:pt-20 pb-16 sm:pb-24 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-end">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           
-          {/* Left Column: Greeting, Headline, Bio, Buttons */}
-          <div className="lg:col-span-7 flex flex-col items-start text-left z-10 pb-6 lg:pb-10">
+          {/* Left Column: Greeting Headline, Underline Bar, English Bio, "Contact Us >" Button */}
+          <div className="lg:col-span-7 flex flex-col items-start text-left z-10">
             
-            {/* Greeting: "Hi There," */}
-            <h3 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight mb-2">
-              {profile.greeting || 'Hi There,'}
-            </h3>
-
-            {/* Main Headline: "I'm Murad Rahman" in bold green */}
-            <h1 className="text-4xl sm:text-5xl lg:text-5xl font-black tracking-tight text-[#15803d] leading-tight mb-4 sm:mb-5">
-              I'm {profile.name || 'Murad Rahman'}
+            {/* Main Headline: "Hi, I am Murad Rahman" matching screenshot */}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight leading-[1.12]">
+              Hi, I am <br />
+              <span className="font-extrabold text-slate-900">
+                {profile.name || 'Murad Rahman'}
+              </span>
             </h1>
 
-            {/* Bio text in Bangla */}
-            <p className="text-sm sm:text-base text-slate-700 leading-relaxed max-w-lg mb-6 sm:mb-7 font-normal">
-              {profile.aboutBio ||
-                'মুরাদ রহমান একজন দক্ষ গ্রাফিক্স ডিজাইনার ও ওয়েব ডেভেলপার, যিনি ব্যক্তি ও ব্যবসার জন্য আধুনিক ও পরিচ্ছন্ন ডিজাইন এবং কার্যকর রেসপনসিভ ওয়েব ইন্টারফেস তৈরিতে প্রতিশ্রুতিবদ্ধ।'}
+            {/* Colored primary underline bar matching screenshot */}
+            <div className="w-48 sm:w-64 h-1.5 bg-[#0284c7] rounded-full mt-3 mb-6 sm:mb-8" />
+
+            {/* Professional English Bio matching screenshot */}
+            <p className="text-sm sm:text-base lg:text-lg text-slate-600 leading-relaxed max-w-xl mb-8 font-normal">
+              {profile.heroSubheadline ||
+                "I'm a passionate Graphic Designer & Web Developer specializing in high-impact YouTube thumbnails that boost CTR and modern, responsive websites designed to engage visitors and drive conversions."}
             </p>
 
-            {/* Two Action Buttons side by side (Matching reference) */}
-            <div className="flex flex-wrap items-center gap-3.5 w-full sm:w-auto">
+            {/* Single Action Button: "Contact Us >" matching user instruction */}
+            <div>
               <a
                 href={
                   profile.whatsapp
                     ? `https://wa.me/${profile.whatsapp.replace(/[^0-9]/g, '')}`
+                    : profile.phone
+                    ? `tel:${profile.phone}`
                     : `mailto:${profile.email || 'muradrahman2026@gmail.com'}`
                 }
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2.5 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] text-white font-bold rounded-md shadow-xs transition-all duration-200 text-sm"
+                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 text-base group"
               >
-                Contact Me
-              </a>
-
-              <a
-                href="#services"
-                className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2.5 bg-transparent hover:bg-[#15803d]/5 text-[#15803d] font-bold rounded-md border-2 border-[#15803d] transition-all duration-200 text-sm"
-              >
-                My Service
+                <span>Contact Us</span>
+                <span className="text-lg transition-transform group-hover:translate-x-1">›</span>
               </a>
             </div>
 
           </div>
 
-          {/* Right Column: Murad Rahman's Cutout Standing Over Green Brush Splash */}
-          <div className="lg:col-span-5 flex justify-center lg:justify-end items-end relative">
-            <div className="relative w-72 sm:w-80 md:w-96 lg:w-[420px] flex items-end justify-center">
-              
-              {/* Authentic Watercolor Green Brush Stroke Graphic behind portrait */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none -z-0">
-                <img
-                  src="/images/green-brush-splash.png"
-                  alt="Brush paint splash"
-                  className="w-[125%] h-[125%] max-w-none object-contain select-none pointer-events-none filter drop-shadow-xs transition-transform duration-500 -translate-y-2"
-                  aria-hidden="true"
-                />
-              </div>
-
-              {/* Murad Rahman's Clean Cutout Portrait */}
-              <div className="relative z-10 w-full flex items-end justify-center">
-                <img
-                  src="/images/murad-rahman-transparent.png"
-                  alt={profile.name || "Murad Rahman"}
-                  className="w-full max-h-[360px] sm:max-h-[400px] lg:max-h-[440px] object-contain drop-shadow-md select-none transition-transform duration-300 hover:scale-[1.01]"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = profile.profileImage || "/images/murad-rahman.jpg";
-                  }}
-                />
-              </div>
-
+          {/* Right Column: Framed Studio Card Photo of Murad Rahman matching screenshot */}
+          <div className="lg:col-span-5 flex justify-center lg:justify-end items-center">
+            <div className="relative w-full max-w-md lg:max-w-lg aspect-square sm:aspect-[4/3] lg:aspect-square rounded-[32px] sm:rounded-[36px] overflow-hidden shadow-2xl shadow-sky-950/10 border-4 border-white bg-slate-100 group transition-transform duration-300 hover:scale-[1.01]">
+              <img
+                src={profile.profileImage || "/images/murad-rahman.jpg"}
+                alt={profile.name || "Murad Rahman"}
+                className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "/images/murad-rahman.jpg";
+                }}
+              />
             </div>
           </div>
 
         </div>
       </div>
+
+      {/* Subtle bottom wave / divider curve matching screenshot */}
+      <div className="absolute bottom-0 left-0 right-0 h-10 sm:h-14 bg-gradient-to-t from-slate-50 to-transparent pointer-events-none" />
     </section>
   );
 };

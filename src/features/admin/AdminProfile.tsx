@@ -140,11 +140,11 @@ export const AdminProfile: React.FC = () => {
                 value={profile.profileImage}
                 onChange={(e) => setProfile({ ...profile, profileImage: e.target.value })}
                 placeholder="/images/murad-rahman.jpg"
-                className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
               />
               <div className="pt-1">
                 <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700 border border-slate-300 transition-colors">
-                  <Upload className="w-3.5 h-3.5 text-[#15803d]" />
+                  <Upload className="w-3.5 h-3.5 text-[#0284c7]" />
                   <span>{isUploadingProfile ? 'আপলোড হচ্ছে...' : 'নতুন ফটো আপলোড করুন'}</span>
                   <input
                     type="file"
@@ -181,11 +181,11 @@ export const AdminProfile: React.FC = () => {
                 value={profile.aboutImage || ''}
                 onChange={(e) => setProfile({ ...profile, aboutImage: e.target.value })}
                 placeholder="https://images.unsplash.com/photo-1581291518857-4e27b48ff24e..."
-                className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
               />
               <div className="pt-1">
                 <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700 border border-slate-300 transition-colors">
-                  <Upload className="w-3.5 h-3.5 text-[#15803d]" />
+                  <Upload className="w-3.5 h-3.5 text-[#0284c7]" />
                   <span>{isUploadingAbout ? 'আপলোড হচ্ছে...' : 'ওয়ার্কস্পেস ছবি আপলোড'}</span>
                   <input
                     type="file"
@@ -256,9 +256,22 @@ export const AdminProfile: React.FC = () => {
                 type="text"
                 value={profile.location}
                 onChange={(e) => setProfile({ ...profile, location: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+              হিরো সেকশনের বিবরণ (Hero Subheadline / Bio)
+            </label>
+            <textarea
+              rows={2}
+              value={profile.heroSubheadline || ''}
+              onChange={(e) => setProfile({ ...profile, heroSubheadline: e.target.value })}
+              placeholder="I'm a passionate Graphic Designer & Web Developer specializing in high-impact YouTube thumbnails..."
+              className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7] leading-relaxed"
+            />
           </div>
 
           <div>
