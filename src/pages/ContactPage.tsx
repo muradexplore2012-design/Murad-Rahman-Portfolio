@@ -172,7 +172,9 @@ export const ContactPage: React.FC = () => {
       });
 
       // 2. Trigger Google Sheets & Gmail Webhook if configured
-      const webhookUrl = settings.googleSheetWebhookUrl?.trim();
+      const webhookUrl =
+        settings.googleSheetWebhookUrl?.trim() ||
+        'https://script.google.com/macros/s/AKfycbzi1_nElsw85vuLxhhMJKXEykbbdH68G_SSFshflYZtK_mT6aVv34cnCDDAfwnbJe56/exec';
       if (webhookUrl && webhookUrl.startsWith('http')) {
         try {
           const payload = {

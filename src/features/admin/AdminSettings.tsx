@@ -122,7 +122,14 @@ export const AdminSettings: React.FC = () => {
     async function load() {
       try {
         const data = await getSiteSettings();
-        if (data) setSettings(data);
+        if (data) {
+          setSettings({
+            ...data,
+            googleSheetWebhookUrl:
+              data.googleSheetWebhookUrl ||
+              'https://script.google.com/macros/s/AKfycbzi1_nElsw85vuLxhhMJKXEykbbdH68G_SSFshflYZtK_mT6aVv34cnCDDAfwnbJe56/exec',
+          });
+        }
       } catch (err) {
         console.error(err);
       } finally {
