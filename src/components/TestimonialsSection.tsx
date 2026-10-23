@@ -88,10 +88,19 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ testim
                     {item.clientName}
                   </h4>
                   
-                  {/* 5 Gold Stars */}
-                  <div className="flex items-center gap-0.5 mt-1 text-amber-400 text-sm select-none">
-                    {Array.from({ length: item.rating || 5 }).map((_, i) => (
-                      <span key={i}>★</span>
+                  {/* 5 Stars: filled gold and unfilled gray */}
+                  <div className="flex items-center gap-0.5 mt-1 text-sm select-none">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <span
+                        key={star}
+                        className={
+                          star <= (Number(item.rating) || 5)
+                            ? 'text-amber-400'
+                            : 'text-slate-200'
+                        }
+                      >
+                        ★
+                      </span>
                     ))}
                   </div>
                 </div>

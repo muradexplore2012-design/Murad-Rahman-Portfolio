@@ -91,24 +91,33 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
   useEffect(() => {
     if (!sectionRef.current) return;
 
-    if (!('IntersectionObserver' in window)) {
-      setInView(true);
-      return;
-    }
+    let isDone = false;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
-    );
+    const checkVisibility = () => {
+      if (isDone || !sectionRef.current) return;
+      const rect = sectionRef.current.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
 
-    observer.observe(sectionRef.current);
+      // Ensure the section has significantly scrolled into view (at least 220px deep from bottom),
+      // preventing premature trigger when the user is still viewing Hero section at top
+      if (rect.top < viewportHeight - 220) {
+        setInView(true);
+        isDone = true;
+        window.removeEventListener('scroll', checkVisibility);
+        window.removeEventListener('resize', checkVisibility);
+      }
+    };
 
-    return () => observer.disconnect();
+    // Initial check (only activates if user already loaded page scrolled down)
+    checkVisibility();
+
+    window.addEventListener('scroll', checkVisibility, { passive: true });
+    window.addEventListener('resize', checkVisibility, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', checkVisibility);
+      window.removeEventListener('resize', checkVisibility);
+    };
   }, []);
 
   return (
