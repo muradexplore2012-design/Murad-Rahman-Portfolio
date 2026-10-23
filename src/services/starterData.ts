@@ -166,7 +166,7 @@ export const starterSkillGroups: SkillGroup[] = [
     skills: [
       { id: "sk-1", name: "Illustrator", percentage: "95%", icon: "illustrator", level: "Advanced" },
       { id: "sk-2", name: "Photoshop", percentage: "92%", icon: "photoshop", level: "Advanced" },
-      { id: "sk-3", name: "WordPress", percentage: "88%", icon: "wordpress", level: "Advanced" },
+      { id: "sk-3", name: "Website", percentage: "88%", icon: "website", level: "Advanced" },
       { id: "sk-4", name: "Google Ads", percentage: "90%", icon: "google", level: "Advanced" },
       { id: "sk-5", name: "Facebook Ads", percentage: "80%", icon: "facebook", level: "Advanced" },
       { id: "sk-6", name: "YouTube Ads", percentage: "85%", icon: "youtube", level: "Advanced" },

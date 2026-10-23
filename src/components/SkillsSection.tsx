@@ -4,6 +4,7 @@ import {
   IllustratorIcon,
   PhotoshopIcon,
   WordpressIcon,
+  WebsiteIcon,
   GoogleIcon,
   FacebookIcon,
   YoutubeIcon,
@@ -20,7 +21,7 @@ interface SkillsSectionProps {
 const DEFAULT_SKILLS: SkillItem[] = [
   { id: 'sk-1', name: 'Illustrator', percentage: '95%', icon: 'illustrator' },
   { id: 'sk-2', name: 'Photoshop', percentage: '92%', icon: 'photoshop' },
-  { id: 'sk-3', name: 'WordPress', percentage: '88%', icon: 'wordpress' },
+  { id: 'sk-3', name: 'Website', percentage: '88%', icon: 'website' },
   { id: 'sk-4', name: 'Google Ads', percentage: '90%', icon: 'google' },
   { id: 'sk-5', name: 'Facebook Ads', percentage: '80%', icon: 'facebook' },
   { id: 'sk-6', name: 'YouTube Ads', percentage: '85%', icon: 'youtube' },
@@ -29,8 +30,17 @@ const DEFAULT_SKILLS: SkillItem[] = [
 ];
 
 export const SkillsSection: React.FC<SkillsSectionProps> = ({ skillGroups }) => {
-  // Extract all skills from groups
-  const loadedSkills = skillGroups.flatMap((g) => g.skills);
+  // Extract all skills from groups and map WordPress to Website
+  const loadedSkills = skillGroups.flatMap((g) => g.skills).map((skill) => {
+    if (skill.name?.toLowerCase().includes('wordpress') || skill.id === 'sk-3') {
+      return {
+        ...skill,
+        name: 'Website',
+        icon: 'website',
+      };
+    }
+    return skill;
+  });
 
   // If skills in groups match the modern structure or default, use them
   const skillsToDisplay: SkillItem[] = loadedSkills.length > 0
@@ -45,6 +55,9 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ skillGroups }) => 
     }
     if (key.includes('photoshop') || key === 'ps') {
       return <PhotoshopIcon className="w-9 h-9 sm:w-10 sm:h-10 text-[#0284c7]" />;
+    }
+    if (key.includes('web') || key.includes('site') || key.includes('globe') || key.includes('internet')) {
+      return <WebsiteIcon className="w-9 h-9 sm:w-10 sm:h-10 text-[#0284c7]" />;
     }
     if (key.includes('word') || key.includes('press') || key.includes('blog') || key === 'wp') {
       return <WordpressIcon className="w-9 h-9 sm:w-10 sm:h-10 text-[#0284c7]" />;

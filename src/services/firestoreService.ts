@@ -208,11 +208,17 @@ export async function getSkillGroups(): Promise<SkillGroup[]> {
         })
         .map(doc => {
           const data = doc.data() as any;
+          const skills = (Array.isArray(data.skills) ? data.skills : []).map((s: any) => {
+            if (s.name && (s.name.toLowerCase().includes('wordpress') || s.id === 'sk-3')) {
+              return { ...s, name: 'Website', icon: 'website' };
+            }
+            return s;
+          });
           return {
             id: doc.id,
             name: data.name,
             sortOrder: typeof data.sortOrder === 'number' ? data.sortOrder : 1,
-            skills: Array.isArray(data.skills) ? data.skills : [],
+            skills,
             ...data,
           };
         }) as SkillGroup[];

@@ -44,6 +44,23 @@ export const WordpressIcon: React.FC<{ className?: string }> = ({ className = "w
   </svg>
 );
 
+// Modern Web / Website Globe Icon
+export const WebsiteIcon: React.FC<{ className?: string }> = ({ className = "w-10 h-10" }) => (
+  <svg
+    viewBox="0 0 24 24"
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.9"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="12" cy="12" r="9.5" />
+    <path d="M2.5 12h19" />
+    <path d="M12 2.5a14 14 0 0 1 4 9.5 14 14 0 0 1-4 9.5 14 14 0 0 1-4-9.5 14 14 0 0 1 4-9.5z" />
+  </svg>
+);
+
 // Google Ads / Google Icon (Matching Reference)
 export const GoogleIcon: React.FC<{ className?: string }> = ({ className = "w-10 h-10" }) => (
   <svg viewBox="0 0 24 24" className={className} fill="currentColor">

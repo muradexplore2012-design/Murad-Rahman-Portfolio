@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, Trash2, CheckCircle, AlertCircle, X, Sparkles } from 'lucide-react';
+import { Plus, Trash2, Pencil, CheckCircle, AlertCircle, X, Sparkles } from 'lucide-react';
 import type { SkillGroup, SkillItem } from '../../types';
 import { getSkillGroups, saveSkillGroup, deleteSkillGroup, cleanGhostSkillGroups } from '../../services/firestoreService';
 import {
   IllustratorIcon,
   PhotoshopIcon,
   WordpressIcon,
+  WebsiteIcon,
   GoogleIcon,
   FacebookIcon,
   YoutubeIcon,
@@ -33,11 +34,38 @@ export const AdminSkills: React.FC = () => {
   const [newSkillLevel, setNewSkillLevel] = useState('Advanced');
   const [newSkillIcon, setNewSkillIcon] = useState('illustrator');
 
+  // Modal for editing an existing skill
+  const [editingSkillGroup, setEditingSkillGroup] = useState<SkillGroup | null>(null);
+  const [editingSkill, setEditingSkill] = useState<SkillItem | null>(null);
+  const [editSkillName, setEditSkillName] = useState('');
+  const [editSkillPercentage, setEditSkillPercentage] = useState('90%');
+  const [editSkillLevel, setEditSkillLevel] = useState('Advanced');
+  const [editSkillIcon, setEditSkillIcon] = useState('website');
+
   const loadSkills = async () => {
     try {
       setIsLoading(true);
       const data = await getSkillGroups();
-      setSkillGroups(data);
+
+      // Automatically migrate WordPress to Website in database if found
+      const syncedData = data.map((group) => {
+        let changed = false;
+        const updatedSkills = group.skills.map((s) => {
+          if (s.name?.toLowerCase().includes('wordpress') || s.id === 'sk-3') {
+            changed = true;
+            return { ...s, name: 'Website', icon: 'website' };
+          }
+          return s;
+        });
+
+        if (changed) {
+          saveSkillGroup({ ...group, skills: updatedSkills }).catch(() => {});
+          return { ...group, skills: updatedSkills };
+        }
+        return group;
+      });
+
+      setSkillGroups(syncedData);
 
       // Clean up any ghost docs in Firestore in the background with admin rights
       cleanGhostSkillGroups().catch(() => {});
@@ -173,6 +201,54 @@ export const AdminSkills: React.FC = () => {
     }
   };
 
+  const handleOpenEditSkill = (group: SkillGroup, skill: SkillItem) => {
+    setEditingSkillGroup(group);
+    setEditingSkill(skill);
+    setEditSkillName(skill.name);
+    setEditSkillPercentage(skill.percentage || '90%');
+    setEditSkillLevel(skill.level || 'Advanced');
+    setEditSkillIcon(skill.icon || 'website');
+  };
+
+  const handleSaveEditSkill = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingSkillGroup || !editingSkill || !editSkillName.trim()) return;
+
+    const updatedSkills = editingSkillGroup.skills.map((s) =>
+      s.id === editingSkill.id
+        ? {
+            ...s,
+            name: editSkillName.trim(),
+            percentage: editSkillPercentage.trim() || '90%',
+            level: editSkillLevel,
+            icon: editSkillIcon.trim() || 'website',
+          }
+        : s
+    );
+
+    // Optimistic UI update
+    setSkillGroups((prev) =>
+      prev.map((g) => (g.id === editingSkillGroup.id ? { ...g, skills: updatedSkills } : g))
+    );
+
+    try {
+      setIsSaving(true);
+      await saveSkillGroup({
+        ...editingSkillGroup,
+        skills: updatedSkills,
+      });
+      setEditingSkill(null);
+      setEditingSkillGroup(null);
+      setStatus({ type: 'success', message: 'দক্ষতা সফলভাবে আপডেট করা হয়েছে!' });
+    } catch (err: any) {
+      console.error("Edit skill failed:", err);
+      await loadSkills();
+      setStatus({ type: 'error', message: err.message || 'আপডেট করতে সমস্যা হয়েছে।' });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   // Helper to render correct SVG icon without text overlap
   const renderSkillIcon = (skill: SkillItem) => {
     const key = (skill.icon || skill.name || '').toLowerCase();
@@ -182,6 +258,9 @@ export const AdminSkills: React.FC = () => {
     }
     if (key.includes('photoshop') || key === 'ps') {
       return <PhotoshopIcon className="w-5 h-5 text-[#0284c7]" />;
+    }
+    if (key.includes('web') || key.includes('site') || key.includes('globe') || key.includes('internet')) {
+      return <WebsiteIcon className="w-5 h-5 text-[#0284c7]" />;
     }
     if (key.includes('word') || key.includes('press') || key === 'wp') {
       return <WordpressIcon className="w-5 h-5 text-[#0284c7]" />;
@@ -299,6 +378,19 @@ export const AdminSkills: React.FC = () => {
                             {skill.level}
                           </span>
                         )}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleOpenEditSkill(group, skill);
+                          }}
+                          className="text-slate-400 hover:text-[#0284c7] p-1.5 hover:bg-sky-50 rounded-lg transition-colors cursor-pointer"
+                          title="সম্পাদনা করুন"
+                          aria-label={`সম্পাদনা করুন ${skill.name}`}
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
                         <button
                           type="button"
                           onClick={(e) => {
@@ -448,6 +540,7 @@ export const AdminSkills: React.FC = () => {
                   >
                     <option value="illustrator">Illustrator</option>
                     <option value="photoshop">Photoshop</option>
+                    <option value="website">Website / Web</option>
                     <option value="wordpress">WordPress</option>
                     <option value="google">Google Ads</option>
                     <option value="facebook">Facebook Ads</option>
@@ -472,6 +565,112 @@ export const AdminSkills: React.FC = () => {
                   className="px-5 py-2 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
                 >
                   যুক্ত করুন
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Edit Skill in Group */}
+      {editingSkill && editingSkillGroup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+          <div className="relative w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl text-slate-800">
+            <button
+              onClick={() => {
+                setEditingSkill(null);
+                setEditingSkillGroup(null);
+              }}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h2 className="text-lg font-bold text-slate-900 mb-2">
+              দক্ষতা সম্পাদনা ({editingSkill.name})
+            </h2>
+            <form onSubmit={handleSaveEditSkill} className="space-y-4 mt-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  টুল / সফটওয়্যার নাম *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editSkillName}
+                  onChange={(e) => setEditSkillName(e.target.value)}
+                  placeholder="যেমন: Website"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    শতাংশ
+                  </label>
+                  <input
+                    type="text"
+                    value={editSkillPercentage}
+                    onChange={(e) => setEditSkillPercentage(e.target.value)}
+                    placeholder="90%"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    লেভেল
+                  </label>
+                  <select
+                    value={editSkillLevel}
+                    onChange={(e) => setEditSkillLevel(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
+                  >
+                    <option value="Advanced">Advanced</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Proficient">Proficient</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    আইকন
+                  </label>
+                  <select
+                    value={editSkillIcon}
+                    onChange={(e) => setEditSkillIcon(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
+                  >
+                    <option value="illustrator">Illustrator</option>
+                    <option value="photoshop">Photoshop</option>
+                    <option value="website">Website / Web</option>
+                    <option value="wordpress">WordPress</option>
+                    <option value="google">Google Ads</option>
+                    <option value="facebook">Facebook Ads</option>
+                    <option value="youtube">YouTube Ads</option>
+                    <option value="email">Email Marketing</option>
+                    <option value="instagram">Instagram Ads</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingSkill(null);
+                    setEditingSkillGroup(null);
+                  }}
+                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer"
+                >
+                  বাতিল
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="px-5 py-2 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
+                >
+                  সংরক্ষণ করুন
                 </button>
               </div>
             </form>
