@@ -13,9 +13,18 @@
     <meta property="og:description" content="মুরাদ রহমান — পরিষ্কার, আধুনিক এবং ব্যবহারবান্ধব ডিজাইন ও ওয়েব অভিজ্ঞতা।" />
     <meta property="og:image" content="/images/murad-rahman.jpg" />
     
-    <!-- Google Fonts for English & Bangla -->
+    <!-- Performance Optimization: DNS Prefetch & Preconnect -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://firestore.googleapis.com">
+    <link rel="dns-prefetch" href="https://firebasestorage.googleapis.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Preload Critical Hero Image with High Priority -->
+    <link rel="preload" as="image" href="/images/murad-rahman.jpg" fetchpriority="high" />
+
+    <!-- Google Fonts for English & Bangla -->
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   </head>
   <body class="bg-white text-slate-800 antialiased selection:bg-[#0284c7] selection:text-white">

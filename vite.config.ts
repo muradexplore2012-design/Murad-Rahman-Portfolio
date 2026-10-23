@@ -8,4 +8,21 @@ export default defineConfig({
     tailwindcss(),
     react(),
   ],
+  build: {
+    target: 'es2020',
+    cssCodeSplit: true,
+    chunkSizeWarningLimit: 800,
+    rollupOptions: {
+      output: {
+        manualChunks(id: string) {
+          if (id.includes('node_modules/firebase/')) {
+            return 'vendor-firebase';
+          }
+          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/') || id.includes('node_modules/react-router-dom/')) {
+            return 'vendor-react';
+          }
+        },
+      },
+    },
+  },
 })

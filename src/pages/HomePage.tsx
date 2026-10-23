@@ -33,17 +33,41 @@ import {
   starterSettings
 } from '../services/starterData';
 
+const getCachedData = <T,>(key: string, fallback: T): T => {
+  try {
+    const item = localStorage.getItem(`mr_cache_${key}`);
+    if (item) {
+      const parsed = JSON.parse(item);
+      if (parsed) return parsed;
+    }
+  } catch {
+    // Ignore cache error
+  }
+  return fallback;
+};
+
+const setCachedData = (key: string, value: any) => {
+  try {
+    localStorage.setItem(`mr_cache_${key}`, JSON.stringify(value));
+  } catch {
+    // Ignore
+  }
+};
+
 export const HomePage: React.FC = () => {
-  const [profile, setProfile] = useState<SiteProfile>(starterProfile);
-  const [projects, setProjects] = useState<Project[]>(starterProjects);
-  const [services, setServices] = useState<Service[]>(starterServices);
-  const [skillGroups, setSkillGroups] = useState<SkillGroup[]>(starterSkillGroups);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>(starterTestimonials);
-  const [settings, setSettings] = useState<SiteSettings>(starterSettings);
-  const [isLoading, setIsLoading] = useState(true);
+  // Initialize immediately from LocalStorage cache or bundled starter data (Zero loading delay!)
+  const [profile, setProfile] = useState<SiteProfile>(() => getCachedData('profile', starterProfile));
+  const [projects, setProjects] = useState<Project[]>(() => getCachedData('projects', starterProjects));
+  const [services, setServices] = useState<Service[]>(() => getCachedData('services', starterServices));
+  const [skillGroups, setSkillGroups] = useState<SkillGroup[]>(() => getCachedData('skills', starterSkillGroups));
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(() => getCachedData('testimonials', starterTestimonials));
+  const [settings, setSettings] = useState<SiteSettings>(() => getCachedData('settings', starterSettings));
   const [prefilledSubject, setPrefilledSubject] = useState('');
 
   useEffect(() => {
+    let isMounted = true;
+
+    // Silent background revalidation: fetches fresh data without blocking the user
     async function loadData() {
       try {
         const [
@@ -62,20 +86,42 @@ export const HomePage: React.FC = () => {
           getSiteSettings(),
         ]);
 
-        if (profileData) setProfile(profileData);
-        if (projectsData?.length) setProjects(projectsData);
-        if (servicesData?.length) setServices(servicesData);
-        if (skillsData?.length) setSkillGroups(skillsData);
-        if (testimonialsData) setTestimonials(testimonialsData);
-        if (settingsData) setSettings(settingsData);
+        if (!isMounted) return;
+
+        if (profileData) {
+          setProfile(profileData);
+          setCachedData('profile', profileData);
+        }
+        if (projectsData?.length) {
+          setProjects(projectsData);
+          setCachedData('projects', projectsData);
+        }
+        if (servicesData?.length) {
+          setServices(servicesData);
+          setCachedData('services', servicesData);
+        }
+        if (skillsData?.length) {
+          setSkillGroups(skillsData);
+          setCachedData('skills', skillsData);
+        }
+        if (testimonialsData) {
+          setTestimonials(testimonialsData);
+          setCachedData('testimonials', testimonialsData);
+        }
+        if (settingsData) {
+          setSettings(settingsData);
+          setCachedData('settings', settingsData);
+        }
       } catch (err) {
-        console.warn("Using starter data due to Firestore read state:", err);
-      } finally {
-        setIsLoading(false);
+        console.warn("Using cached/starter data:", err);
       }
     }
 
     loadData();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Update dynamic document title & meta description
@@ -88,17 +134,6 @@ export const HomePage: React.FC = () => {
   const handleSelectService = (serviceTitle: string) => {
     setPrefilledSubject(`Inquiry for: ${serviceTitle}`);
   };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-white flex flex-col items-center justify-center text-slate-800">
-        <div className="w-12 h-12 border-4 border-sky-200 border-t-[#0284c7] rounded-full animate-spin mb-4" />
-        <p className="text-sm font-bold tracking-wider text-slate-600 uppercase">
-          লোড হচ্ছে...
-        </p>
-      </div>
-    );
-  }
 
   const { sectionVisibility } = settings;
 

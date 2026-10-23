@@ -84,11 +84,12 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
 
   const visibleCounters = counters.filter((c) => c.isVisible);
 
+  const sectionRef = useRef<HTMLElement>(null);
   const countersRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
 
   useEffect(() => {
-    if (!countersRef.current) return;
+    if (!sectionRef.current) return;
 
     if (!('IntersectionObserver' in window)) {
       setInView(true);
@@ -102,20 +103,26 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
           observer.disconnect();
         }
       },
-      { threshold: 0.15 }
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
     );
 
-    observer.observe(countersRef.current);
+    observer.observe(sectionRef.current);
 
     return () => observer.disconnect();
   }, []);
 
   return (
-    <section id="about" className="pt-10 sm:pt-14 pb-16 sm:pb-20 relative bg-white">
+    <section ref={sectionRef} id="about" className="pt-10 sm:pt-14 pb-16 sm:pb-20 relative bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Centered Section Title */}
-        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
+        {/* Centered Section Title with Rise-Up Entrance Animation */}
+        <div
+          className={`text-center max-w-2xl mx-auto mb-8 sm:mb-12 transition-all duration-700 ease-out will-change-transform ${
+            inView
+              ? 'opacity-100 translate-y-0'
+              : 'opacity-0 translate-y-12'
+          }`}
+        >
           <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-black text-[#0284c7] tracking-tight">
             আমার সম্পর্কে
           </h2>
@@ -124,16 +131,22 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
         {/* 2-Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           
-          {/* Left Column: Landscape Workspace Photo Card */}
-          <div className="lg:col-span-6 flex justify-center">
-            <div className="w-full max-w-lg aspect-[4/3] rounded-2xl overflow-hidden shadow-lg border border-slate-200 bg-slate-900">
+          {/* Left Column: Landscape Workspace Photo Card with Rise-Up Entrance Animation */}
+          <div
+            className={`lg:col-span-6 flex justify-center transition-all duration-900 delay-150 ease-out will-change-transform ${
+              inView
+                ? 'opacity-100 translate-y-0'
+                : 'opacity-0 translate-y-16'
+            }`}
+          >
+            <div className="w-full max-w-lg aspect-[4/3] rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-slate-200 bg-slate-900 transition-all duration-500 hover:-translate-y-1.5 group">
               <img
                 src={
                   profile.aboutImage ||
                   "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=1200&q=80"
                 }
                 alt="Murad Rahman Workspace"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src =
                     "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=1200&q=80";
@@ -142,8 +155,14 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
             </div>
           </div>
 
-          {/* Right Column: Bio Copy, 'More About Me' Button, and 3 Counter Boxes */}
-          <div className="lg:col-span-6 flex flex-col justify-center">
+          {/* Right Column: Bio Copy, 'More About Me' Button, and 3 Counter Boxes with Rise-Up Animation */}
+          <div
+            className={`lg:col-span-6 flex flex-col justify-center transition-all duration-900 delay-300 ease-out will-change-transform ${
+              inView
+                ? 'opacity-100 translate-y-0'
+                : 'opacity-0 translate-y-16'
+            }`}
+          >
             
             {/* Paragraph 1 */}
             <p className="text-sm sm:text-base text-slate-800 leading-relaxed font-normal mb-5">
@@ -157,27 +176,36 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
                 'তিনি ব্যবহারবান্ধব ডিজিটাল সলিউশন তৈরি করতে বিশেষ পারদর্শী, যা সঠিক অডিয়েন্সকে টার্গেট করে সর্বোচ্চ রিচ, এনগেজমেন্ট এবং ব্র্যান্ডের প্রফেশনাল ইমেজ নিশ্চিত করে।'}
             </p>
 
-            {/* Button: "More About Me" (Outlined primary color) */}
+            {/* Button: "More About Me" */}
             <div className="mb-8">
               <a
                 href={profile.resumeUrl || "#contact"}
-                className="inline-flex items-center justify-center px-6 py-2.5 border-2 border-[#0284c7] text-[#0284c7] hover:bg-[#0284c7] hover:text-white font-bold text-sm rounded-lg transition-all duration-200 shadow-2xs"
+                className="inline-flex items-center justify-center px-6 py-2.5 border-2 border-[#0284c7] text-[#0284c7] hover:bg-[#0284c7] hover:text-white font-bold text-sm rounded-lg transition-all duration-200 shadow-2xs hover:scale-105 active:scale-95 cursor-pointer"
               >
                 More About Me
               </a>
             </div>
 
-            {/* 3 Counter Boxes in a Row with smooth count-up from 1 */}
+            {/* 3 Counter Boxes in a Row with smooth staggered rise-up & count-up */}
             {visibleCounters.length > 0 && (
               <div ref={countersRef} className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
-                {visibleCounters.map((counter) => (
-                  <CounterBox
+                {visibleCounters.map((counter, idx) => (
+                  <div
                     key={counter.id}
-                    targetValue={counter.value}
-                    suffix={counter.suffix || '+'}
-                    label={counter.label}
-                    inView={inView}
-                  />
+                    className={`transition-all duration-700 ease-out will-change-transform ${
+                      inView
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-12'
+                    }`}
+                    style={{ transitionDelay: `${450 + idx * 120}ms` }}
+                  >
+                    <CounterBox
+                      targetValue={counter.value}
+                      suffix={counter.suffix || '+'}
+                      label={counter.label}
+                      inView={inView}
+                    />
+                  </div>
                 ))}
               </div>
             )}
