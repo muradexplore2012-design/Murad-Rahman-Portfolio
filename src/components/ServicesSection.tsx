@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { Service } from '../types';
 
 interface ServicesSectionProps {
@@ -13,6 +13,35 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
   whatsapp,
 }) => {
   const publishedServices = services.filter((s) => s.isPublished);
+
+  const cardsRef = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    if (!cardsRef.current) return;
+
+    if (!('IntersectionObserver' in window)) {
+      setInView(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -40px 0px',
+      }
+    );
+
+    observer.observe(cardsRef.current);
+
+    return () => observer.disconnect();
+  }, []);
 
   if (publishedServices.length === 0) {
     return null;
@@ -32,7 +61,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
   };
 
   return (
-    <section id="services" className="py-20 relative bg-slate-50/70 border-t border-slate-100">
+    <section id="services" className="py-20 relative bg-slate-50/70 border-t border-slate-100 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
@@ -45,16 +74,26 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
           </h2>
         </div>
 
-        {/* Services Grid matching reference 3-column layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 max-w-6xl mx-auto">
-          {publishedServices.map((service) => {
+        {/* Services Grid: Observed directly so animation plays right in front of user */}
+        <div
+          ref={cardsRef}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 max-w-6xl mx-auto"
+        >
+          {publishedServices.map((service, index) => {
             const waUrl = getWhatsAppUrl(service.title);
             const isExternal = waUrl.startsWith('http');
 
             return (
               <div
                 key={service.id}
-                className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 flex flex-col justify-between shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                style={{
+                  animation: inView
+                    ? `serviceCardRise 1.5s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.35 + 0.15}s both`
+                    : 'none',
+                }}
+                className={`bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 flex flex-col justify-between shadow-xs hover:shadow-xl hover:-translate-y-2 transition-all duration-300 service-card-animated ${
+                  inView ? '' : 'opacity-0 translate-y-36'
+                }`}
               >
                 <div>
                   {/* Banner Image / Card Header Visual */}

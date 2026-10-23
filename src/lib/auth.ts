@@ -1,4 +1,13 @@
-import { onAuthStateChanged, signOut as firebaseSignOut, type User } from 'firebase/auth';
+import {
+  onAuthStateChanged,
+  signOut as firebaseSignOut,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  type User
+} from 'firebase/auth';
 import { auth } from './firebase';
 
 /* 
@@ -43,6 +52,42 @@ export async function verifyAdminStatus(user: User | null): Promise<boolean> {
 }
 
 /**
+ * User Sign-in with Google popup
+ */
+export async function signInWithGoogle(): Promise<User> {
+  if (!auth) throw new Error("Firebase Auth is not initialized.");
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  const result = await signInWithPopup(auth, provider);
+  return result.user;
+}
+
+/**
+ * User Sign-in with Email & Password
+ */
+export async function signInWithEmail(email: string, pass: string): Promise<User> {
+  if (!auth) throw new Error("Firebase Auth is not initialized.");
+  const result = await signInWithEmailAndPassword(auth, email.trim(), pass);
+  return result.user;
+}
+
+/**
+ * User Registration / Sign-up with Email & Password
+ */
+export async function signUpWithEmail(name: string, email: string, pass: string): Promise<User> {
+  if (!auth) throw new Error("Firebase Auth is not initialized.");
+  const result = await createUserWithEmailAndPassword(auth, email.trim(), pass);
+  if (name.trim()) {
+    try {
+      await updateProfile(result.user, { displayName: name.trim() });
+    } catch (e) {
+      console.warn("Could not set displayName:", e);
+    }
+  }
+  return result.user;
+}
+
+/**
  * Sign out helper
  */
 export async function signOutAdmin(): Promise<void> {
@@ -50,6 +95,8 @@ export async function signOutAdmin(): Promise<void> {
     await firebaseSignOut(auth);
   }
 }
+
+export const signOutUser = signOutAdmin;
 
 /**
  * Listen to auth state changes

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Eye, ExternalLink } from 'lucide-react';
 import type { Project } from '../types';
 import { ProjectDetailModal } from './ProjectDetailModal';
@@ -12,6 +12,35 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [activeModalProject, setActiveModalProject] = useState<Project | null>(null);
 
+  const cardsRef = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    if (!cardsRef.current) return;
+
+    if (!('IntersectionObserver' in window)) {
+      setInView(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.08,
+        rootMargin: '0px 0px -40px 0px',
+      }
+    );
+
+    observer.observe(cardsRef.current);
+
+    return () => observer.disconnect();
+  }, []);
+
   const publishedProjects = projects.filter((p) => p.isPublished);
 
   // Dynamic list of categories
@@ -23,7 +52,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
       : publishedProjects.filter((p) => p.category === selectedCategory);
 
   return (
-    <section id="projects" className="py-20 relative bg-white border-t border-slate-100">
+    <section id="projects" className="py-20 relative bg-white border-t border-slate-100 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
@@ -57,12 +86,23 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
           </div>
         )}
 
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-          {filteredProjects.map((project) => (
+        {/* Projects Grid with Deep Staggered Rise from Bottom */}
+        <div
+          ref={cardsRef}
+          key={selectedCategory}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8"
+        >
+          {filteredProjects.map((project, index) => (
             <div
               key={project.id}
-              className="card-light card-light-hover rounded-2xl overflow-hidden flex flex-col group bg-white border border-slate-200"
+              style={{
+                animation: inView
+                  ? `serviceCardRise 1.5s cubic-bezier(0.16, 1, 0.3, 1) ${Math.min(index * 0.25 + 0.15, 1.2)}s both`
+                  : 'none',
+              }}
+              className={`card-light card-light-hover rounded-2xl overflow-hidden flex flex-col group bg-white border border-slate-200 service-card-animated ${
+                inView ? '' : 'opacity-0 translate-y-36'
+              }`}
             >
               {/* Project Image Container */}
               <div className="relative aspect-video w-full overflow-hidden bg-slate-900">

@@ -5,6 +5,29 @@ interface TestimonialsSectionProps {
   testimonials: Testimonial[];
 }
 
+const ClientAvatar: React.FC<{ photo?: string; name: string }> = ({ photo, name }) => {
+  const [hasError, setHasError] = React.useState(false);
+
+  if (photo && !hasError) {
+    return (
+      <img
+        src={photo}
+        alt={name}
+        onError={() => setHasError(true)}
+        className="w-11 h-11 rounded-full object-cover shrink-0 border border-slate-200 shadow-xs"
+      />
+    );
+  }
+
+  const initial = (name || 'C').trim().charAt(0).toUpperCase();
+
+  return (
+    <div className="w-11 h-11 rounded-full bg-sky-100 text-[#0284c7] font-black text-base flex items-center justify-center shrink-0 border border-sky-200 shadow-xs">
+      {initial}
+    </div>
+  );
+};
+
 export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ testimonials }) => {
   const displayTestimonials = testimonials.filter((t) => t.isApproved !== false);
 
@@ -58,18 +81,7 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ testim
 
               {/* Client Info: Avatar, Name & 5 Gold Stars */}
               <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
-                <img
-                  src={
-                    item.clientPhoto ||
-                    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&h=200&q=80"
-                  }
-                  alt={item.clientName}
-                  className="w-11 h-11 rounded-full object-cover shrink-0 border border-slate-200"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src =
-                      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&h=200&q=80";
-                  }}
-                />
+                <ClientAvatar photo={item.clientPhoto} name={item.clientName} />
 
                 <div>
                   <h4 className="text-sm font-black text-slate-900 leading-tight">

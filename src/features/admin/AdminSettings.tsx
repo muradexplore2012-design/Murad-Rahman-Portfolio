@@ -54,6 +54,18 @@ function doPost(e) {
     
     sheet.appendRow([timestamp, name, email, phone, subject, message, userId]);
     
+    // মেসেজ যাতে ২ বা ৩ লাইনে অটো ভেঙে সুন্দরভাবে বসে (Text Wrapping & Column Width)
+    var lastRow = sheet.getLastRow();
+    sheet.getRange(lastRow, 6).setWrapStrategy(SpreadsheetApp.WrapStrategy.WRAP);
+    sheet.getRange(lastRow, 1, 1, 7).setVerticalAlignment("top");
+    sheet.setColumnWidth(1, 160); // তারিখ
+    sheet.setColumnWidth(2, 130); // নাম
+    sheet.setColumnWidth(3, 190); // ইমেইল
+    sheet.setColumnWidth(4, 140); // ফোন
+    sheet.setColumnWidth(5, 180); // বিষয়
+    sheet.setColumnWidth(6, 350); // মেসেজ কলাম (যাতে ২-৩ লাইনে সহজে পড়া যায়)
+    sheet.setColumnWidth(7, 130); // ইউজার আইডি
+    
     if (NOTIFICATION_EMAIL) {
       var emailSubject = "📬 নতুন পোর্টফোলিও মেসেজ: " + subject + " (" + name + ")";
       var emailBody = 

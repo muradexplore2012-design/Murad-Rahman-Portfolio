@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { SkillGroup, SkillItem } from '../types';
 import {
   IllustratorIcon,
@@ -29,7 +29,117 @@ const DEFAULT_SKILLS: SkillItem[] = [
   { id: 'sk-8', name: 'Instagram Ads', percentage: '75%', icon: 'instagram' },
 ];
 
+interface SkillCardProps {
+  skill: SkillItem;
+  index: number;
+  inView: boolean;
+  renderIcon: (skill: SkillItem) => React.ReactNode;
+}
+
+const SkillCard: React.FC<SkillCardProps> = ({ skill, index, inView, renderIcon }) => {
+  const percentageStr = skill.percentage || (skill.level === 'Intermediate' ? '75%' : '90%');
+  const targetNum = parseInt(percentageStr.replace(/[^0-9]/g, ''), 10) || 85;
+
+  const [count, setCount] = useState(1);
+
+  useEffect(() => {
+    if (!inView) {
+      setCount(1);
+      return;
+    }
+
+    // Start count-up when this specific card begins its entrance
+    const startDelay = index * 250 + 200;
+    const duration = 1200;
+
+    let timeoutId: ReturnType<typeof setTimeout>;
+    let animationFrameId: number;
+
+    timeoutId = setTimeout(() => {
+      let startTime: number | null = null;
+      const easeOutCubic = (t: number): number => 1 - Math.pow(1 - t, 3);
+
+      const animate = (timestamp: number) => {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+        const current = Math.floor(1 + (targetNum - 1) * easeOutCubic(progress));
+        setCount(current);
+
+        if (progress < 1) {
+          animationFrameId = requestAnimationFrame(animate);
+        } else {
+          setCount(targetNum);
+        }
+      };
+
+      animationFrameId = requestAnimationFrame(animate);
+    }, startDelay);
+
+    return () => {
+      clearTimeout(timeoutId);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [inView, targetNum, index]);
+
+  return (
+    <div
+      style={{
+        animation: inView
+          ? `serviceCardRise 1.5s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.25 + 0.15}s both`
+          : 'none',
+      }}
+      className={`w-[calc(50%-0.6rem)] sm:w-[calc(33.333%-1rem)] lg:w-[185px] bg-white rounded-2xl border border-slate-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.06)] hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 p-6 sm:p-7 flex flex-col items-center justify-center text-center group cursor-default shrink-0 service-card-animated ${
+        inView ? '' : 'opacity-0 translate-y-36'
+      }`}
+    >
+      {/* Circular Halo Icon Container */}
+      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-sky-50/80 border border-sky-100/90 flex items-center justify-center mb-4 sm:mb-5 shadow-[0_0_25px_rgba(2,132,199,0.12)] group-hover:scale-105 group-hover:border-sky-300 transition-all duration-300">
+        {renderIcon(skill)}
+      </div>
+
+      {/* Percentage (Live count-up from 1 to target) */}
+      <span className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-1 sm:mb-1.5 font-sans tabular-nums">
+        {count}%
+      </span>
+
+      {/* Skill Name */}
+      <span className="text-xs sm:text-sm font-bold text-[#0284c7] tracking-wide">
+        {skill.name}
+      </span>
+    </div>
+  );
+};
+
 export const SkillsSection: React.FC<SkillsSectionProps> = ({ skillGroups }) => {
+  const cardsRef = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    if (!cardsRef.current) return;
+
+    if (!('IntersectionObserver' in window)) {
+      setInView(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -40px 0px',
+      }
+    );
+
+    observer.observe(cardsRef.current);
+
+    return () => observer.disconnect();
+  }, []);
+
   // Extract all skills from groups and map WordPress to Website
   const loadedSkills = skillGroups.flatMap((g) => g.skills).map((skill) => {
     if (skill.name?.toLowerCase().includes('wordpress') || skill.id === 'sk-3') {
@@ -82,7 +192,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ skillGroups }) => 
   };
 
   return (
-    <section id="skills" className="py-20 relative bg-white border-t border-slate-100">
+    <section id="skills" className="py-20 relative bg-white border-t border-slate-100 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header matching Reference Image */}
@@ -92,33 +202,20 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ skillGroups }) => 
           </h2>
         </div>
 
-        {/* Skills Cards Grid matching Reference Image */}
-        <div className="flex flex-wrap justify-center gap-4 sm:gap-6 max-w-5xl mx-auto">
-          {skillsToDisplay.map((skill) => {
-            const percentage = skill.percentage || (skill.level === 'Intermediate' ? '75%' : '90%');
-
-            return (
-              <div
-                key={skill.id}
-                className="w-[calc(50%-0.6rem)] sm:w-[calc(33.333%-1rem)] lg:w-[185px] bg-white rounded-2xl border border-slate-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.06)] hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 p-6 sm:p-7 flex flex-col items-center justify-center text-center group cursor-default shrink-0"
-              >
-                {/* Circular Halo Icon Container */}
-                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-sky-50/80 border border-sky-100/90 flex items-center justify-center mb-4 sm:mb-5 shadow-[0_0_25px_rgba(2,132,199,0.12)] group-hover:scale-105 group-hover:border-sky-300 transition-all duration-300">
-                  {renderIcon(skill)}
-                </div>
-
-                {/* Percentage */}
-                <span className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-1 sm:mb-1.5 font-sans">
-                  {percentage}
-                </span>
-
-                {/* Skill Name */}
-                <span className="text-xs sm:text-sm font-bold text-[#0284c7] tracking-wide">
-                  {skill.name}
-                </span>
-              </div>
-            );
-          })}
+        {/* Skills Cards Grid: Rising One-by-One */}
+        <div
+          ref={cardsRef}
+          className="flex flex-wrap justify-center gap-4 sm:gap-6 max-w-5xl mx-auto"
+        >
+          {skillsToDisplay.map((skill, index) => (
+            <SkillCard
+              key={skill.id}
+              skill={skill}
+              index={index}
+              inView={inView}
+              renderIcon={renderIcon}
+            />
+          ))}
         </div>
 
       </div>

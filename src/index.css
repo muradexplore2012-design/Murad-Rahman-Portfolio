@@ -84,3 +84,260 @@
 .bg-theme-primary {
   background-color: #0284c7;
 }
+
+/* ===================================================
+   Hero Profile Image Entrance & Floating Animations
+   =================================================== */
+@keyframes heroEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(48px) scale(0.86);
+    filter: blur(10px);
+  }
+  65% {
+    opacity: 1;
+    transform: translateY(-8px) scale(1.025);
+    filter: blur(0px);
+  }
+  85% {
+    transform: translateY(3px) scale(0.995);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+@keyframes heroGlowPulse {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.97);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes heroGentleFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes shimmerSweepOnce {
+  0% {
+    transform: translateX(-150%) skewX(-25deg);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.75;
+  }
+  70% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: translateX(250%) skewX(-25deg);
+    opacity: 0;
+  }
+}
+
+.animate-hero-entrance {
+  animation: heroEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-hero-glow {
+  animation: heroGlowPulse 4s ease-in-out infinite;
+}
+
+.animate-hero-float {
+  animation: heroGentleFloat 5.5s ease-in-out infinite;
+}
+
+.animate-shimmer-sweep {
+  animation: shimmerSweepOnce 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+}
+
+/* ===================================================
+   Hero Left Column: 4 Distinct Unique Animations
+   =================================================== */
+
+/* 1. Title: Horizontal Slide-In from Left */
+@keyframes titleSlideFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-70px);
+    filter: blur(6px);
+  }
+  70% {
+    opacity: 1;
+    transform: translateX(6px);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+    filter: blur(0px);
+  }
+}
+
+/* 2. Bar: Glowing Neon Laser Draw */
+@keyframes barLaserDraw {
+  0% {
+    transform: scaleX(0);
+    opacity: 0;
+    box-shadow: 0 0 0px #38bdf8;
+  }
+  25% {
+    opacity: 1;
+    box-shadow: 0 0 16px 3px #38bdf8;
+  }
+  75% {
+    box-shadow: 0 0 20px 4px #0284c7;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+    box-shadow: 0 0 6px 1px rgba(2, 132, 199, 0.4);
+  }
+}
+
+/* 3. Bio: Cinematic Camera Focus-Pull Dissolve */
+@keyframes bioFocusReveal {
+  0% {
+    opacity: 0;
+    filter: blur(12px);
+    transform: scale(0.95) translateY(12px);
+  }
+  50% {
+    opacity: 0.8;
+    filter: blur(3px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0px);
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* 4. Button: Bouncy Elastic Pop-In */
+@keyframes buttonElasticPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(24px);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.18) translateY(-6px);
+  }
+  70% {
+    transform: scale(0.93) translateY(2px);
+  }
+  85% {
+    transform: scale(1.04) translateY(-1px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes buttonPulseGlow {
+  0%, 100% {
+    box-shadow: 0 4px 14px -2px rgba(2, 132, 199, 0.35);
+  }
+  50% {
+    box-shadow: 0 8px 24px -2px rgba(2, 132, 199, 0.65), 0 0 14px rgba(56, 189, 248, 0.45);
+  }
+}
+
+.animate-title-slide-left {
+  animation: titleSlideFromLeft 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards;
+}
+
+.animate-bar-laser-draw {
+  transform-origin: left;
+  animation: barLaserDraw 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.28s forwards;
+}
+
+.animate-bio-focus {
+  animation: bioFocusReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.45s forwards;
+}
+
+.animate-btn-pop {
+  animation: buttonElasticPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.65s forwards;
+}
+
+.animate-btn-glow {
+  animation: buttonPulseGlow 3s ease-in-out infinite;
+}
+
+@keyframes progressShimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+.animate-progress-shimmer {
+  animation: progressShimmer 1.8s ease-in-out infinite;
+}
+
+@keyframes cursorBlink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.animate-cursor-blink {
+  animation: cursorBlink 0.75s ease-in-out infinite;
+}
+
+/* Services Cards Dramatic Slow Ascent from Deep Below */
+@keyframes serviceCardRise {
+  0% {
+    opacity: 0;
+    transform: translateY(140px) scale(0.88);
+    filter: blur(6px);
+  }
+  65% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1.02);
+    filter: blur(0px);
+  }
+  85% {
+    transform: translateY(3px) scale(0.995);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-entrance,
+  .animate-hero-glow,
+  .animate-hero-float,
+  .animate-shimmer-sweep,
+  .animate-title-slide-left,
+  .animate-bar-laser-draw,
+  .animate-bio-focus,
+  .animate-btn-pop,
+  .animate-btn-glow,
+  .service-card-animated {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}

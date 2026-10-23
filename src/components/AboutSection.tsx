@@ -1,9 +1,77 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { SiteProfile } from '../types';
 
 interface AboutSectionProps {
   profile: SiteProfile;
 }
+
+interface CounterBoxProps {
+  targetValue: string;
+  suffix?: string;
+  label: string;
+  inView: boolean;
+}
+
+const CounterBox: React.FC<CounterBoxProps> = ({ targetValue, suffix = '+', label, inView }) => {
+  const rawNum = parseInt(targetValue.replace(/[^0-9]/g, ''), 10) || 0;
+  const hasLeadingZero = targetValue.trim().startsWith('0') && targetValue.trim().length > 1;
+
+  const [count, setCount] = useState(1);
+
+  useEffect(() => {
+    if (!inView) {
+      setCount(1);
+      return;
+    }
+
+    if (rawNum <= 1) {
+      setCount(rawNum);
+      return;
+    }
+
+    const start = 1;
+    const duration = 2000; // 2 seconds count-up duration
+    let startTime: number | null = null;
+    let animationFrameId: number;
+
+    const easeOutCubic = (t: number): number => 1 - Math.pow(1 - t, 3);
+
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const easedProgress = easeOutCubic(progress);
+
+      const current = Math.floor(start + (rawNum - start) * easedProgress);
+      setCount(current);
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(animate);
+      } else {
+        setCount(rawNum);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [inView, rawNum]);
+
+  const formattedCount = hasLeadingZero && count < 10 ? `0${count}` : `${count}`;
+
+  return (
+    <div className="border border-[#0284c7]/40 p-4 sm:p-5 bg-white text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-[#0284c7] rounded-xl shadow-2xs group">
+      <div className="text-2xl sm:text-3xl font-black text-[#0284c7] leading-none mb-2 tabular-nums">
+        {formattedCount}
+        {suffix}
+      </div>
+      <div className="text-xs sm:text-sm font-bold text-slate-800">
+        {label}
+      </div>
+    </div>
+  );
+};
 
 export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
   const counters = profile.counters && profile.counters.length > 0
@@ -15,6 +83,32 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
       ];
 
   const visibleCounters = counters.filter((c) => c.isVisible);
+
+  const countersRef = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    if (!countersRef.current) return;
+
+    if (!('IntersectionObserver' in window)) {
+      setInView(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(countersRef.current);
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <section id="about" className="pt-10 sm:pt-14 pb-16 sm:pb-20 relative bg-white">
@@ -73,22 +167,17 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
               </a>
             </div>
 
-            {/* 3 Counter Boxes in a Row (Bordered primary boxes) */}
+            {/* 3 Counter Boxes in a Row with smooth count-up from 1 */}
             {visibleCounters.length > 0 && (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+              <div ref={countersRef} className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
                 {visibleCounters.map((counter) => (
-                  <div
+                  <CounterBox
                     key={counter.id}
-                    className="border border-[#0284c7]/40 p-4 sm:p-5 bg-white text-left transition-transform hover:-translate-y-0.5 shadow-2xs rounded-lg"
-                  >
-                    <div className="text-2xl sm:text-3xl font-black text-[#0284c7] leading-none mb-2">
-                      {counter.value}
-                      {counter.suffix || '+'}
-                    </div>
-                    <div className="text-xs sm:text-sm font-bold text-slate-800">
-                      {counter.label}
-                    </div>
-                  </div>
+                    targetValue={counter.value}
+                    suffix={counter.suffix || '+'}
+                    label={counter.label}
+                    inView={inView}
+                  />
                 ))}
               </div>
             )}
