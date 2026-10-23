@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Plus, Trash2, CheckCircle, AlertCircle, X, Sparkles } from 'lucide-react';
 import type { SkillGroup, SkillItem } from '../../types';
-import { getSkillGroups, saveSkillGroup, deleteSkillGroup } from '../../services/firestoreService';
+import { getSkillGroups, saveSkillGroup, deleteSkillGroup, cleanGhostSkillGroups } from '../../services/firestoreService';
 import {
   IllustratorIcon,
   PhotoshopIcon,
@@ -38,6 +38,9 @@ export const AdminSkills: React.FC = () => {
       setIsLoading(true);
       const data = await getSkillGroups();
       setSkillGroups(data);
+
+      // Clean up any ghost docs in Firestore in the background with admin rights
+      cleanGhostSkillGroups().catch(() => {});
     } catch (err: any) {
       console.error(err);
       setStatus({ type: 'error', message: 'স্কিলস লোড করতে সমস্যা হয়েছে।' });

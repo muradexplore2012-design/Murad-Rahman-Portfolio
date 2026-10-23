@@ -80,14 +80,14 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ skillGroups }) => 
         </div>
 
         {/* Skills Cards Grid matching Reference Image */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 sm:gap-6 max-w-5xl mx-auto">
+        <div className="flex flex-wrap justify-center gap-4 sm:gap-6 max-w-5xl mx-auto">
           {skillsToDisplay.map((skill) => {
             const percentage = skill.percentage || (skill.level === 'Intermediate' ? '75%' : '90%');
 
             return (
               <div
                 key={skill.id}
-                className="bg-white rounded-2xl border border-slate-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.06)] hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 p-6 sm:p-7 flex flex-col items-center justify-center text-center group cursor-default"
+                className="w-[calc(50%-0.6rem)] sm:w-[calc(33.333%-1rem)] lg:w-[185px] bg-white rounded-2xl border border-slate-100 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.06)] hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 p-6 sm:p-7 flex flex-col items-center justify-center text-center group cursor-default shrink-0"
               >
                 {/* Circular Halo Icon Container */}
                 <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-sky-50/80 border border-sky-100/90 flex items-center justify-center mb-4 sm:mb-5 shadow-[0_0_25px_rgba(2,132,199,0.12)] group-hover:scale-105 group-hover:border-sky-300 transition-all duration-300">

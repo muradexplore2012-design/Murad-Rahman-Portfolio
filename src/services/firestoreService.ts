@@ -201,22 +201,53 @@ export async function getSkillGroups(): Promise<SkillGroup[]> {
     const colRef = collection(db, COLLECTIONS.SKILLS);
     const querySnapshot = await getDocs(colRef);
     if (!querySnapshot.empty) {
-      const items = querySnapshot.docs.map(doc => {
-        const data = doc.data() as any;
-        return {
-          id: doc.id,
-          name: data.name || 'My Skills',
-          sortOrder: typeof data.sortOrder === 'number' ? data.sortOrder : 1,
-          skills: Array.isArray(data.skills) ? data.skills : [],
-          ...data,
-        };
-      }) as SkillGroup[];
-      return items.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+      const items = querySnapshot.docs
+        .filter(doc => {
+          const data = doc.data() as any;
+          return typeof data.name === 'string' && data.name.trim().length > 0 && Array.isArray(data.skills);
+        })
+        .map(doc => {
+          const data = doc.data() as any;
+          return {
+            id: doc.id,
+            name: data.name,
+            sortOrder: typeof data.sortOrder === 'number' ? data.sortOrder : 1,
+            skills: Array.isArray(data.skills) ? data.skills : [],
+            ...data,
+          };
+        }) as SkillGroup[];
+
+      if (items.length > 0) {
+        return items.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+      }
     }
   } catch (error) {
     console.warn("Could not load skills from Firestore, using starter skills:", error);
   }
   return starterSkillGroups;
+}
+
+/**
+ * Automatically cleans up any orphaned/corrupted skillGroup documents that have no valid name
+ */
+export async function cleanGhostSkillGroups(): Promise<number> {
+  if (!db) return 0;
+  try {
+    const colRef = collection(db, COLLECTIONS.SKILLS);
+    const snap = await getDocs(colRef);
+    let deletedCount = 0;
+    for (const d of snap.docs) {
+      const data = d.data() as any;
+      if (!data.name || typeof data.name !== 'string' || data.name.trim() === '') {
+        await deleteDoc(doc(db, COLLECTIONS.SKILLS, d.id));
+        deletedCount++;
+      }
+    }
+    return deletedCount;
+  } catch (err) {
+    // If not admin, silent catch
+    return 0;
+  }
 }
 
 export async function saveSkillGroup(group: Partial<SkillGroup> & { id?: string }): Promise<string> {
