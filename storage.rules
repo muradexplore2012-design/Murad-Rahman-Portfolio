@@ -4,24 +4,40 @@ service firebase.storage {
 
     /* 
     =============================================================================
-    🔶 ADMIN IDENTITY CHECK 🔶
+    🛡️ ADMIN IDENTITY CHECK
+    =============================================================================
+    Admin UID: VBYGRdOew4NAXcdKTmIgEXd79Sv2
     =============================================================================
     */
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
     function isAdmin() {
-      return request.auth != null && (
+      return isAuthenticated() && (
         request.auth.uid == "VBYGRdOew4NAXcdKTmIgEXd79Sv2" ||
         request.auth.token.email == "muradexplore2012@gmail.com" ||
         request.auth.token.admin == true
       );
     }
 
-    // Public read for website assets (images, profile pictures, PDFs)
+    /* 
+    =============================================================================
+    PUBLIC ASSETS & ADMIN UPLOADS
+    =============================================================================
+    - Read: Public (Images, avatars, project covers, PDFs needed on website)
+    - Write: Admin ONLY
+        * Max file size: 5MB (5 * 1024 * 1024 bytes)
+        * Allowed content types: Images (JPEG, PNG, WebP, SVG, GIF) and PDF resumes
+    =============================================================================
+    */
     match /{allPaths=**} {
       allow read: if true;
       allow write: if isAdmin() &&
-                      request.resource.size < 5 * 1024 * 1024 && // max 5MB
+                      request.resource.size <= 5 * 1024 * 1024 &&
                       (request.resource.contentType.matches('image/.*') ||
                        request.resource.contentType == 'application/pdf');
     }
+
   }
 }

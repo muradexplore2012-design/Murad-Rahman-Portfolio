@@ -37,7 +37,7 @@ export const AdminLayout: React.FC = () => {
     { label: 'Projects', icon: FolderGit2, path: '/admin/projects' },
     { label: 'Services', icon: Layers, path: '/admin/services' },
     { label: 'Skills', icon: Cpu, path: '/admin/skills' },
-    { label: 'Testimonials', icon: MessageSquareQuote, path: '/admin/testimonials' },
+    { label: 'Reviews', icon: MessageSquareQuote, path: '/admin/testimonials' },
     { label: 'Contact Inbox', icon: Inbox, path: '/admin/inbox' },
     { label: 'Site Settings', icon: Settings, path: '/admin/settings' },
   ];

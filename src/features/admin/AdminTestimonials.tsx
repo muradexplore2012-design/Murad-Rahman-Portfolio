@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MessageSquareQuote, Plus, Trash2, CheckCircle, AlertCircle, Save, X, Star, Eye, EyeOff } from 'lucide-react';
+import { MessageSquareQuote, Plus, Trash2, CheckCircle, AlertCircle, Save, X, Star, Eye, EyeOff, Edit2 } from 'lucide-react';
 import type { Testimonial } from '../../types';
 import { getTestimonials, saveTestimonial, deleteTestimonial } from '../../services/firestoreService';
 
@@ -41,6 +41,11 @@ export const AdminTestimonials: React.FC = () => {
       isApproved: true,
       sortOrder: testimonials.length + 1,
     });
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEdit = (item: Testimonial) => {
+    setEditingItem({ ...item });
     setIsModalOpen(true);
   };
 
@@ -91,7 +96,7 @@ export const AdminTestimonials: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900">ক্লায়েন্ট রিভিউ (Testimonials CMS)</h1>
+          <h1 className="text-2xl font-extrabold text-slate-900">ক্লায়েন্ট রিভিউ (Reviews CMS)</h1>
           <p className="text-xs text-slate-500 mt-1">
             শুধুমাত্র আসল ক্লায়েন্টের রিভিউ যুক্ত করুন। কোনো রিভিউ না থাকলে পাবলিক সাইটে এই সেকশন স্বয়ংক্রিয়ভাবে লুকিয়ে থাকে।
           </p>
@@ -158,8 +163,16 @@ export const AdminTestimonials: React.FC = () => {
 
                 <div className="flex items-center gap-2 self-end sm:self-auto">
                   <button
+                    onClick={() => handleOpenEdit(item)}
+                    className="p-2 rounded-lg text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors cursor-pointer"
+                    title="এডিট করুন"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+
+                  <button
                     onClick={() => handleToggleApproval(item)}
-                    className={`p-2 rounded-lg text-xs font-semibold transition-colors ${
+                    className={`p-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                       item.isApproved
                         ? 'text-[#15803d] bg-emerald-50 hover:bg-emerald-100'
                         : 'text-slate-400 bg-slate-100 hover:text-slate-600'
@@ -171,7 +184,7 @@ export const AdminTestimonials: React.FC = () => {
 
                   <button
                     onClick={() => handleDelete(item.id, item.clientName)}
-                    className="p-2 rounded-lg text-rose-600 bg-rose-50 hover:bg-rose-100 transition-colors"
+                    className="p-2 rounded-lg text-rose-600 bg-rose-50 hover:bg-rose-100 transition-colors cursor-pointer"
                     title="ডিলিট করুন"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -193,7 +206,9 @@ export const AdminTestimonials: React.FC = () => {
             >
               <X className="w-5 h-5" />
             </button>
-            <h2 className="text-lg font-bold text-slate-900 mb-4">নতুন ক্লায়েন্ট রিভিউ</h2>
+            <h2 className="text-lg font-bold text-slate-900 mb-4">
+              {editingItem.id ? 'রিভিউ এডিট করুন' : 'নতুন ক্লায়েন্ট রিভিউ'}
+            </h2>
             <form onSubmit={handleSave} className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">

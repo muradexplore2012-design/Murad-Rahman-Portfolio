@@ -73,15 +73,21 @@ export async function getProjects(onlyPublished = true): Promise<Project[]> {
   try {
     const colRef = collection(db, COLLECTIONS.PROJECTS);
     const q = onlyPublished
-      ? query(colRef, where('isPublished', '==', true), orderBy('sortOrder', 'asc'))
-      : query(colRef, orderBy('sortOrder', 'asc'));
+      ? query(colRef, where('isPublished', '==', true))
+      : colRef;
 
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
-      return querySnapshot.docs.map(doc => ({
+      let items = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       })) as Project[];
+
+      if (onlyPublished) {
+        items = items.filter(p => p.isPublished !== false);
+      }
+      items.sort((a, b) => (Number(a.sortOrder) || 0) - (Number(b.sortOrder) || 0));
+      return items;
     }
   } catch (error) {
     console.warn("Could not load projects from Firestore, falling back to starter projects:", error);
@@ -139,15 +145,21 @@ export async function getServices(onlyPublished = true): Promise<Service[]> {
   try {
     const colRef = collection(db, COLLECTIONS.SERVICES);
     const q = onlyPublished
-      ? query(colRef, where('isPublished', '==', true), orderBy('sortOrder', 'asc'))
-      : query(colRef, orderBy('sortOrder', 'asc'));
+      ? query(colRef, where('isPublished', '==', true))
+      : colRef;
 
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
-      return querySnapshot.docs.map(doc => ({
+      let items = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       })) as Service[];
+
+      if (onlyPublished) {
+        items = items.filter(s => s.isPublished !== false);
+      }
+      items.sort((a, b) => (Number(a.sortOrder) || 0) - (Number(b.sortOrder) || 0));
+      return items;
     }
   } catch (error) {
     console.warn("Could not load services from Firestore, using starter services:", error);
@@ -229,19 +241,62 @@ export async function getTestimonials(onlyApproved = true): Promise<Testimonial[
   if (!db) return starterTestimonials;
   try {
     const colRef = collection(db, COLLECTIONS.TESTIMONIALS);
+
+    // Query with where('isApproved', '==', true) without orderBy to prevent composite index errors
     const q = onlyApproved
-      ? query(colRef, where('isApproved', '==', true), orderBy('sortOrder', 'asc'))
-      : query(colRef, orderBy('sortOrder', 'asc'));
+      ? query(colRef, where('isApproved', '==', true))
+      : colRef;
 
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Testimonial[];
+      let items = querySnapshot.docs
+        .map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+        .filter((item: any) => {
+          const isFake =
+            item.clientName === "Subhan Ansari" ||
+            item.clientName === "Rabeya" ||
+            item.clientName === "মোহাম্মদ আরিফ" ||
+            item.id?.startsWith("testi-");
+          return !isFake;
+        }) as Testimonial[];
+
+      if (onlyApproved) {
+        items = items.filter(t => t.isApproved !== false);
+      }
+
+      // Sort in memory by sortOrder
+      items.sort((a, b) => (Number(a.sortOrder) || 0) - (Number(b.sortOrder) || 0));
+
+      return items;
     }
   } catch (error) {
-    console.warn("Could not load testimonials from Firestore, using starter testimonials:", error);
+    console.warn("Primary testimonials query error, trying fallback:", error);
+    try {
+      const colRef = collection(db, COLLECTIONS.TESTIMONIALS);
+      const snap = await getDocs(colRef);
+      if (!snap.empty) {
+        let items = snap.docs
+          .map(doc => ({ id: doc.id, ...doc.data() }))
+          .filter((item: any) => {
+            const isFake =
+              item.clientName === "Subhan Ansari" ||
+              item.clientName === "Rabeya" ||
+              item.clientName === "মোহাম্মদ আরিফ" ||
+              item.id?.startsWith("testi-");
+            return !isFake;
+          }) as Testimonial[];
+        if (onlyApproved) {
+          items = items.filter(t => t.isApproved !== false);
+        }
+        items.sort((a, b) => (Number(a.sortOrder) || 0) - (Number(b.sortOrder) || 0));
+        return items;
+      }
+    } catch (e2) {
+      console.warn("Fallback query also failed:", e2);
+    }
   }
   return starterTestimonials;
 }

@@ -18,7 +18,7 @@ export const starterProfile: SiteProfile = {
   availabilityText: "প্রজেক্টের জন্য যোগাযোগ করতে পারেন",
   resumeUrl: "",
   socialLinks: {
-    facebook: "",
+    facebook: "https://www.facebook.com/profile.php?id=100085471628384",
     instagram: "",
     linkedin: "",
     github: "",
@@ -176,41 +176,7 @@ export const starterSkillGroups: SkillGroup[] = [
   }
 ];
 
-export const starterTestimonials: Testimonial[] = [
-  {
-    id: "testi-1",
-    clientName: "Subhan Ansari",
-    clientRole: "Client",
-    clientPhoto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&h=200&q=80",
-    quote: "মুরাদের মাধ্যমে তৈরি পোর্টফোলিও ওয়েবসাইটের অভিজ্ঞতা খুবই ভালো ছিল। ডিজাইনটি আধুনিক ও প্রফেশনাল, আর সবকিছুই খুব স্মুথভাবে কাজ করে। আমি সত্যিই সন্তুষ্ট।",
-    rating: 5,
-    isApproved: true,
-    sortOrder: 1,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: "testi-2",
-    clientName: "Rabeya",
-    clientRole: "Client",
-    clientPhoto: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&h=200&q=80",
-    quote: "পোর্টফোলিও ওয়েবসাইটটি অসাধারণভাবে তৈরি করা হয়েছে। লোডিং স্পিড ভালো, ডিজাইন ক্লিন এবং ইউজার এক্সপেরিয়েন্স খুবই সুন্দর। মুরাদের কাজ সত্যিই প্রশংসনীয়।",
-    rating: 5,
-    isApproved: true,
-    sortOrder: 2,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: "testi-3",
-    clientName: "মোহাম্মদ আরিফ",
-    clientRole: "Client",
-    clientPhoto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&h=200&q=80",
-    quote: "এই পোর্টফোলিও ওয়েবসাইটটি আমার প্রত্যাশার চেয়েও ভালো হয়েছে। সবকিছু সময়মতো ডেলিভারি পেয়েছি এবং সাপোর্টও ছিল দারুণ। আমি অবশ্যই রেকমেন্ড করব।",
-    rating: 5,
-    isApproved: true,
-    sortOrder: 3,
-    createdAt: new Date().toISOString()
-  }
-];
+export const starterTestimonials: Testimonial[] = [];
 
 export const starterSettings: SiteSettings = {
   siteTitle: "Murad Rahman — Graphics Designer & Web Developer",

@@ -6,7 +6,7 @@ interface TestimonialsSectionProps {
 }
 
 export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ testimonials }) => {
-  const displayTestimonials = testimonials.filter((t) => t.isApproved);
+  const displayTestimonials = testimonials.filter((t) => t.isApproved !== false);
 
   if (displayTestimonials.length === 0) {
     return null;

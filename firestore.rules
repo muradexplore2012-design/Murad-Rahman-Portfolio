@@ -4,59 +4,120 @@ service cloud.firestore {
 
     /* 
     =============================================================================
-    🔶 ADMIN IDENTITY CHECK 🔶
+    🛡️ ADMIN AUTHORIZATION CHECK
     =============================================================================
-    Admin UID: VBYGRdOew4NAXcdKTmIgEXd79Sv2
-    Admin Email: muradexplore2012@gmail.com
+    - Primary verification: Verified Admin UID
+    - Fallback verification: Verified Admin Email & Custom Claims
+    - Never trusts client-side state, localStorage, or request body for admin role
     =============================================================================
     */
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
     function isAdmin() {
-      return request.auth != null && (
+      return isAuthenticated() && (
         request.auth.uid == "VBYGRdOew4NAXcdKTmIgEXd79Sv2" ||
         request.auth.token.email == "muradexplore2012@gmail.com" ||
         request.auth.token.admin == true
       );
     }
 
-    // 1. Site Profile: public read, admin write
+    /* 
+    =============================================================================
+    1. SITE PROFILE (/profile/main)
+    =============================================================================
+    - Read: Public (visitors need to see Murad's name, bio, social links, counters)
+    - Write: Admin Only (verified UID)
+    =============================================================================
+    */
     match /profile/{document=**} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // 2. Projects: public read for published, admin write/read all
+    /* 
+    =============================================================================
+    2. PROJECTS (/projects/{projectId})
+    =============================================================================
+    - Read: Public can only view published projects (isPublished == true)
+            Admin can view all projects (including drafts/unpublished)
+    - Write: Admin Only (create, update, delete)
+    =============================================================================
+    */
     match /projects/{projectId} {
-      allow read: if resource.data.isPublished == true || isAdmin();
+      allow read: if (resource != null && resource.data.isPublished == true) || isAdmin();
       allow write: if isAdmin();
     }
 
-    // 3. Services: public read for published, admin write/read all
+    /* 
+    =============================================================================
+    3. SERVICES (/services/{serviceId})
+    =============================================================================
+    - Read: Public can only view active services (isPublished == true)
+            Admin can view all services
+    - Write: Admin Only (create, update, delete)
+    =============================================================================
+    */
     match /services/{serviceId} {
-      allow read: if resource.data.isPublished == true || isAdmin();
+      allow read: if (resource != null && resource.data.isPublished == true) || isAdmin();
       allow write: if isAdmin();
     }
 
-    // 4. Skills & Groups: public read, admin write
+    /* 
+    =============================================================================
+    4. SKILLS & SOFTWARE GROUPS (/skillGroups/{groupId})
+    =============================================================================
+    - Read: Public (technical skills, Adobe tools)
+    - Write: Admin Only
+    =============================================================================
+    */
     match /skillGroups/{groupId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // 5. Testimonials: public read for approved, admin write/read all
+    /* 
+    =============================================================================
+    5. CLIENT REVIEWS & TESTIMONIALS (/testimonials/{testimonialId})
+    =============================================================================
+    - Read: Public can only view approved reviews (isApproved == true)
+            Admin can view all reviews (including pending/unapproved)
+    - Write: Admin Only
+    =============================================================================
+    */
     match /testimonials/{testimonialId} {
-      allow read: if resource.data.isApproved == true || isAdmin();
+      allow read: if (resource != null && resource.data.isApproved == true) || isAdmin();
       allow write: if isAdmin();
     }
 
-    // 6. Site Settings & SEO: public read, admin write
+    /* 
+    =============================================================================
+    6. SITE SETTINGS & SEO (/siteSettings/{document=**})
+    =============================================================================
+    - Read: Public (site title, meta description, section visibility)
+    - Write: Admin Only
+    =============================================================================
+    */
     match /siteSettings/{document=**} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // 7. Contact Messages: 
-    // - Public can ONLY create (submit inquiry) with valid input length
-    // - ONLY admin can read, update or delete
+    /* 
+    =============================================================================
+    7. CONTACT INQUIRY MESSAGES (/contactMessages/{messageId})
+    =============================================================================
+    - Create: Public visitors can submit contact messages with strict input validation:
+        * Name: 1-100 characters
+        * Email: Valid email format, 1-100 characters
+        * Message: 1-3000 characters
+        * Phone & Subject: Optional strings
+        * Must start with isRead == false and isArchived == false
+    - Read: ADMIN ONLY (Visitors CANNOT view inbox messages or other clients' inquiries)
+    - Update/Delete: ADMIN ONLY (Marking read, archiving, deleting)
+    =============================================================================
+    */
     match /contactMessages/{messageId} {
       allow create: if request.resource.data.name is string &&
                        request.resource.data.name.size() > 0 &&
@@ -64,10 +125,25 @@ service cloud.firestore {
                        request.resource.data.email is string &&
                        request.resource.data.email.size() > 0 &&
                        request.resource.data.email.size() <= 100 &&
+                       request.resource.data.email.matches('^[^@]+@[^@]+\\.[^@]+$') &&
                        request.resource.data.message is string &&
                        request.resource.data.message.size() > 0 &&
-                       request.resource.data.message.size() <= 3000;
+                       request.resource.data.message.size() <= 3000 &&
+                       (!('isRead' in request.resource.data) || request.resource.data.isRead == false) &&
+                       (!('isArchived' in request.resource.data) || request.resource.data.isArchived == false);
+
       allow read, update, delete: if isAdmin();
+    }
+
+    /* 
+    =============================================================================
+    🔒 DEFAULT DENY CATCH-ALL
+    =============================================================================
+    - Any collection or path not explicitly permitted above is strictly denied.
+    =============================================================================
+    */
+    match /{document=**} {
+      allow read, write: if false;
     }
 
   }

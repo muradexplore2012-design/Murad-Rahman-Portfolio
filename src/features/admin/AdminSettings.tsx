@@ -148,7 +148,7 @@ export const AdminSettings: React.FC = () => {
               { key: 'services', label: 'সার্ভিসসমূহ (Services Section)' },
               { key: 'projects', label: 'পোর্টফোলিও / প্রজেক্ট গ্রিড' },
               { key: 'skills', label: 'স্কিলস ও টুলস (Skills Section)' },
-              { key: 'testimonials', label: 'রিভিউ (Testimonials Section)' },
+              { key: 'testimonials', label: 'ক্লায়েন্ট রিভিউ (Reviews Section)' },
               { key: 'contact', label: 'যোগাযোগ ফর্ম (Contact Section)' },
             ].map(({ key, label }) => {
               const isVisible = settings.sectionVisibility[key as keyof SiteSettings['sectionVisibility']];

@@ -118,7 +118,7 @@ export const HomePage: React.FC = () => {
         )}
         {sectionVisibility.projects && <ProjectsSection projects={projects} />}
         {sectionVisibility.skills && <SkillsSection skillGroups={skillGroups} />}
-        {sectionVisibility.testimonials && (
+        {sectionVisibility.testimonials !== false && (
           <TestimonialsSection testimonials={testimonials} />
         )}
         {sectionVisibility.contact && (

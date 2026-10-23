@@ -55,25 +55,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ profile }) => {
 
           </div>
 
-          {/* Right Column: Murad Rahman's Cutout Standing Naturally Over Green Paint Splash (No Card / No Box) */}
+          {/* Right Column: Murad Rahman's Cutout Standing Over the Authentic Green Brush Splash */}
           <div className="lg:col-span-5 flex justify-center items-end relative pt-6 lg:pt-0">
-            <div className="relative w-80 sm:w-96 md:w-[440px] flex items-center justify-center">
+            <div className="relative w-80 sm:w-96 md:w-[460px] lg:w-[480px] flex items-center justify-center">
               
-              {/* Green Brush Paint Splash Graphic directly behind Murad's body matching Reference */}
-              <div className="absolute inset-0 -z-0 flex items-center justify-center pointer-events-none transform scale-110 sm:scale-125">
-                <svg
-                  viewBox="0 0 500 500"
-                  className="w-full h-full text-[#4ade80] opacity-90 filter drop-shadow-xs"
-                  fill="currentColor"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M432.5,296.5Q417,343,382,376.5Q347,410,298.5,427Q250,444,203,425Q156,406,116.5,373.5Q77,341,61.5,295.5Q46,250,67.5,205.5Q89,161,123.5,127.5Q158,94,204,74.5Q250,55,297.5,72.5Q345,90,381.5,124Q418,158,433,204Q448,250,432.5,296.5Z" />
-                </svg>
-                {/* Secondary accent soft glow */}
-                <div className="absolute w-72 h-72 bg-[#22c55e]/25 rounded-full blur-2xl" />
+              {/* Authentic Watercolor Green Brush Stroke Graphic (from reference) */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none -z-0">
+                <img
+                  src="/images/green-brush-splash.png"
+                  alt="Brush paint splash"
+                  className="w-[118%] h-[118%] max-w-none object-contain select-none pointer-events-none filter drop-shadow-xs transition-transform duration-500"
+                  aria-hidden="true"
+                />
               </div>
 
-              {/* Murad Rahman's Clean Transparent Cutout Portrait */}
+              {/* Murad Rahman's Clean Cutout Portrait */}
               <div className="relative z-10 w-full flex items-end justify-center">
                 <img
                   src="/images/murad-rahman-transparent.png"
