@@ -17,12 +17,12 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
   const visibleCounters = counters.filter((c) => c.isVisible);
 
   return (
-    <section id="about" className="py-20 relative bg-white border-t border-slate-200">
+    <section id="about" className="pt-8 sm:pt-10 lg:pt-12 pb-16 sm:pb-20 relative bg-[#FAF8F5]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Centered Green Section Title (Exactly like screenshot) */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="text-4xl sm:text-5xl font-black text-[#15803d] tracking-tight">
+        {/* Centered Green Section Title (Matching reference) */}
+        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
+          <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-black text-[#15803d] tracking-tight">
             আমার সম্পর্কে
           </h2>
         </div>
