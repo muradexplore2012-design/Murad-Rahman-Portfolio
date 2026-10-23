@@ -105,6 +105,8 @@ export interface ContactMessage {
   phone?: string;
   subject?: string;
   message: string;
+  userId?: string;
+  userPhoto?: string;
   isRead: boolean;
   isArchived: boolean;
   createdAt: any;
@@ -118,6 +120,7 @@ export interface SiteSettings {
   accentColor?: string;
   copyrightText: string;
   footerBio?: string;
+  googleSheetWebhookUrl?: string; // Webhook for Google Sheets & Gmail notifications
   sectionVisibility: {
     hero: boolean;
     about: boolean;

@@ -391,7 +391,9 @@ export async function submitContactMessage(params: {
   phone?: string;
   subject?: string;
   message: string;
-}): Promise<void> {
+  userId?: string;
+  userPhoto?: string;
+}): Promise<string> {
   if (!db) throw new Error("Database is not connected. Please try again later.");
 
   // Validation
@@ -406,16 +408,20 @@ export async function submitContactMessage(params: {
   }
 
   const colRef = collection(db, COLLECTIONS.CONTACT_MESSAGES);
-  await addDoc(colRef, {
+  const docRef = await addDoc(colRef, {
     name: params.name.trim(),
     email: params.email.trim(),
     phone: params.phone?.trim() || '',
     subject: params.subject?.trim() || 'Website Inquiry',
     message: params.message.trim(),
+    userId: params.userId || '',
+    userPhoto: params.userPhoto || '',
     isRead: false,
     isArchived: false,
     createdAt: serverTimestamp()
   });
+
+  return docRef.id;
 }
 
 export async function getContactMessages(): Promise<ContactMessage[]> {

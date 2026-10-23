@@ -186,6 +186,7 @@ export const starterSettings: SiteSettings = {
   accentColor: "#38bdf8",
   copyrightText: `© ${new Date().getFullYear()} Murad Rahman. All rights reserved.`,
   footerBio: "পরিচ্ছন্ন ডিজাইন এবং আধুনিক ওয়েব ইন্টারফেস নিয়ে কাজ করা গ্রাফিক্স ডিজাইনার ও ওয়েব ডেভেলপার।",
+  googleSheetWebhookUrl: "",
   sectionVisibility: {
     hero: true,
     about: true,

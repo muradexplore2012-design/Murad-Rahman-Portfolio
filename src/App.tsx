@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { HomePage } from './pages/HomePage';
+import { ContactPage } from './pages/ContactPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 // Code-split admin routes so public visitors load a lean bundle
@@ -53,6 +54,7 @@ export function App() {
       <Routes>
         {/* Public Website */}
         <Route path="/" element={<HomePage />} />
+        <Route path="/contact" element={<ContactPage />} />
 
         {/* Admin Login */}
         <Route
