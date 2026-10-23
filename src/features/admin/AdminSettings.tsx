@@ -158,14 +158,14 @@ export const AdminSettings: React.FC = () => {
                   onClick={() => toggleSection(key as keyof SiteSettings['sectionVisibility'])}
                   className={`p-3.5 rounded-xl border cursor-pointer flex items-center justify-between transition-colors ${
                     isVisible
-                      ? 'bg-emerald-50/60 border-emerald-300 text-slate-900'
+                      ? 'bg-sky-50/60 border-sky-300 text-slate-900'
                       : 'bg-slate-50 border-slate-200 text-slate-400'
                   }`}
                 >
                   <span className="text-xs font-semibold">{label}</span>
                   <div className="flex items-center gap-1.5 text-xs font-medium">
                     {isVisible ? (
-                      <span className="text-[#15803d] flex items-center gap-1 font-semibold">
+                      <span className="text-[#0284c7] flex items-center gap-1 font-semibold">
                         <Eye className="w-3.5 h-3.5" /> অন
                       </span>
                     ) : (
@@ -194,7 +194,7 @@ export const AdminSettings: React.FC = () => {
               type="text"
               value={settings.footerBio || ''}
               onChange={(e) => setSettings({ ...settings, footerBio: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
             />
           </div>
 
@@ -206,7 +206,7 @@ export const AdminSettings: React.FC = () => {
               type="text"
               value={settings.copyrightText}
               onChange={(e) => setSettings({ ...settings, copyrightText: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
             />
           </div>
         </div>
@@ -215,7 +215,7 @@ export const AdminSettings: React.FC = () => {
           <button
             type="submit"
             disabled={isSaving}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] text-white font-semibold rounded-xl shadow-md shadow-emerald-700/20 transition-all text-sm cursor-pointer"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white font-semibold rounded-xl shadow-md shadow-sky-700/20 transition-all text-sm cursor-pointer"
           >
             <Save className="w-4 h-4" />
             <span>{isSaving ? 'সেভ হচ্ছে...' : 'সেটিংস সেভ করুন'}</span>

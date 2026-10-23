@@ -112,7 +112,7 @@ export const AdminInbox: React.FC = () => {
         <button
           onClick={loadMessages}
           disabled={isLoading}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 hover:text-[#15803d] hover:bg-slate-50 rounded-xl text-xs font-semibold shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 hover:text-[#0284c7] hover:bg-slate-50 rounded-xl text-xs font-semibold shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
           <span>রিফ্রেশ</span>
@@ -134,7 +134,7 @@ export const AdminInbox: React.FC = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="নাম, ইমেইল অথবা বিষয়ের মাধ্যমে খুঁজুন..."
-          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d] shadow-xs"
+          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7] shadow-xs"
         />
       </div>
 
@@ -155,13 +155,13 @@ export const AdminInbox: React.FC = () => {
                 key={msg.id}
                 onClick={() => handleOpenMessage(msg)}
                 className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer hover:bg-slate-50/80 transition-colors ${
-                  !msg.isRead ? 'bg-emerald-50/40 font-semibold' : ''
+                  !msg.isRead ? 'bg-sky-50/40 font-semibold' : ''
                 }`}
               >
                 <div className="flex items-start sm:items-center gap-3">
                   <div
                     className={`w-2.5 h-2.5 rounded-full shrink-0 mt-1 sm:mt-0 ${
-                      !msg.isRead ? 'bg-[#15803d] shadow-xs' : 'bg-transparent'
+                      !msg.isRead ? 'bg-[#0284c7] shadow-xs' : 'bg-transparent'
                     }`}
                   />
                   <div>
@@ -169,13 +169,13 @@ export const AdminInbox: React.FC = () => {
                       <span className="text-sm text-slate-900">{msg.name}</span>
                       <span className="text-xs text-slate-500">&lt;{msg.email}&gt;</span>
                       {msg.phone && (
-                        <span className="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 text-[#15803d] font-medium border border-slate-200">
+                        <span className="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 text-[#0284c7] font-medium border border-slate-200">
                           {msg.phone}
                         </span>
                       )}
                     </div>
                     <div className="text-xs text-slate-700 mt-1">
-                      <span className="font-bold text-[#15803d] mr-2">[{msg.subject}]</span>
+                      <span className="font-bold text-[#0284c7] mr-2">[{msg.subject}]</span>
                       <span className="text-slate-500 line-clamp-1 inline font-normal">
                         {msg.message}
                       </span>
@@ -189,7 +189,7 @@ export const AdminInbox: React.FC = () => {
                     className="p-2 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 text-xs transition-colors"
                     title={msg.isRead ? 'অপঠিত হিসেবে চিহ্নিত করুন' : 'পঠিত হিসেবে চিহ্নিত করুন'}
                   >
-                    <CheckCircle2 className={`w-4 h-4 ${msg.isRead ? 'text-slate-300' : 'text-[#15803d]'}`} />
+                    <CheckCircle2 className={`w-4 h-4 ${msg.isRead ? 'text-slate-300' : 'text-[#0284c7]'}`} />
                   </button>
                   <button
                     onClick={(e) => handleDelete(msg.id, e)}
@@ -217,17 +217,17 @@ export const AdminInbox: React.FC = () => {
             </button>
 
             <div className="pb-4 border-b border-slate-100 mb-6">
-              <span className="text-xs font-semibold text-[#15803d] uppercase tracking-wider block mb-1">
+              <span className="text-xs font-semibold text-[#0284c7] uppercase tracking-wider block mb-1">
                 মেসেজ বিবরণ
               </span>
               <h2 className="text-xl font-bold text-slate-900">{selectedMessage.subject}</h2>
               <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 mt-2">
                 <span>প্রেরক: <strong className="text-slate-900">{selectedMessage.name}</strong></span>
-                <a href={`mailto:${selectedMessage.email}`} className="text-[#15803d] hover:underline">
+                <a href={`mailto:${selectedMessage.email}`} className="text-[#0284c7] hover:underline">
                   {selectedMessage.email}
                 </a>
                 {selectedMessage.phone && (
-                  <span className="text-[#15803d] font-medium">ফোন: {selectedMessage.phone}</span>
+                  <span className="text-[#0284c7] font-medium">ফোন: {selectedMessage.phone}</span>
                 )}
               </div>
             </div>
@@ -239,7 +239,7 @@ export const AdminInbox: React.FC = () => {
             <div className="flex justify-between items-center pt-2">
               <a
                 href={`mailto:${selectedMessage.email}?subject=Re: ${encodeURIComponent(selectedMessage.subject || '')}`}
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors"
               >
                 <Mail className="w-3.5 h-3.5" />
                 <span>ইমেইলে উত্তর দিন</span>

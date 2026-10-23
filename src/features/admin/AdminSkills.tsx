@@ -134,31 +134,31 @@ export const AdminSkills: React.FC = () => {
     const key = (skill.icon || skill.name || '').toLowerCase();
 
     if (key.includes('illustrator') || key === 'ai') {
-      return <IllustratorIcon className="w-5 h-5 text-[#15803d]" />;
+      return <IllustratorIcon className="w-5 h-5 text-[#0284c7]" />;
     }
     if (key.includes('photoshop') || key === 'ps') {
-      return <PhotoshopIcon className="w-5 h-5 text-[#15803d]" />;
+      return <PhotoshopIcon className="w-5 h-5 text-[#0284c7]" />;
     }
     if (key.includes('word') || key.includes('press') || key === 'wp') {
-      return <WordpressIcon className="w-5 h-5 text-[#15803d]" />;
+      return <WordpressIcon className="w-5 h-5 text-[#0284c7]" />;
     }
     if (key.includes('google')) {
-      return <GoogleIcon className="w-4 h-4 text-[#15803d]" />;
+      return <GoogleIcon className="w-4 h-4 text-[#0284c7]" />;
     }
     if (key.includes('facebook') || key === 'fb') {
-      return <FacebookIcon className="w-4 h-4 text-[#15803d]" />;
+      return <FacebookIcon className="w-4 h-4 text-[#0284c7]" />;
     }
     if (key.includes('youtube') || key === 'yt') {
-      return <YoutubeIcon className="w-5 h-5 text-[#15803d]" />;
+      return <YoutubeIcon className="w-5 h-5 text-[#0284c7]" />;
     }
     if (key.includes('email') || key.includes('mail') || key.includes('yahoo')) {
-      return <YahooEmailIcon className="w-5 h-5 text-[#15803d]" />;
+      return <YahooEmailIcon className="w-5 h-5 text-[#0284c7]" />;
     }
     if (key.includes('instagram') || key.includes('insta')) {
-      return <InstagramIcon className="w-4 h-4 text-[#15803d]" />;
+      return <InstagramIcon className="w-4 h-4 text-[#0284c7]" />;
     }
 
-    return <Sparkles className="w-4 h-4 text-[#15803d]" />;
+    return <Sparkles className="w-4 h-4 text-[#0284c7]" />;
   };
 
   return (
@@ -175,7 +175,7 @@ export const AdminSkills: React.FC = () => {
 
         <button
           onClick={() => setIsGroupModalOpen(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>নতুন গ্রুপ তৈরি করুন</span>
@@ -186,7 +186,7 @@ export const AdminSkills: React.FC = () => {
         <div
           className={`p-4 rounded-xl text-xs flex items-center gap-2 ${
             status.type === 'success'
-              ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
+              ? 'bg-sky-50 border border-sky-200 text-sky-800'
               : 'bg-rose-50 border border-rose-200 text-rose-700'
           }`}
         >
@@ -225,11 +225,11 @@ export const AdminSkills: React.FC = () => {
                   {group.skills.map((skill) => (
                     <div
                       key={skill.id}
-                      className="p-2.5 sm:p-3 rounded-xl bg-slate-50 border border-slate-200/80 hover:border-emerald-200 flex items-center justify-between transition-colors"
+                      className="p-2.5 sm:p-3 rounded-xl bg-slate-50 border border-slate-200/80 hover:border-sky-200 flex items-center justify-between transition-colors"
                     >
                       {/* Left: Clean Icon Container + Single Clear Skill Name */}
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-sky-50 border border-sky-200 flex items-center justify-center shrink-0">
                           {renderSkillIcon(skill)}
                         </div>
                         <span className="text-xs sm:text-sm font-bold text-slate-900 truncate">
@@ -240,7 +240,7 @@ export const AdminSkills: React.FC = () => {
                       {/* Right: Percentage, Level & Delete */}
                       <div className="flex items-center gap-2 shrink-0">
                         {skill.percentage && (
-                          <span className="text-xs font-bold text-[#15803d] px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 font-sans">
+                          <span className="text-xs font-bold text-[#0284c7] px-2.5 py-0.5 rounded-full bg-sky-50 border border-sky-200 font-sans">
                             {skill.percentage}
                           </span>
                         )}
@@ -268,7 +268,7 @@ export const AdminSkills: React.FC = () => {
 
               <button
                 onClick={() => setActiveGroupForSkill(group)}
-                className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-[#15803d] border border-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-sky-50 text-slate-700 hover:text-[#0284c7] border border-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>দক্ষতা যুক্ত করুন</span>
@@ -300,7 +300,7 @@ export const AdminSkills: React.FC = () => {
                   value={newGroupName}
                   onChange={(e) => setNewGroupName(e.target.value)}
                   placeholder="যেমন: Design & Advertising"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
                 />
               </div>
               <div className="flex justify-end gap-2 pt-2">
@@ -314,7 +314,7 @@ export const AdminSkills: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="px-5 py-2 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
+                  className="px-5 py-2 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
                 >
                   গ্রুপ তৈরি করুন
                 </button>
@@ -348,7 +348,7 @@ export const AdminSkills: React.FC = () => {
                   value={newSkillName}
                   onChange={(e) => setNewSkillName(e.target.value)}
                   placeholder="যেমন: Illustrator"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
                 />
               </div>
 
@@ -362,7 +362,7 @@ export const AdminSkills: React.FC = () => {
                     value={newSkillPercentage}
                     onChange={(e) => setNewSkillPercentage(e.target.value)}
                     placeholder="90%"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
                   />
                 </div>
 
@@ -373,7 +373,7 @@ export const AdminSkills: React.FC = () => {
                   <select
                     value={newSkillLevel}
                     onChange={(e) => setNewSkillLevel(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
                   >
                     <option value="Advanced">Advanced</option>
                     <option value="Intermediate">Intermediate</option>
@@ -388,7 +388,7 @@ export const AdminSkills: React.FC = () => {
                   <select
                     value={newSkillIcon}
                     onChange={(e) => setNewSkillIcon(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
                   >
                     <option value="illustrator">Illustrator</option>
                     <option value="photoshop">Photoshop</option>
@@ -413,7 +413,7 @@ export const AdminSkills: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="px-5 py-2 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
+                  className="px-5 py-2 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
                 >
                   যুক্ত করুন
                 </button>

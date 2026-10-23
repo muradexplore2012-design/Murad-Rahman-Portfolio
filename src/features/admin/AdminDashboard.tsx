@@ -92,7 +92,7 @@ export const AdminDashboard: React.FC = () => {
         <button
           onClick={fetchStats}
           disabled={isLoading}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:text-[#15803d] hover:bg-slate-50 hover:border-slate-300 shadow-xs transition-colors self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:text-[#0284c7] hover:bg-slate-50 hover:border-slate-300 shadow-xs transition-colors self-start sm:self-auto"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
           <span>রিফ্রেশ</span>
@@ -102,13 +102,13 @@ export const AdminDashboard: React.FC = () => {
       {/* Firebase Status Badge & Seed Button */}
       <div className="rounded-2xl p-6 border border-slate-200 bg-white shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 text-[#15803d] flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-sky-50 border border-sky-200 text-[#0284c7] flex items-center justify-center">
             <Database className="w-5 h-5" />
           </div>
           <div>
             <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
               <span>Firebase কানেকশন স্ট্যাটাস</span>
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse" />
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
               {isFirebaseConfigured
@@ -121,7 +121,7 @@ export const AdminDashboard: React.FC = () => {
         <button
           onClick={handleSeedDatabase}
           disabled={isSeeding}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-50 hover:bg-[#15803d] border border-emerald-300/80 text-[#15803d] hover:text-white text-xs font-semibold transition-all shadow-xs"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sky-50 hover:bg-[#0284c7] border border-sky-300/80 text-[#0284c7] hover:text-white text-xs font-semibold transition-all shadow-xs"
         >
           <Sparkles className="w-4 h-4 text-amber-500" />
           <span>{isSeeding ? 'ডেটাবেসে যুক্ত হচ্ছে...' : 'ফায়ারবেস স্টার্টার ডেটা লোড করুন'}</span>
@@ -129,7 +129,7 @@ export const AdminDashboard: React.FC = () => {
       </div>
 
       {seedResult && (
-        <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
+        <div className="p-4 rounded-xl bg-sky-50 border border-sky-200 text-sky-800 text-xs flex items-center gap-2">
           <CheckCircle className="w-4 h-4 shrink-0" />
           <span>{seedResult}</span>
         </div>
@@ -144,7 +144,7 @@ export const AdminDashboard: React.FC = () => {
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
               মোট প্রজেক্ট
             </span>
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 text-[#15803d] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-sky-50 text-[#0284c7] flex items-center justify-center">
               <FolderGit2 className="w-4 h-4" />
             </div>
           </div>
@@ -153,12 +153,12 @@ export const AdminDashboard: React.FC = () => {
               {isLoading ? '...' : stats.totalProjects}
             </div>
             <p className="text-xs text-slate-500 mt-1">
-              প্রকাশিত: <span className="text-[#15803d] font-semibold">{stats.publishedProjects} টি</span>
+              প্রকাশিত: <span className="text-[#0284c7] font-semibold">{stats.publishedProjects} টি</span>
             </p>
           </div>
           <Link
             to="/admin/projects"
-            className="mt-4 pt-3 border-t border-slate-100 text-xs font-semibold text-[#15803d] hover:text-[#166534] flex items-center justify-between transition-colors"
+            className="mt-4 pt-3 border-t border-slate-100 text-xs font-semibold text-[#0284c7] hover:text-[#0369a1] flex items-center justify-between transition-colors"
           >
             <span>প্রজেক্ট ম্যানেজ করুন</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -229,9 +229,9 @@ export const AdminDashboard: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link
             to="/admin/profile"
-            className="p-4 rounded-xl bg-white border border-slate-200 hover:border-[#15803d] hover:shadow-md transition-all block group"
+            className="p-4 rounded-xl bg-white border border-slate-200 hover:border-[#0284c7] hover:shadow-md transition-all block group"
           >
-            <h4 className="text-sm font-semibold text-slate-900 group-hover:text-[#15803d] transition-colors">
+            <h4 className="text-sm font-semibold text-slate-900 group-hover:text-[#0284c7] transition-colors">
               প্রোফাইল তথ্য ও ছবি
             </h4>
             <p className="text-xs text-slate-500 mt-1">বায়ো, নাম ও যোগাযোগের তথ্য বদলান</p>
@@ -239,9 +239,9 @@ export const AdminDashboard: React.FC = () => {
 
           <Link
             to="/admin/projects"
-            className="p-4 rounded-xl bg-white border border-slate-200 hover:border-[#15803d] hover:shadow-md transition-all block group"
+            className="p-4 rounded-xl bg-white border border-slate-200 hover:border-[#0284c7] hover:shadow-md transition-all block group"
           >
-            <h4 className="text-sm font-semibold text-slate-900 group-hover:text-[#15803d] transition-colors">
+            <h4 className="text-sm font-semibold text-slate-900 group-hover:text-[#0284c7] transition-colors">
               নতুন প্রজেক্ট যোগ করুন
             </h4>
             <p className="text-xs text-slate-500 mt-1">পোর্টফোলিওতে কাজ যুক্ত করুন</p>
@@ -249,9 +249,9 @@ export const AdminDashboard: React.FC = () => {
 
           <Link
             to="/admin/skills"
-            className="p-4 rounded-xl bg-white border border-slate-200 hover:border-[#15803d] hover:shadow-md transition-all block group"
+            className="p-4 rounded-xl bg-white border border-slate-200 hover:border-[#0284c7] hover:shadow-md transition-all block group"
           >
-            <h4 className="text-sm font-semibold text-slate-900 group-hover:text-[#15803d] transition-colors">
+            <h4 className="text-sm font-semibold text-slate-900 group-hover:text-[#0284c7] transition-colors">
               দক্ষতা ও সফটওয়্যার
             </h4>
             <p className="text-xs text-slate-500 mt-1">এডোবি ও ওয়েব স্কিলস আপডেট</p>
@@ -259,9 +259,9 @@ export const AdminDashboard: React.FC = () => {
 
           <Link
             to="/admin/settings"
-            className="p-4 rounded-xl bg-white border border-slate-200 hover:border-[#15803d] hover:shadow-md transition-all block group"
+            className="p-4 rounded-xl bg-white border border-slate-200 hover:border-[#0284c7] hover:shadow-md transition-all block group"
           >
-            <h4 className="text-sm font-semibold text-slate-900 group-hover:text-[#15803d] transition-colors">
+            <h4 className="text-sm font-semibold text-slate-900 group-hover:text-[#0284c7] transition-colors">
               এসইও ও সাইট সেটিংস
             </h4>
             <p className="text-xs text-slate-500 mt-1">টাইটেল, মেটা ডেসক্রিপশন ও কপিরাইট</p>

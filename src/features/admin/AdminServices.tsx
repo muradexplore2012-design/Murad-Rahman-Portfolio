@@ -154,7 +154,7 @@ export const AdminServices: React.FC = () => {
 
         <button
           onClick={handleOpenAdd}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>নতুন সার্ভিস যোগ করুন</span>
@@ -165,7 +165,7 @@ export const AdminServices: React.FC = () => {
         <div
           className={`p-4 rounded-xl text-xs flex items-center gap-2 ${
             status.type === 'success'
-              ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
+              ? 'bg-sky-50 border border-sky-200 text-sky-800'
               : 'bg-rose-50 border border-rose-200 text-rose-700'
           }`}
         >
@@ -204,7 +204,7 @@ export const AdminServices: React.FC = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <ImageIcon className="w-6 h-6 text-emerald-400" />
+                      <ImageIcon className="w-6 h-6 text-sky-400" />
                     )}
                   </div>
 
@@ -212,7 +212,7 @@ export const AdminServices: React.FC = () => {
                     <div className="flex items-center gap-2">
                       <h3 className="text-sm font-bold text-slate-900">{item.title}</h3>
                       {item.startingPrice && (
-                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-50 text-[#15803d] border border-emerald-200 font-semibold">
+                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-sky-50 text-[#0284c7] border border-sky-200 font-semibold">
                           {item.startingPrice}
                         </span>
                       )}
@@ -240,7 +240,7 @@ export const AdminServices: React.FC = () => {
                     onClick={() => handleTogglePublish(item)}
                     className={`p-2 rounded-lg text-xs font-semibold transition-colors ${
                       item.isPublished
-                        ? 'text-[#15803d] bg-emerald-50 hover:bg-emerald-100'
+                        ? 'text-[#0284c7] bg-sky-50 hover:bg-sky-100'
                         : 'text-slate-400 bg-slate-100 hover:text-slate-600'
                     }`}
                     title={item.isPublished ? 'পাবলিশড' : 'ড্রাফট'}
@@ -250,7 +250,7 @@ export const AdminServices: React.FC = () => {
 
                   <button
                     onClick={() => handleOpenEdit(item)}
-                    className="p-2 rounded-lg text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors"
+                    className="p-2 rounded-lg text-sky-700 bg-sky-50 hover:bg-sky-100 transition-colors"
                     title="এডিট করুন"
                   >
                     <Edit2 className="w-4 h-4" />
@@ -300,7 +300,7 @@ export const AdminServices: React.FC = () => {
                       setEditingService({ ...editingService, coverImage: e.target.value })
                     }
                     placeholder="/images/service-facebook-ads.png অথবা ইমেজ লিঙ্ক"
-                    className="flex-1 px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d]"
+                    className="flex-1 px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7]"
                   />
                   <label className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-semibold text-slate-700 cursor-pointer transition-colors shrink-0">
                     <Upload className="w-3.5 h-3.5 text-slate-500" />
@@ -336,7 +336,7 @@ export const AdminServices: React.FC = () => {
                   value={editingService.title}
                   onChange={(e) => setEditingService({ ...editingService, title: e.target.value })}
                   placeholder="যেমন: I will create Facebook Ads that grow your brand"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
                 />
               </div>
 
@@ -353,7 +353,7 @@ export const AdminServices: React.FC = () => {
                       setEditingService({ ...editingService, deliveryTime: e.target.value })
                     }
                     placeholder="যেমন: 3-5Days Delivery"
-                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d]"
+                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7]"
                   />
                 </div>
 
@@ -368,7 +368,7 @@ export const AdminServices: React.FC = () => {
                       setEditingService({ ...editingService, ratingText: e.target.value })
                     }
                     placeholder="যেমন: 4.9 (210+ Reviews)"
-                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d]"
+                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7]"
                   />
                 </div>
               </div>
@@ -386,7 +386,7 @@ export const AdminServices: React.FC = () => {
                       setEditingService({ ...editingService, startingPrice: e.target.value })
                     }
                     placeholder="যেমন: ২৯৯৳"
-                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d]"
+                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7]"
                   />
                 </div>
 
@@ -401,7 +401,7 @@ export const AdminServices: React.FC = () => {
                       setEditingService({ ...editingService, badgeText: e.target.value })
                     }
                     placeholder="যেমন: শুরু ২৯৯৳ থেকে"
-                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d]"
+                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7]"
                   />
                 </div>
               </div>
@@ -418,7 +418,7 @@ export const AdminServices: React.FC = () => {
                     setEditingService({ ...editingService, description: e.target.value })
                   }
                   placeholder="যেমন: ফেসবুক অ্যাডস দিয়ে আপনার ব্র্যান্ড বাড়ান।"
-                  className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d]"
+                  className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7]"
                 />
               </div>
 
@@ -432,7 +432,7 @@ export const AdminServices: React.FC = () => {
                   value={featuresInput}
                   onChange={(e) => setFeaturesInput(e.target.value)}
                   placeholder="Targeted Audience Research&#10;High-Converting Creatives&#10;Pixel Setup"
-                  className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] font-mono"
+                  className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] font-mono"
                 />
               </div>
 
@@ -445,7 +445,7 @@ export const AdminServices: React.FC = () => {
                   onChange={(e) =>
                     setEditingService({ ...editingService, isPublished: e.target.checked })
                   }
-                  className="w-4 h-4 rounded text-[#15803d] accent-[#15803d] border-slate-300"
+                  className="w-4 h-4 rounded text-[#0284c7] accent-[#0284c7] border-slate-300"
                 />
                 <label htmlFor="srvPublish" className="text-xs font-semibold text-slate-700 cursor-pointer">
                   পাবলিক সাইটে প্রদর্শন করুন
@@ -463,7 +463,7 @@ export const AdminServices: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="inline-flex items-center gap-1.5 px-6 py-2.5 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-6 py-2.5 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>{isSaving ? 'সেভ হচ্ছে...' : 'সার্ভিস সেভ করুন'}</span>

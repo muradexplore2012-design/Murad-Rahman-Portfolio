@@ -91,8 +91,8 @@ export const HomePage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FAF8F5] flex flex-col items-center justify-center text-slate-800">
-        <div className="w-12 h-12 border-4 border-emerald-200 border-t-[#15803d] rounded-full animate-spin mb-4" />
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center text-slate-800">
+        <div className="w-12 h-12 border-4 border-sky-200 border-t-[#0284c7] rounded-full animate-spin mb-4" />
         <p className="text-sm font-bold tracking-wider text-slate-600 uppercase">
           লোড হচ্ছে...
         </p>
@@ -103,7 +103,7 @@ export const HomePage: React.FC = () => {
   const { sectionVisibility } = settings;
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] text-slate-900 flex flex-col selection:bg-[#15803d] selection:text-white">
+    <div className="min-h-screen bg-white text-slate-900 flex flex-col selection:bg-[#0284c7] selection:text-white">
       <Navbar profile={profile} />
 
       <main className="flex-1">

@@ -29,7 +29,7 @@ export const Footer: React.FC<FooterProps> = ({ profile, settings }) => {
   const returnText = `ডিজিটাল ডিজাইন ও ওয়েব ডেভেলপমেন্ট প্রজেক্টের ক্ষেত্রে প্রতিটি ধাপে ক্লায়েন্টের মতামত ও রিভিশন নিয়ে কাজ সম্পন্ন করা হয়। কাজ শুরু করার পূর্বে স্পষ্ট ব্রিফিং নেওয়া হয় যাতে সন্তোষজনক ফলাফল নিশ্চিত করা সম্ভব হয়। রিভিশন ও ডেলিভারি সংক্রান্ত নিয়ম আলোচনা সাপেক্ষে নির্ধারিত থাকে।`;
 
   return (
-    <footer className="relative bg-[#15803d] text-white overflow-hidden">
+    <footer className="relative bg-[#0284c7] text-white overflow-hidden">
       
       {/* Top 4-Column Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-12">
@@ -209,7 +209,7 @@ export const Footer: React.FC<FooterProps> = ({ profile, settings }) => {
       </div>
 
       {/* Bottom Copyright & Design By Bar (Matching Reference Exactly) */}
-      <div className="bg-[#14532d] border-t border-white/10">
+      <div className="bg-[#0369a1] border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-white font-medium">
           
           {/* Left: Copyright */}
@@ -280,7 +280,7 @@ export const Footer: React.FC<FooterProps> = ({ profile, settings }) => {
               <button
                 type="button"
                 onClick={() => setModalContent(null)}
-                className="px-5 py-2 bg-[#15803d] hover:bg-[#166534] text-white text-xs font-semibold rounded-xl transition-colors cursor-pointer"
+                className="px-5 py-2 bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-semibold rounded-xl transition-colors cursor-pointer"
               >
                 ঠিক আছে
               </button>

@@ -103,7 +103,7 @@ export const AdminProfile: React.FC = () => {
       </div>
 
       {status.type === 'success' && (
-        <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
+        <div className="p-4 rounded-xl bg-sky-50 border border-sky-200 text-sky-800 text-xs flex items-center gap-2">
           <CheckCircle className="w-4 h-4 shrink-0" />
           <span>{status.message}</span>
         </div>
@@ -216,7 +216,7 @@ export const AdminProfile: React.FC = () => {
                 required
                 value={profile.name}
                 onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
               />
             </div>
 
@@ -229,7 +229,7 @@ export const AdminProfile: React.FC = () => {
                 required
                 value={profile.title}
                 onChange={(e) => setProfile({ ...profile, title: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
               />
             </div>
           </div>
@@ -244,7 +244,7 @@ export const AdminProfile: React.FC = () => {
                 value={profile.greeting}
                 onChange={(e) => setProfile({ ...profile, greeting: e.target.value })}
                 placeholder="Hi There,"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
               />
             </div>
 
@@ -282,7 +282,7 @@ export const AdminProfile: React.FC = () => {
               rows={3}
               value={profile.aboutBio}
               onChange={(e) => setProfile({ ...profile, aboutBio: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d] leading-relaxed"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7] leading-relaxed"
             />
           </div>
 
@@ -294,7 +294,7 @@ export const AdminProfile: React.FC = () => {
               rows={3}
               value={profile.aboutSecondaryBio || ''}
               onChange={(e) => setProfile({ ...profile, aboutSecondaryBio: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d] leading-relaxed"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7] leading-relaxed"
             />
           </div>
         </div>
@@ -311,7 +311,7 @@ export const AdminProfile: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {(profile.counters || []).map((counter, idx) => (
               <div key={counter.id} className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
-                <span className="text-[11px] font-bold text-[#15803d] block uppercase">
+                <span className="text-[11px] font-bold text-[#0284c7] block uppercase">
                   বক্স {idx + 1}
                 </span>
                 <div>
@@ -321,7 +321,7 @@ export const AdminProfile: React.FC = () => {
                     value={counter.value}
                     onChange={(e) => handleCounterChange(idx, 'value', e.target.value)}
                     placeholder="550"
-                    className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-sm text-slate-900 font-bold focus:outline-none focus:ring-2 focus:ring-[#15803d]"
+                    className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-sm text-slate-900 font-bold focus:outline-none focus:ring-2 focus:ring-[#0284c7]"
                   />
                 </div>
                 <div>
@@ -331,7 +331,7 @@ export const AdminProfile: React.FC = () => {
                     value={counter.suffix || '+'}
                     onChange={(e) => handleCounterChange(idx, 'suffix', e.target.value)}
                     placeholder="+"
-                    className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d]"
+                    className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7]"
                   />
                 </div>
                 <div>
@@ -341,7 +341,7 @@ export const AdminProfile: React.FC = () => {
                     value={counter.label}
                     onChange={(e) => handleCounterChange(idx, 'label', e.target.value)}
                     placeholder="Project Completed"
-                    className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d]"
+                    className="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7]"
                   />
                 </div>
               </div>
@@ -364,7 +364,7 @@ export const AdminProfile: React.FC = () => {
                 type="email"
                 value={profile.email}
                 onChange={(e) => setProfile({ ...profile, email: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
               />
             </div>
 
@@ -377,7 +377,7 @@ export const AdminProfile: React.FC = () => {
                 value={profile.whatsapp || ''}
                 onChange={(e) => setProfile({ ...profile, whatsapp: e.target.value })}
                 placeholder="01XXXXXXXXX"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
               />
             </div>
           </div>
@@ -391,7 +391,7 @@ export const AdminProfile: React.FC = () => {
               value={profile.resumeUrl || ''}
               onChange={(e) => setProfile({ ...profile, resumeUrl: e.target.value })}
               placeholder="https://drive.google.com/file/..."
-              className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
             />
           </div>
         </div>
@@ -401,7 +401,7 @@ export const AdminProfile: React.FC = () => {
           <button
             type="submit"
             disabled={isSaving}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] disabled:opacity-50 text-white font-bold rounded-xl shadow-md shadow-emerald-700/20 transition-all text-sm cursor-pointer"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] disabled:opacity-50 text-white font-bold rounded-xl shadow-md shadow-sky-700/20 transition-all text-sm cursor-pointer"
           >
             <Save className="w-4 h-4" />
             <span>{isSaving ? 'সেভ হচ্ছে...' : 'পরিবর্তন সেভ করুন'}</span>

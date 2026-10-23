@@ -182,8 +182,8 @@ export const starterSettings: SiteSettings = {
   siteTitle: "Murad Rahman — Graphics Designer & Web Developer",
   metaDescription: "মুরাদ রহমান — Graphics Design, Blogger-ভিত্তিক আধুনিক ওয়েবসাইট ও Web Development এর প্রফেশনাল পোর্টফোলিও।",
   ogImage: "/images/murad-rahman.jpg",
-  primaryColor: "#15803d",
-  accentColor: "#22c55e",
+  primaryColor: "#0284c7",
+  accentColor: "#38bdf8",
   copyrightText: `© ${new Date().getFullYear()} Murad Rahman. All rights reserved.`,
   footerBio: "পরিচ্ছন্ন ডিজাইন এবং আধুনিক ওয়েব ইন্টারফেস নিয়ে কাজ করা গ্রাফিক্স ডিজাইনার ও ওয়েব ডেভেলপার।",
   sectionVisibility: {

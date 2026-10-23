@@ -49,16 +49,16 @@ export const AdminLoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden">
-      {/* Background subtle green glow */}
-      <div className="absolute w-[500px] h-[500px] bg-emerald-400/10 rounded-full blur-[120px] pointer-events-none -z-0" />
+    <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden">
+      {/* Background subtle primary glow */}
+      <div className="absolute w-[500px] h-[500px] bg-sky-400/10 rounded-full blur-[120px] pointer-events-none -z-0" />
 
       <div className="relative z-10 w-full max-w-md">
         
         {/* Back link */}
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-[#15803d] transition-colors mb-6"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-[#0284c7] transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>পোর্টফোলিওতে ফিরে যান</span>
@@ -67,7 +67,7 @@ export const AdminLoginPage: React.FC = () => {
         {/* Card */}
         <div className="rounded-2xl border border-slate-200 p-8 shadow-xl bg-white backdrop-blur-xl">
           <div className="flex items-center gap-3 mb-6 pb-6 border-b border-slate-100">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200 text-[#15803d] flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl bg-sky-50 border border-sky-200 text-[#0284c7] flex items-center justify-center">
               <Shield className="w-6 h-6" />
             </div>
             <div>
@@ -96,7 +96,7 @@ export const AdminLoginPage: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@example.com"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d] text-sm shadow-xs transition-colors"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7] text-sm shadow-xs transition-colors"
                 />
               </div>
             </div>
@@ -113,7 +113,7 @@ export const AdminLoginPage: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d] text-sm shadow-xs transition-colors"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7] text-sm shadow-xs transition-colors"
                 />
               </div>
             </div>
@@ -121,7 +121,7 @@ export const AdminLoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3.5 px-4 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] disabled:opacity-50 text-white font-semibold rounded-xl shadow-md shadow-emerald-700/20 transition-all text-sm flex items-center justify-center gap-2 mt-2"
+              className="w-full py-3.5 px-4 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] disabled:opacity-50 text-white font-semibold rounded-xl shadow-md shadow-sky-700/20 transition-all text-sm flex items-center justify-center gap-2 mt-2 cursor-pointer"
             >
               {isLoading ? (
                 <>
@@ -140,7 +140,7 @@ export const AdminLoginPage: React.FC = () => {
           {/* Admin Email helper note */}
           <div className="mt-6 pt-5 border-t border-slate-100 text-xs text-slate-500">
             <span className="font-semibold text-slate-700">অনুমোদিত এডমিন: </span>
-            <span className="text-[#15803d] font-medium">{ADMIN_EMAIL}</span>
+            <span className="text-[#0284c7] font-medium">{ADMIN_EMAIL}</span>
           </div>
         </div>
 

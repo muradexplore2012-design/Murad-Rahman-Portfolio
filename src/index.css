@@ -3,10 +3,10 @@
 @layer base {
   :root {
     --font-sans: 'Plus Jakarta Sans', 'Hind Siliguri', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --primary: #15803d;
-    --primary-hover: #166534;
-    --accent: #22c55e;
-    --bg-cream: #FAF8F5;
+    --primary: #0284c7;
+    --primary-hover: #0369a1;
+    --accent: #38bdf8;
+    --bg-cream: #ffffff;
   }
 
   html {
@@ -15,7 +15,7 @@
   }
 
   body {
-    background-color: var(--bg-cream);
+    background-color: #ffffff;
     color: #1e293b;
     overflow-x: hidden;
   }
@@ -48,13 +48,13 @@
 }
 .card-light-hover:hover {
   transform: translateY(-4px);
-  border-color: #86efac;
-  box-shadow: 0 16px 30px -10px rgba(22, 163, 74, 0.15);
+  border-color: #7dd3fc;
+  box-shadow: 0 16px 30px -10px rgba(2, 132, 199, 0.15);
 }
 
-/* Brush stroke splash background effect matching reference screenshot */
+/* Splash background effect */
 .brush-splash {
-  background: radial-gradient(ellipse at center, rgba(74, 222, 128, 0.45) 0%, rgba(34, 197, 94, 0.25) 50%, rgba(250, 248, 245, 0) 75%);
+  background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.35) 0%, rgba(2, 132, 199, 0.18) 50%, rgba(255, 255, 255, 0) 75%);
   filter: blur(10px);
 }
 
@@ -64,10 +64,12 @@
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
 }
 
-.text-theme-green {
-  color: #15803d;
+.text-theme-green,
+.text-theme-primary {
+  color: #0284c7;
 }
 
-.bg-theme-green {
-  background-color: #15803d;
+.bg-theme-green,
+.bg-theme-primary {
+  background-color: #0284c7;
 }

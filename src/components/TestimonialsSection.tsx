@@ -21,13 +21,13 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ testim
           
           {/* Top star ornament with lines: — ★ — */}
           <div className="flex items-center justify-center gap-3 mb-2">
-            <div className="w-12 sm:w-16 h-px bg-slate-400" />
-            <span className="text-[#15803d] text-base leading-none">★</span>
-            <div className="w-12 sm:w-16 h-px bg-slate-400" />
+            <div className="w-12 sm:w-16 h-px bg-slate-300" />
+            <span className="text-[#0284c7] text-base leading-none">★</span>
+            <div className="w-12 sm:w-16 h-px bg-slate-300" />
           </div>
 
           {/* Title */}
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#15803d] tracking-tight mb-2">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#0284c7] tracking-tight mb-2">
             Customer Reviews
           </h2>
 
@@ -45,8 +45,8 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ testim
               className="bg-white rounded-xl border border-sky-100 p-6 sm:p-8 flex flex-col justify-between shadow-xs hover:shadow-md transition-all duration-300"
             >
               <div>
-                {/* Large Green Double Quotes matching screenshot */}
-                <div className="text-5xl font-black text-[#15803d] leading-none mb-3 font-serif select-none">
+                {/* Large Double Quotes matching primary color */}
+                <div className="text-5xl font-black text-[#0284c7] leading-none mb-3 font-serif select-none">
                   “
                 </div>
 

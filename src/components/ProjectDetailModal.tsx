@@ -36,7 +36,7 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project,
             }}
           />
           <div className="absolute top-4 left-4 flex gap-2">
-            <span className="px-3 py-1 text-xs font-bold bg-[#15803d] text-white rounded-full shadow-md">
+            <span className="px-3 py-1 text-xs font-bold bg-[#0284c7] text-white rounded-full shadow-md">
               {project.category}
             </span>
             {project.isStarter && (
@@ -71,14 +71,14 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project,
           {project.tools && project.tools.length > 0 && (
             <div className="mb-6">
               <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                <Tag className="w-3.5 h-3.5 text-[#15803d]" />
+                <Tag className="w-3.5 h-3.5 text-[#0284c7]" />
                 <span>ব্যবহৃত সফটওয়্যার ও টুলস</span>
               </h4>
               <div className="flex flex-wrap gap-2">
                 {project.tools.map((tool, idx) => (
                   <span
                     key={idx}
-                    className="px-3 py-1 text-xs font-bold rounded-md bg-emerald-50 text-[#15803d] border border-emerald-200"
+                    className="px-3 py-1 text-xs font-bold rounded-md bg-sky-50 text-[#0284c7] border border-sky-200"
                   >
                     {tool}
                   </span>
@@ -94,7 +94,7 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project,
                 href={project.liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#15803d] hover:bg-[#166534] text-white text-sm font-bold rounded-lg shadow-sm transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#0284c7] hover:bg-[#0369a1] text-white text-sm font-bold rounded-lg shadow-sm transition-colors"
               >
                 <span>লাইভ ডেমো দেখুন</span>
                 <ExternalLink className="w-4 h-4" />

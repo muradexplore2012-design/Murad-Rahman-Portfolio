@@ -104,7 +104,7 @@ export const AdminTestimonials: React.FC = () => {
 
         <button
           onClick={handleOpenAdd}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>নতুন রিভিউ যোগ করুন</span>
@@ -115,7 +115,7 @@ export const AdminTestimonials: React.FC = () => {
         <div
           className={`p-4 rounded-xl text-xs flex items-center gap-2 ${
             status.type === 'success'
-              ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
+              ? 'bg-sky-50 border border-sky-200 text-sky-800'
               : 'bg-rose-50 border border-rose-200 text-rose-700'
           }`}
         >
@@ -164,7 +164,7 @@ export const AdminTestimonials: React.FC = () => {
                 <div className="flex items-center gap-2 self-end sm:self-auto">
                   <button
                     onClick={() => handleOpenEdit(item)}
-                    className="p-2 rounded-lg text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors cursor-pointer"
+                    className="p-2 rounded-lg text-sky-700 bg-sky-50 hover:bg-sky-100 transition-colors cursor-pointer"
                     title="এডিট করুন"
                   >
                     <Edit2 className="w-4 h-4" />
@@ -174,7 +174,7 @@ export const AdminTestimonials: React.FC = () => {
                     onClick={() => handleToggleApproval(item)}
                     className={`p-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                       item.isApproved
-                        ? 'text-[#15803d] bg-emerald-50 hover:bg-emerald-100'
+                        ? 'text-[#0284c7] bg-sky-50 hover:bg-sky-100'
                         : 'text-slate-400 bg-slate-100 hover:text-slate-600'
                     }`}
                     title={item.isApproved ? 'অনুমোদিত' : 'অননুমোদিত'}
@@ -219,7 +219,7 @@ export const AdminTestimonials: React.FC = () => {
                   required
                   value={editingItem.clientName}
                   onChange={(e) => setEditingItem({ ...editingItem, clientName: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
                 />
               </div>
 
@@ -231,7 +231,7 @@ export const AdminTestimonials: React.FC = () => {
                     value={editingItem.clientRole || ''}
                     onChange={(e) => setEditingItem({ ...editingItem, clientRole: e.target.value })}
                     placeholder="Founder / CEO"
-                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
                   />
                 </div>
                 <div>
@@ -240,7 +240,7 @@ export const AdminTestimonials: React.FC = () => {
                     type="text"
                     value={editingItem.clientCompany || ''}
                     onChange={(e) => setEditingItem({ ...editingItem, clientCompany: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
                   />
                 </div>
               </div>
@@ -255,7 +255,7 @@ export const AdminTestimonials: React.FC = () => {
                   value={editingItem.quote}
                   onChange={(e) => setEditingItem({ ...editingItem, quote: e.target.value })}
                   placeholder="মুরাদ রহমানের ডিজাইন খুবই চমৎকার..."
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
                 />
               </div>
 
@@ -270,7 +270,7 @@ export const AdminTestimonials: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="px-5 py-2 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
+                  className="px-5 py-2 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
                 >
                   সেভ করুন
                 </button>

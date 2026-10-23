@@ -141,7 +141,7 @@ export const AdminProjects: React.FC = () => {
 
         <button
           onClick={handleOpenAdd}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>নতুন প্রজেক্ট যোগ করুন</span>
@@ -152,7 +152,7 @@ export const AdminProjects: React.FC = () => {
         <div
           className={`p-4 rounded-xl text-xs flex items-center gap-2 ${
             status.type === 'success'
-              ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
+              ? 'bg-sky-50 border border-sky-200 text-sky-800'
               : 'bg-rose-50 border border-rose-200 text-rose-700'
           }`}
         >
@@ -213,7 +213,7 @@ export const AdminProjects: React.FC = () => {
                     onClick={() => handleTogglePublish(proj)}
                     className={`p-2 rounded-lg text-xs font-semibold transition-colors ${
                       proj.isPublished
-                        ? 'text-[#15803d] bg-emerald-50 hover:bg-emerald-100'
+                        ? 'text-[#0284c7] bg-sky-50 hover:bg-sky-100'
                         : 'text-slate-400 bg-slate-100 hover:text-slate-600'
                     }`}
                     title={proj.isPublished ? 'পাবলিশ করা আছে' : 'ড্রাফট (অনুপস্থিত)'}
@@ -223,7 +223,7 @@ export const AdminProjects: React.FC = () => {
 
                   <button
                     onClick={() => handleOpenEdit(proj)}
-                    className="p-2 rounded-lg text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors"
+                    className="p-2 rounded-lg text-sky-700 bg-sky-50 hover:bg-sky-100 transition-colors"
                     title="এডিট করুন"
                   >
                     <Edit2 className="w-4 h-4" />
@@ -270,7 +270,7 @@ export const AdminProjects: React.FC = () => {
                     required
                     value={editingProject.title}
                     onChange={(e) => setEditingProject({ ...editingProject, title: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
                   />
                 </div>
 
@@ -281,7 +281,7 @@ export const AdminProjects: React.FC = () => {
                   <select
                     value={editingProject.category}
                     onChange={(e) => setEditingProject({ ...editingProject, category: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
                   >
                     <option value="Graphics Design">Graphics Design</option>
                     <option value="Web Development">Web Development</option>
@@ -304,10 +304,10 @@ export const AdminProjects: React.FC = () => {
                     value={editingProject.coverImage}
                     onChange={(e) => setEditingProject({ ...editingProject, coverImage: e.target.value })}
                     placeholder="https://..."
-                    className="flex-1 px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                    className="flex-1 px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
                   />
                   <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700 border border-slate-300 shrink-0 transition-colors">
-                    <Upload className="w-3.5 h-3.5 text-[#15803d]" />
+                    <Upload className="w-3.5 h-3.5 text-[#0284c7]" />
                     <span>আপলোড</span>
                     <input
                       type="file"
@@ -319,7 +319,7 @@ export const AdminProjects: React.FC = () => {
                   </label>
                 </div>
                 {isUploading && (
-                  <span className="text-[11px] text-[#15803d] mt-1 block font-medium">ইমেজ আপলোড হচ্ছে...</span>
+                  <span className="text-[11px] text-[#0284c7] mt-1 block font-medium">ইমেজ আপলোড হচ্ছে...</span>
                 )}
               </div>
 
@@ -335,7 +335,7 @@ export const AdminProjects: React.FC = () => {
                   onChange={(e) =>
                     setEditingProject({ ...editingProject, shortDescription: e.target.value })
                   }
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
                 />
               </div>
 
@@ -350,7 +350,7 @@ export const AdminProjects: React.FC = () => {
                   onChange={(e) =>
                     setEditingProject({ ...editingProject, fullDescription: e.target.value })
                   }
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
                 />
               </div>
 
@@ -369,7 +369,7 @@ export const AdminProjects: React.FC = () => {
                     })
                   }
                   placeholder="Photoshop, Illustrator, Tailwind"
-                  className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                  className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
                 />
               </div>
 
@@ -384,7 +384,7 @@ export const AdminProjects: React.FC = () => {
                     value={editingProject.liveUrl || ''}
                     onChange={(e) => setEditingProject({ ...editingProject, liveUrl: e.target.value })}
                     placeholder="https://..."
-                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
                   />
                 </div>
 
@@ -399,7 +399,7 @@ export const AdminProjects: React.FC = () => {
                       setEditingProject({ ...editingProject, githubUrl: e.target.value })
                     }
                     placeholder="https://github.com/..."
-                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d]"
+                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
                   />
                 </div>
               </div>
@@ -412,7 +412,7 @@ export const AdminProjects: React.FC = () => {
                     onChange={(e) =>
                       setEditingProject({ ...editingProject, isPublished: e.target.checked })
                     }
-                    className="w-4 h-4 rounded text-[#15803d] accent-[#15803d] border-slate-300"
+                    className="w-4 h-4 rounded text-[#0284c7] accent-[#0284c7] border-slate-300"
                   />
                   <span>পাবলিশ করুন (Published)</span>
                 </label>
@@ -424,7 +424,7 @@ export const AdminProjects: React.FC = () => {
                     onChange={(e) =>
                       setEditingProject({ ...editingProject, isFeatured: e.target.checked })
                     }
-                    className="w-4 h-4 rounded text-[#15803d] accent-[#15803d] border-slate-300"
+                    className="w-4 h-4 rounded text-[#0284c7] accent-[#0284c7] border-slate-300"
                   />
                   <span>ফিচার্ড প্রজেক্ট (Featured)</span>
                 </label>
@@ -441,7 +441,7 @@ export const AdminProjects: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="inline-flex items-center gap-1.5 px-6 py-2.5 bg-[#15803d] hover:bg-[#166534] active:bg-[#14532d] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-6 py-2.5 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>{isSaving ? 'সেভ হচ্ছে...' : 'প্রজেক্ট সেভ করুন'}</span>

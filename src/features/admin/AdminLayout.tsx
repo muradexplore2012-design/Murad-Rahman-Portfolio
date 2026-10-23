@@ -43,12 +43,12 @@ export const AdminLayout: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] text-slate-800 flex flex-col md:flex-row">
+    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col md:flex-row">
       
       {/* Mobile Header Bar */}
       <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-slate-200 shadow-xs">
         <div className="flex items-center gap-2">
-          <ShieldCheck className="w-5 h-5 text-[#15803d]" />
+          <ShieldCheck className="w-5 h-5 text-[#0284c7]" />
           <span className="font-bold text-sm text-slate-900">Murad Rahman CMS</span>
         </div>
         <button
@@ -71,7 +71,7 @@ export const AdminLayout: React.FC = () => {
           <div className="p-6 border-b border-slate-100 flex items-center justify-between">
             <div>
               <h2 className="font-black text-base tracking-tight text-slate-900 flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-[#15803d]" />
+                <ShieldCheck className="w-5 h-5 text-[#0284c7]" />
                 <span>Admin CMS</span>
               </h2>
               <p className="text-xs text-slate-500 mt-0.5 truncate max-w-[180px]">
@@ -99,8 +99,8 @@ export const AdminLayout: React.FC = () => {
                   className={({ isActive }) =>
                     `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                       isActive
-                        ? 'bg-[#15803d] text-white shadow-md shadow-emerald-700/20'
-                        : 'text-slate-600 hover:text-[#15803d] hover:bg-emerald-50/70'
+                        ? 'bg-[#0284c7] text-white shadow-md shadow-sky-700/20'
+                        : 'text-slate-600 hover:text-[#0284c7] hover:bg-sky-50/70'
                     }`
                   }
                 >
@@ -117,7 +117,7 @@ export const AdminLayout: React.FC = () => {
           <Link
             to="/"
             target="_blank"
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-emerald-50 hover:text-[#15803d] border border-slate-200/60 rounded-xl transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-sky-50 hover:text-[#0284c7] border border-slate-200/60 rounded-xl transition-colors"
           >
             <span>পাবলিক সাইট দেখুন</span>
             <ExternalLink className="w-3.5 h-3.5" />
