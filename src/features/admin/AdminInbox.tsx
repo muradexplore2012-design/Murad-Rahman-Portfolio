@@ -559,26 +559,6 @@ export const AdminInbox: React.FC = () => {
 
                 {/* Header Action Buttons */}
                 <div className="flex items-center gap-1.5 shrink-0">
-                  {/* External WhatsApp button */}
-                  {selectedMessage.phone && (
-                    <a
-                      href={
-                        getWhatsAppUrl(
-                          selectedMessage.phone,
-                          selectedMessage.name,
-                          selectedMessage.subject
-                        ) || '#'
-                      }
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs transition-colors"
-                      title="WhatsApp-এ চ্যাট করুন"
-                    >
-                      <Send className="w-3.5 h-3.5" />
-                      <span className="hidden sm:inline">WhatsApp</span>
-                    </a>
-                  )}
-
                   {/* Toggle Read */}
                   <button
                     type="button"
