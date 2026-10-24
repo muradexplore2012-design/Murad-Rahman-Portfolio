@@ -30,30 +30,41 @@
     <!-- Google Fonts for English & Bangla -->
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Netlify Badge & Drawer Auto-Suppressor -->
+    <!-- Netlify Badge & HUD Permanent Blocker -->
     <script>
       (function() {
         try {
+          // 1. Force Netlify HUD to think it's permanently dismissed
+          localStorage.setItem('nl-hud:public:v1', 'hidden');
+          localStorage.setItem('nl-hud:owner-private:v1', 'hidden');
           localStorage.setItem('netlify-badge-dismissed', 'true');
           localStorage.setItem('netlify-drawer-dismissed', 'true');
         } catch(e) {}
-        var removeNetlify = function() {
-          var sel = 'iframe[src*="netlify"], iframe[title*="Netlify"], #netlify-drawer, netlifydrawer-app, .netlify-badge, [class*="netlify-drawer"], [class*="NetlifyDrawer"]';
+
+        // 2. Intercept and destroy Netlify HUD script or iframe if attempted
+        var killNetlify = function() {
+          var sel = '#nl-badge-frame, #nl-hud-frame, iframe[id*="nl-"], iframe[title*="Netlify"], iframe[src*="netlify"], netlifydrawer-app, .netlify-badge, [class*="netlify-drawer"]';
           document.querySelectorAll(sel).forEach(function(el) {
             try { el.remove(); } catch(e) { el.style.display = 'none'; }
           });
         };
+
         if (typeof window !== 'undefined') {
-          window.addEventListener('DOMContentLoaded', removeNetlify);
-          window.addEventListener('load', removeNetlify);
+          killNetlify();
+          window.addEventListener('DOMContentLoaded', killNetlify);
+          window.addEventListener('load', killNetlify);
           if (typeof MutationObserver !== 'undefined') {
-            new MutationObserver(removeNetlify).observe(document.documentElement, { childList: true, subtree: true });
+            new MutationObserver(killNetlify).observe(document.documentElement, { childList: true, subtree: true });
           }
         }
       })();
     </script>
   </head>
   <body class="bg-white text-slate-800 antialiased selection:bg-[#0284c7] selection:text-white">
+    <!-- Pre-emptive blockers: Netlify script checks for these exact IDs and exits immediately if found -->
+    <div id="nl-badge-frame" style="display:none!important;visibility:hidden!important;width:0!important;height:0!important;" aria-hidden="true"></div>
+    <div id="nl-hud-frame" style="display:none!important;visibility:hidden!important;width:0!important;height:0!important;" aria-hidden="true"></div>
+    
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

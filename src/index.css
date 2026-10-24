@@ -345,8 +345,13 @@
 /* =============================================================================
    🔥 OBLITERATE "POWERED BY NETLIFY" BADGE & NETLIFY DRAWER
 ============================================================================= */
-iframe[src*="netlify"],
+#nl-badge-frame,
+#nl-hud-frame,
+iframe[id="nl-badge-frame"],
+iframe[id="nl-hud-frame"],
+iframe[title="Powered by Netlify"],
 iframe[title*="Netlify"],
+iframe[src*="netlify"],
 iframe#netlify-badge,
 #netlify-drawer,
 netlifydrawer-app,
@@ -367,4 +372,6 @@ div:has(> iframe[src*="netlify"]) {
   position: absolute !important;
   left: -99999px !important;
   bottom: -99999px !important;
+  clip-path: circle(0) !important;
+  transform: scale(0) !important;
 }
