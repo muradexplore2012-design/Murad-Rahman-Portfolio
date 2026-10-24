@@ -63,6 +63,17 @@ export const HomePage: React.FC = () => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>(() => getCachedData('testimonials', starterTestimonials));
   const [settings, setSettings] = useState<SiteSettings>(() => getCachedData('settings', starterSettings));
   const [prefilledSubject, setPrefilledSubject] = useState('');
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
+
+  // Auto-open Inbox if navigated with ?inbox=true
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('inbox') === 'true') {
+        setIsChatModalOpen(true);
+      }
+    } catch {}
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -139,10 +150,19 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white text-slate-900 flex flex-col selection:bg-[#0284c7] selection:text-white">
-      <Navbar profile={profile} />
+      <Navbar
+        profile={profile}
+        isChatModalOpen={isChatModalOpen}
+        setIsChatModalOpen={setIsChatModalOpen}
+      />
 
       <main className="flex-1">
-        {sectionVisibility.hero && <HeroSection profile={profile} />}
+        {sectionVisibility.hero && (
+          <HeroSection
+            profile={profile}
+            onOpenInbox={() => setIsChatModalOpen(true)}
+          />
+        )}
         {sectionVisibility.about && <AboutSection profile={profile} />}
         {sectionVisibility.services && (
           <ServicesSection

@@ -4,9 +4,10 @@ import type { SiteProfile } from '../types';
 
 interface HeroSectionProps {
   profile: SiteProfile;
+  onOpenInbox?: () => void;
 }
 
-export const HeroSection: React.FC<HeroSectionProps> = ({ profile }) => {
+export const HeroSection: React.FC<HeroSectionProps> = ({ profile, onOpenInbox }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasSettled, setHasSettled] = useState(false);
   const [progressActive, setProgressActive] = useState(false);
@@ -135,15 +136,26 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ profile }) => {
               </p>
             </div>
 
-            {/* 4. Action Button: "Contact Us >" */}
+            {/* 4. Action Button: "Inbox Now ›" */}
             <div>
-              <Link
-                to="/contact"
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white font-bold rounded-xl shadow-md hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 text-base group animate-btn-glow cursor-pointer"
-              >
-                <span>Contact Us</span>
-                <span className="text-lg transition-transform duration-200 group-hover:translate-x-1.5">›</span>
-              </Link>
+              {onOpenInbox ? (
+                <button
+                  type="button"
+                  onClick={onOpenInbox}
+                  className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white font-bold rounded-xl shadow-md hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 text-base group animate-btn-glow cursor-pointer"
+                >
+                  <span>Inbox Now</span>
+                  <span className="text-lg transition-transform duration-200 group-hover:translate-x-1.5">›</span>
+                </button>
+              ) : (
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white font-bold rounded-xl shadow-md hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 text-base group animate-btn-glow cursor-pointer"
+                >
+                  <span>Inbox Now</span>
+                  <span className="text-lg transition-transform duration-200 group-hover:translate-x-1.5">›</span>
+                </Link>
+              )}
             </div>
 
           </div>

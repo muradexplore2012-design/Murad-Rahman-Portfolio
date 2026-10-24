@@ -35,12 +35,22 @@ const YoutubeIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
 
 interface NavbarProps {
   profile: SiteProfile;
+  isChatModalOpen?: boolean;
+  setIsChatModalOpen?: (open: boolean) => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
+export const Navbar: React.FC<NavbarProps> = ({
+  profile,
+  isChatModalOpen: controlledChatOpen,
+  setIsChatModalOpen: setControlledChatOpen,
+}) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSignInOpen, setIsSignInOpen] = useState(false);
-  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
+  const [internalChatOpen, setInternalChatOpen] = useState(false);
+
+  const isChatModalOpen = controlledChatOpen !== undefined ? controlledChatOpen : internalChatOpen;
+  const setIsChatModalOpen = setControlledChatOpen || setInternalChatOpen;
+
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -277,13 +287,14 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
                 </button>
               )}
 
-              {/* Contact Us Primary Button */}
-              <Link
-                to="/contact"
-                className="px-5 py-2 text-xs sm:text-sm font-bold text-white bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] rounded-lg shadow-xs hover:shadow transition-all duration-200 cursor-pointer"
+              {/* Inbox Now Primary Button */}
+              <button
+                type="button"
+                onClick={() => setIsChatModalOpen(true)}
+                className="px-5 py-2 text-xs sm:text-sm font-bold text-white bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] rounded-lg shadow-xs hover:shadow hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
               >
-                Contact Us
-              </Link>
+                Inbox Now
+              </button>
 
             </div>
 
@@ -519,13 +530,16 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
             </button>
           )}
 
-          <Link
-            to="/contact"
-            onClick={() => setMobileMenuOpen(false)}
-            className="w-full block py-2.5 px-3 text-center text-xs font-bold text-white bg-[#0284c7] hover:bg-[#0369a1] rounded-lg shadow-xs transition-colors cursor-pointer"
+          <button
+            type="button"
+            onClick={() => {
+              setMobileMenuOpen(false);
+              setIsChatModalOpen(true);
+            }}
+            className="w-full block py-2.5 px-3 text-center text-xs font-bold text-white bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] rounded-lg shadow-xs transition-colors cursor-pointer"
           >
-            Contact Us
-          </Link>
+            Inbox Now
+          </button>
         </div>
       </aside>
 
