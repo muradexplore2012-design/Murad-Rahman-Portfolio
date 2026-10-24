@@ -12,6 +12,9 @@
 [context.deploy-preview.environment]
   NETLIFY_DRAWER_ENABLED = "false"
 
+[context.branch-deploy.environment]
+  NETLIFY_DRAWER_ENABLED = "false"
+
 # SPA Fallback: Ensures /admin, /contact, etc. work without 404 on refresh
 [[redirects]]
   from = "/*"
