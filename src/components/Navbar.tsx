@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, ChevronDown, LogOut, Shield, User } from 'lucide-react';
+import { Menu, X, ChevronDown, LogOut, Shield, User, MessageSquare } from 'lucide-react';
 import type { SiteProfile } from '../types';
 import { SignInModal } from './SignInModal';
+import { UserChatModal } from './UserChatModal';
 import { UserAvatar, getUserDisplayName } from './UserAvatar';
 import { subscribeToAuthState, signOutUser, verifyAdminStatus } from '../lib/auth';
 import type { User as FirebaseUser } from 'firebase/auth';
@@ -38,6 +39,7 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSignInOpen, setIsSignInOpen] = useState(false);
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -198,56 +200,79 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
               {/* User Sign In / Profile Area */}
               {currentUser ? (
                 /* Authenticated User Menu */
-                <div className="relative" ref={dropdownRef}>
+                <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                    className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 transition-colors cursor-pointer"
+                    onClick={() => setIsChatModalOpen(true)}
+                    className="p-1.5 rounded-full border border-slate-200 hover:border-sky-300 text-slate-600 hover:text-[#0284c7] hover:bg-sky-50 transition-colors cursor-pointer"
+                    title="আমার ইনবক্স / চ্যাট"
                   >
-                    <UserAvatar user={currentUser} className="w-7 h-7" adminFallbackImage={profile.profileImage} />
-                    <span className="text-xs font-bold text-slate-800 max-w-[120px] truncate">
-                      {getUserDisplayName(currentUser, profile.name)}
-                    </span>
-                    <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                    <MessageSquare className="w-4 h-4" />
                   </button>
 
-                  {/* Dropdown Menu */}
-                  {userDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
-                      <div className="px-3 py-2 border-b border-slate-100 flex items-center gap-2.5">
-                        <UserAvatar user={currentUser} className="w-9 h-9" adminFallbackImage={profile.profileImage} />
-                        <div className="min-w-0">
-                          <p className="text-xs font-bold text-slate-900 truncate">
-                            {getUserDisplayName(currentUser, profile.name)}
-                          </p>
-                          <p className="text-[11px] text-slate-500 truncate mt-0.5">
-                            {currentUser.email}
-                          </p>
+                  <div className="relative" ref={dropdownRef}>
+                    <button
+                      type="button"
+                      onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                      className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 transition-colors cursor-pointer"
+                    >
+                      <UserAvatar user={currentUser} className="w-7 h-7" adminFallbackImage={profile.profileImage} />
+                      <span className="text-xs font-bold text-slate-800 max-w-[120px] truncate">
+                        {getUserDisplayName(currentUser, profile.name)}
+                      </span>
+                      <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    {userDropdownOpen && (
+                      <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                        <div className="px-3 py-2 border-b border-slate-100 flex items-center gap-2.5">
+                          <UserAvatar user={currentUser} className="w-9 h-9" adminFallbackImage={profile.profileImage} />
+                          <div className="min-w-0">
+                            <p className="text-xs font-bold text-slate-900 truncate">
+                              {getUserDisplayName(currentUser, profile.name)}
+                            </p>
+                            <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                              {currentUser.email}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="py-1">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setUserDropdownOpen(false);
+                              setIsChatModalOpen(true);
+                            }}
+                            className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:text-[#0284c7] hover:bg-sky-50 rounded-lg transition-colors cursor-pointer text-left"
+                          >
+                            <MessageSquare className="w-3.5 h-3.5 text-[#0284c7]" />
+                            <span>আমার ইনবক্স / চ্যাট</span>
+                          </button>
+
+                          {isAdmin && (
+                            <a
+                              href="/admin"
+                              className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:text-[#0284c7] hover:bg-sky-50 rounded-lg transition-colors"
+                            >
+                              <Shield className="w-3.5 h-3.5 text-[#0284c7]" />
+                              <span>Admin Dashboard</span>
+                            </a>
+                          )}
+
+                          <button
+                            type="button"
+                            onClick={handleSignOut}
+                            className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer text-left"
+                          >
+                            <LogOut className="w-3.5 h-3.5" />
+                            <span>Sign Out (লগআউট)</span>
+                          </button>
                         </div>
                       </div>
-
-                      <div className="py-1">
-                        {isAdmin && (
-                          <a
-                            href="/admin"
-                            className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:text-[#0284c7] hover:bg-sky-50 rounded-lg transition-colors"
-                          >
-                            <Shield className="w-3.5 h-3.5 text-[#0284c7]" />
-                            <span>Admin Dashboard</span>
-                          </a>
-                        )}
-
-                        <button
-                          type="button"
-                          onClick={handleSignOut}
-                          className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer text-left"
-                        >
-                          <LogOut className="w-3.5 h-3.5" />
-                          <span>Sign Out (লগআউট)</span>
-                        </button>
-                      </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               ) : (
                 /* Unauthenticated Sign in Button */
@@ -443,6 +468,18 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
                 </div>
               </div>
 
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setIsChatModalOpen(true);
+                }}
+                className="w-full py-2 px-3 bg-sky-50 text-[#0284c7] hover:bg-sky-100 border border-sky-200 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <MessageSquare className="w-3.5 h-3.5" />
+                <span>আমার ইনবক্স / চ্যাট</span>
+              </button>
+
               {isAdmin && (
                 <a
                   href="/admin"
@@ -492,6 +529,14 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
       <SignInModal
         isOpen={isSignInOpen}
         onClose={() => setIsSignInOpen(false)}
+      />
+
+      {/* Real-time 2-Way Client Chat / Inbox Modal */}
+      <UserChatModal
+        isOpen={isChatModalOpen}
+        onClose={() => setIsChatModalOpen(false)}
+        currentUser={currentUser}
+        profile={profile}
       />
     </>
   );

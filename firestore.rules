@@ -128,11 +128,26 @@ service cloud.firestore {
                        request.resource.data.email.matches('^[^@]+@[^@]+\\.[^@]+$') &&
                        request.resource.data.message is string &&
                        request.resource.data.message.size() > 0 &&
-                       request.resource.data.message.size() <= 3000 &&
-                       (!('isRead' in request.resource.data) || request.resource.data.isRead == false) &&
-                       (!('isArchived' in request.resource.data) || request.resource.data.isArchived == false);
+                       request.resource.data.message.size() <= 3000;
 
-      allow read, update, delete: if isAdmin();
+      // Allow admin full read, and allow clients to read their own messages
+      allow read: if isAdmin() || (
+        request.auth != null && (
+          resource.data.userId == request.auth.uid ||
+          (resource.data.email != null && request.auth.token.email != null && resource.data.email == request.auth.token.email)
+        )
+      );
+
+      // Allow admin full update, and allow clients to reply to their own messages
+      allow update: if isAdmin() || (
+        request.auth != null && (
+          resource.data.userId == request.auth.uid ||
+          (resource.data.email != null && request.auth.token.email != null && resource.data.email == request.auth.token.email)
+        )
+      );
+
+      // Only admin can delete messages
+      allow delete: if isAdmin();
     }
 
     /* 

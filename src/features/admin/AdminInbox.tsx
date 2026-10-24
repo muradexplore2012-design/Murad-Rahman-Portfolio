@@ -1,38 +1,155 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Inbox,
-  Mail,
   Trash2,
   CheckCircle2,
-  X,
-  Phone,
-  Calendar,
   AlertCircle,
   RefreshCw,
   Search,
   Tag,
   MessageSquare,
-  Copy,
-  Check,
-  Send
+  Send,
+  ArrowLeft,
+  Sparkles,
+  CheckCheck
 } from 'lucide-react';
 import type { ContactMessage } from '../../types';
 import {
-  getContactMessages,
+  subscribeToContactMessages,
   updateContactMessageStatus,
-  deleteContactMessage
+  deleteContactMessage,
+  sendAdminReply
 } from '../../services/firestoreService';
 
 export const AdminInbox: React.FC = () => {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState<'all' | 'unread'>('all');
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
+  const [replyText, setReplyText] = useState('');
+  const [isSending, setIsSending] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [status, setStatus] = useState<{ type: 'idle' | 'success' | 'error'; message: string }>({
     type: 'idle',
     message: '',
   });
+
+  const chatScrollRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Auto-scroll to bottom of chat when messages or replies change
+  useEffect(() => {
+    if (chatScrollRef.current) {
+      chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+    }
+  }, [selectedMessage?.replies, selectedMessage?.message, selectedMessage?.id]);
+
+  // Real-time Firestore subscription to contact messages
+  useEffect(() => {
+    setIsLoading(true);
+    const unsubscribe = subscribeToContactMessages(
+      (data) => {
+        setMessages(data);
+        setIsLoading(false);
+
+        // Keep selected message updated in real-time when new replies arrive
+        setSelectedMessage((prev) => {
+          if (!prev) return null;
+          const found = data.find((m) => m.id === prev.id);
+          return found || null;
+        });
+      },
+      (err) => {
+        console.error('Real-time subscription error:', err);
+        setStatus({
+          type: 'error',
+          message: 'মেসেজ লোড করা যায়নি। Firebase Firestore রুলস চেক করুন।',
+        });
+        setIsLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleSelectChat = async (msg: ContactMessage) => {
+    setSelectedMessage(msg);
+
+    // Mark as read if not read yet
+    if (!msg.isRead || msg.unreadByAdmin) {
+      try {
+        await updateContactMessageStatus(msg.id, { isRead: true, unreadByAdmin: false });
+        setMessages((prev) =>
+          prev.map((m) => (m.id === msg.id ? { ...m, isRead: true, unreadByAdmin: false } : m))
+        );
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
+  const handleSendReply = async () => {
+    if (!selectedMessage || !replyText.trim() || isSending) return;
+
+    try {
+      setIsSending(true);
+      const text = replyText.trim();
+      setReplyText('');
+
+      await sendAdminReply(selectedMessage.id, text, {
+        name: 'Murad Rahman',
+        email: 'muradexplore2012@gmail.com',
+      });
+
+      // Focus back to input
+      setTimeout(() => {
+        textareaRef.current?.focus();
+      }, 50);
+    } catch (err: any) {
+      console.error('Error sending reply:', err);
+      alert(err.message || 'রিপ্লাই পাঠানো যায়নি। আবার চেষ্টা করুন।');
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendReply();
+    }
+  };
+
+  const handleToggleRead = async (msg: ContactMessage, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    try {
+      const newStatus = !msg.isRead;
+      await updateContactMessageStatus(msg.id, { isRead: newStatus, unreadByAdmin: !newStatus });
+      setMessages((prev) =>
+        prev.map((m) => (m.id === msg.id ? { ...m, isRead: newStatus, unreadByAdmin: !newStatus } : m))
+      );
+      if (selectedMessage?.id === msg.id) {
+        setSelectedMessage((prev) => (prev ? { ...prev, isRead: newStatus, unreadByAdmin: !newStatus } : null));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDelete = async (id: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    if (!window.confirm('আপনি কি নিশ্চিত এই সম্পূর্ণ চ্যাটটি মুছে ফেলতে চান?')) return;
+    try {
+      await deleteContactMessage(id);
+      setMessages((prev) => prev.filter((m) => m.id !== id));
+      if (selectedMessage?.id === id) {
+        setSelectedMessage(null);
+      }
+    } catch (err: any) {
+      alert(err.message || 'ডিলিট করতে সমস্যা হয়েছে।');
+    }
+  };
 
   const handleCopy = (text: string, field: string) => {
     navigator.clipboard.writeText(text);
@@ -40,22 +157,28 @@ export const AdminInbox: React.FC = () => {
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  const formatDateTime = (ts: any) => {
-    if (!ts) return 'N/A';
+  const formatTime = (ts: any): string => {
+    if (!ts) return '';
     try {
       const d = ts?.toDate ? ts.toDate() : ts?.seconds ? new Date(ts.seconds * 1000) : new Date(ts);
-      if (isNaN(d.getTime())) return 'N/A';
-      return d.toLocaleString('en-US', {
-        month: '2-digit',
-        day: '2-digit',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true,
-      });
+      if (isNaN(d.getTime())) return '';
+      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     } catch {
-      return 'N/A';
+      return '';
+    }
+  };
+
+  const formatDate = (ts: any): string => {
+    if (!ts) return '';
+    try {
+      const d = ts?.toDate ? ts.toDate() : ts?.seconds ? new Date(ts.seconds * 1000) : new Date(ts);
+      if (isNaN(d.getTime())) return '';
+      const now = new Date();
+      const isToday = d.toDateString() === now.toDateString();
+      if (isToday) return formatTime(ts);
+      return d.toLocaleDateString('bn-BD', { month: 'short', day: 'numeric' });
+    } catch {
+      return '';
     }
   };
 
@@ -68,413 +191,486 @@ export const AdminInbox: React.FC = () => {
       : digits.startsWith('0')
       ? '88' + digits
       : digits;
-    const text = `Hello ${name || ''}, Murad Rahman here regarding your portfolio inquiry: ${subject || ''}`;
+    const text = `Hello ${name || ''}, Murad Rahman from Portfolio here regarding: ${subject || ''}`;
     return `https://wa.me/${intlDigits}?text=${encodeURIComponent(text)}`;
   };
 
-  const loadMessages = async () => {
-    try {
-      setIsLoading(true);
-      const data = await getContactMessages();
-      setMessages(data);
-    } catch (err: any) {
-      console.error(err);
-      setStatus({
-        type: 'error',
-        message: 'মেসেজ লোড করা যায়নি। Firebase Firestore Rules নিশ্চিত করুন।',
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadMessages();
-  }, []);
-
-  const handleOpenMessage = async (msg: ContactMessage) => {
-    setSelectedMessage(msg);
-    if (!msg.isRead) {
-      try {
-        await updateContactMessageStatus(msg.id, { isRead: true });
-        setMessages((prev) =>
-          prev.map((m) => (m.id === msg.id ? { ...m, isRead: true } : m))
-        );
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  };
-
-  const handleToggleRead = async (msg: ContactMessage, e: React.MouseEvent) => {
-    e.stopPropagation();
-    try {
-      await updateContactMessageStatus(msg.id, { isRead: !msg.isRead });
-      setMessages((prev) =>
-        prev.map((m) => (m.id === msg.id ? { ...m, isRead: !msg.isRead } : m))
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleDelete = async (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!window.confirm("আপনি কি নিশ্চিত এই মেসেজটি মুছে ফেলতে চান?")) return;
-    try {
-      await deleteContactMessage(id);
-      setMessages((prev) => prev.filter((m) => m.id !== id));
-      if (selectedMessage?.id === id) {
-        setSelectedMessage(null);
-      }
-    } catch (err: any) {
-      alert(err.message || 'ডিলিট করতে সমস্যা হয়েছে।');
-    }
-  };
-
-  const filtered = messages.filter(
-    (m) =>
+  const filtered = messages.filter((m) => {
+    const matchesSearch =
       m.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       m.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       m.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      m.message?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+      m.message?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      m.phone?.includes(searchTerm);
+
+    if (filterType === 'unread') {
+      return matchesSearch && (!m.isRead || m.unreadByAdmin);
+    }
+    return matchesSearch;
+  });
+
+  const unreadCount = messages.filter((m) => !m.isRead || m.unreadByAdmin).length;
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
-      
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+    <div className="space-y-4">
+      {/* Top Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900">মেসেজ ইনবক্স</h1>
-          <p className="text-xs text-slate-500 mt-1">
-            পাবলিক পোর্টফোলিও ওয়েবসাইট থেকে আসা সকল ক্লায়েন্ট বার্তা।
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
+            <span>মেসেজ ও লাইভ চ্যাট ইনবক্স</span>
+            {unreadCount > 0 && (
+              <span className="px-2.5 py-0.5 rounded-full bg-[#0284c7] text-white text-xs font-bold shadow-xs">
+                {unreadCount}টি নতুন
+              </span>
+            )}
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5">
+            পোর্টফোলিও ক্লায়েন্টদের সাথে সরাসরি ২-ওয়ে লাইভ টেক্সট চ্যাট ও রিপ্লাই।
           </p>
         </div>
 
-        <button
-          onClick={loadMessages}
-          disabled={isLoading}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 hover:text-[#0284c7] hover:bg-slate-50 rounded-xl text-xs font-semibold shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
-          <span>রিফ্রেশ</span>
-        </button>
-      </div>
-
-      {status.type === 'error' && (
-        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 shrink-0" />
-          <span>{status.message}</span>
-        </div>
-      )}
-
-      {/* Search Bar */}
-      <div className="relative">
-        <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="নাম, ইমেইল অথবা বিষয়ের মাধ্যমে খুঁজুন..."
-          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7] shadow-xs"
-        />
-      </div>
-
-      {/* Messages List */}
-      <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white shadow-xs">
-        {isLoading ? (
-          <div className="p-8 text-center text-slate-500 text-sm">ইনবক্স লোড হচ্ছে...</div>
-        ) : filtered.length === 0 ? (
-          <div className="p-12 text-center text-slate-400 space-y-3">
-            <Inbox className="w-12 h-12 text-slate-300 mx-auto" />
-            <p className="text-sm font-semibold text-slate-700">কোনো মেসেজ নেই</p>
-            <p className="text-xs text-slate-500">পোর্টফোলিও সাইটের কন্টাক্ট ফর্ম থেকে মেসেজ পাঠানো হলে এখানে জমা হবে।</p>
+        {status.type === 'error' && (
+          <div className="p-2.5 px-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{status.message}</span>
           </div>
-        ) : (
-          <div className="divide-y divide-slate-100">
-            {filtered.map((msg) => (
-              <div
-                key={msg.id}
-                onClick={() => handleOpenMessage(msg)}
-                className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer hover:bg-slate-50/80 transition-colors ${
-                  !msg.isRead ? 'bg-sky-50/40 font-semibold' : ''
+        )}
+      </div>
+
+      {/* Main WhatsApp-Style Card */}
+      <div className="rounded-3xl border border-slate-200 bg-white shadow-md overflow-hidden flex flex-col md:flex-row h-[720px] max-h-[82vh]">
+        
+        {/* ============================================================== */}
+        {/* LEFT COLUMN: WhatsApp Chat List                                */}
+        {/* ============================================================== */}
+        <div
+          className={`w-full md:w-[360px] lg:w-[400px] border-r border-slate-200 flex flex-col bg-slate-50/50 shrink-0 ${
+            selectedMessage ? 'hidden md:flex' : 'flex'
+          }`}
+        >
+          {/* Chat List Search & Filters Header */}
+          <div className="p-3.5 border-b border-slate-200/80 bg-white space-y-3">
+            {/* Search Input */}
+            <div className="relative">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="চ্যাট বা ক্লায়েন্ট খুঁজুন..."
+                className="w-full pl-9 pr-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-100/80 focus:bg-white border border-transparent focus:border-sky-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-200 transition-all"
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            {/* Filter Tabs */}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setFilterType('all')}
+                className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  filterType === 'all'
+                    ? 'bg-[#0284c7] text-white shadow-xs'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200/70'
                 }`}
               >
-                <div className="flex items-start sm:items-center gap-3">
-                  <div
-                    className={`w-2.5 h-2.5 rounded-full shrink-0 mt-1 sm:mt-0 ${
-                      !msg.isRead ? 'bg-[#0284c7] shadow-xs' : 'bg-transparent'
+                সকল চ্যাট ({messages.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilterType('unread')}
+                className={`py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  filterType === 'unread'
+                    ? 'bg-[#0284c7] text-white shadow-xs'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200/70'
+                }`}
+              >
+                <span>অপঠিত</span>
+                {unreadCount > 0 && (
+                  <span
+                    className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${
+                      filterType === 'unread' ? 'bg-white text-[#0284c7]' : 'bg-[#0284c7] text-white'
                     }`}
-                  />
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm text-slate-900">{msg.name}</span>
-                      <span className="text-xs text-slate-500">&lt;{msg.email}&gt;</span>
-                      {msg.phone && (
-                        <span className="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 text-[#0284c7] font-medium border border-slate-200">
-                          {msg.phone}
-                        </span>
-                      )}
+                  >
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Conversations Scroll Area */}
+          <div className="flex-1 overflow-y-auto divide-y divide-slate-100/80">
+            {isLoading ? (
+              <div className="p-8 text-center text-slate-400 text-xs flex flex-col items-center justify-center gap-2">
+                <RefreshCw className="w-5 h-5 animate-spin text-[#0284c7]" />
+                <span>চ্যাট লোড হচ্ছে...</span>
+              </div>
+            ) : filtered.length === 0 ? (
+              <div className="p-10 text-center text-slate-400 space-y-2">
+                <Inbox className="w-10 h-10 text-slate-300 mx-auto" />
+                <p className="text-xs font-bold text-slate-600">কোনো চ্যাট পাওয়া যায়নি</p>
+                <p className="text-[11px] text-slate-400">
+                  {searchTerm ? 'অনুসন্ধানের সাথে কোনো মেসেজ মিলছে না' : 'পাবলিক সাইট থেকে মেসেজ আসলে এখানে দেখাবে।'}
+                </p>
+              </div>
+            ) : (
+              filtered.map((msg) => {
+                const isSelected = selectedMessage?.id === msg.id;
+                const isUnread = !msg.isRead || msg.unreadByAdmin;
+                const lastPreview = msg.lastMessage || msg.message;
+                const totalReplies = msg.replies?.length || 0;
+
+                return (
+                  <div
+                    key={msg.id}
+                    onClick={() => handleSelectChat(msg)}
+                    className={`p-3.5 sm:p-4 flex items-start gap-3 cursor-pointer transition-all border-l-4 ${
+                      isSelected
+                        ? 'bg-sky-50/80 border-l-[#0284c7]'
+                        : isUnread
+                        ? 'bg-white border-l-sky-400 hover:bg-slate-50'
+                        : 'bg-white/60 border-l-transparent hover:bg-slate-50'
+                    }`}
+                  >
+                    {/* User Avatar with initials & green dot */}
+                    <div className="relative shrink-0">
+                      <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-400 to-[#0284c7] text-white font-extrabold flex items-center justify-center text-sm shadow-xs">
+                        {msg.name ? msg.name.slice(0, 2).toUpperCase() : 'CL'}
+                      </div>
+                      {/* Active indicator dot */}
+                      <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white" />
                     </div>
-                    <div className="text-xs text-slate-700 mt-1">
-                      <span className="font-bold text-[#0284c7] mr-2">[{msg.subject}]</span>
-                      <span className="text-slate-500 line-clamp-1 inline font-normal">
-                        {msg.message}
+
+                    {/* Chat Item Info */}
+                    <div className="flex-1 min-w-0">
+                      {/* Row 1: Name & Timestamp */}
+                      <div className="flex items-center justify-between gap-2">
+                        <h3
+                          className={`text-xs sm:text-sm truncate ${
+                            isUnread ? 'font-black text-slate-900' : 'font-bold text-slate-800'
+                          }`}
+                        >
+                          {msg.name}
+                        </h3>
+                        <span
+                          className={`text-[10px] shrink-0 ${
+                            isUnread ? 'text-[#0284c7] font-bold' : 'text-slate-400'
+                          }`}
+                        >
+                          {formatDate(msg.lastMessageAt || msg.createdAt)}
+                        </span>
+                      </div>
+
+                      {/* Row 2: Subject Badge */}
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className="text-[10px] font-bold px-2 py-0.2 rounded-md bg-sky-100 text-[#0284c7] truncate border border-sky-200">
+                          {msg.subject || 'সাধারণ ইনকোয়ারি'}
+                        </span>
+                        {totalReplies > 0 && (
+                          <span className="text-[10px] text-slate-400 font-medium shrink-0">
+                            ({totalReplies + 1} মেসেজ)
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Row 3: Message preview & Unread badge */}
+                      <div className="flex items-center justify-between gap-2 mt-1">
+                        <p
+                          className={`text-[11px] truncate flex-1 ${
+                            isUnread ? 'text-slate-900 font-bold' : 'text-slate-500'
+                          }`}
+                        >
+                          {msg.lastSender === 'admin' ? (
+                            <span className="text-[#0284c7] font-semibold">আপনি: </span>
+                          ) : null}
+                          {lastPreview}
+                        </p>
+
+                        {isUnread && (
+                          <span className="w-2.5 h-2.5 rounded-full bg-[#0284c7] shrink-0 animate-pulse shadow-xs" />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        {/* ============================================================== */}
+        {/* RIGHT COLUMN: WhatsApp Active Chat Conversation Area          */}
+        {/* ============================================================== */}
+        <div
+          className={`flex-1 flex flex-col bg-slate-50/70 h-full relative ${
+            !selectedMessage ? 'hidden md:flex' : 'flex'
+          }`}
+        >
+          {selectedMessage ? (
+            <>
+              {/* Active Chat Header */}
+              <div className="p-3.5 sm:p-4 bg-white border-b border-slate-200 flex items-center justify-between gap-3 shadow-xs shrink-0">
+                <div className="flex items-center gap-3 min-w-0">
+                  {/* Mobile Back Button to Chat List */}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedMessage(null)}
+                    className="md:hidden p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl"
+                    title="সব চ্যাটে ফিরে যান"
+                  >
+                    <ArrowLeft className="w-5 h-5" />
+                  </button>
+
+                  {/* Client Avatar */}
+                  <div className="relative shrink-0">
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-400 to-[#0284c7] text-white font-extrabold flex items-center justify-center text-sm shadow-xs">
+                      {selectedMessage.name ? selectedMessage.name.slice(0, 2).toUpperCase() : 'CL'}
+                    </div>
+                    <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white" />
+                  </div>
+
+                  {/* Client Name & Info */}
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <h2 className="text-sm sm:text-base font-black text-slate-900 truncate">
+                        {selectedMessage.name}
+                      </h2>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                        সরাসরি ক্লায়েন্ট
                       </span>
+                    </div>
+                    <div className="flex items-center gap-2 text-[11px] text-slate-500 truncate">
+                      <span className="truncate">{selectedMessage.email}</span>
+                      {selectedMessage.phone && (
+                        <>
+                          <span>•</span>
+                          <span className="font-bold text-slate-700">{selectedMessage.phone}</span>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
+                {/* Header Action Buttons */}
+                <div className="flex items-center gap-1.5 shrink-0">
+                  {/* External WhatsApp button */}
+                  {selectedMessage.phone && (
+                    <a
+                      href={
+                        getWhatsAppUrl(
+                          selectedMessage.phone,
+                          selectedMessage.name,
+                          selectedMessage.subject
+                        ) || '#'
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs transition-colors"
+                      title="WhatsApp-এ চ্যাট করুন"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">WhatsApp</span>
+                    </a>
+                  )}
+
+                  {/* Toggle Read */}
                   <button
-                    onClick={(e) => handleToggleRead(msg, e)}
-                    className="p-2 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 text-xs transition-colors"
-                    title={msg.isRead ? 'অপঠিত হিসেবে চিহ্নিত করুন' : 'পঠিত হিসেবে চিহ্নিত করুন'}
+                    type="button"
+                    onClick={() => handleToggleRead(selectedMessage)}
+                    className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl text-xs transition-colors"
+                    title={selectedMessage.isRead ? 'অপঠিত চিহ্নিত করুন' : 'পঠিত চিহ্নিত করুন'}
                   >
-                    <CheckCircle2 className={`w-4 h-4 ${msg.isRead ? 'text-slate-300' : 'text-[#0284c7]'}`} />
+                    <CheckCircle2
+                      className={`w-4 h-4 ${selectedMessage.isRead ? 'text-slate-300' : 'text-[#0284c7]'}`}
+                    />
                   </button>
+
+                  {/* Delete Conversation */}
                   <button
-                    onClick={(e) => handleDelete(msg.id, e)}
-                    className="p-2 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 text-xs transition-colors"
-                    title="মেসেজ মুছুন"
+                    type="button"
+                    onClick={() => handleDelete(selectedMessage.id)}
+                    className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl text-xs transition-colors"
+                    title="চ্যাটটি ডিলিট করুন"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
 
-      {/* Premium Message Detail Modal */}
-      {selectedMessage && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200"
-          onClick={() => setSelectedMessage(null)}
-        >
-          <div 
-            className="relative w-full max-w-2xl rounded-3xl overflow-hidden bg-white shadow-2xl border border-slate-200 flex flex-col max-h-[92vh] text-slate-800 animate-in zoom-in-95 duration-200"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Top Brand Banner matching the Email Notification header */}
-            <div className="bg-gradient-to-r from-[#0284c7] via-[#0369a1] to-[#0284c7] px-6 py-5 text-white relative flex items-center justify-between shadow-sm">
-              <div className="flex items-center gap-3.5">
-                <div className="w-11 h-11 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center text-white shrink-0 shadow-inner">
-                  <Mail className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-lg sm:text-xl font-black text-white tracking-tight">
-                      Murad Rahman Portfolio
-                    </h2>
-                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-white/20 text-white border border-white/30 uppercase tracking-wider">
-                      ইনবক্স বার্তা
-                    </span>
+              {/* Chat Messages Stream (Scrollable WhatsApp Body) */}
+              <div
+                ref={chatScrollRef}
+                className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 bg-gradient-to-b from-slate-100/50 to-slate-50/80"
+              >
+                {/* Subject & Inquiry Info Box */}
+                <div className="max-w-md mx-auto my-2 p-3 bg-white/90 backdrop-blur-xs rounded-2xl border border-sky-100 text-center shadow-xs">
+                  <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0284c7] mb-1">
+                    <Tag className="w-3.5 h-3.5" />
+                    <span>বিষয়: {selectedMessage.subject || 'সাধারণ যোগাযোগ'}</span>
                   </div>
-                  <p className="text-xs text-sky-100 font-medium mt-0.5">
-                    নতুন ক্লায়েন্ট যোগাযোগ ও ইনকোয়ারি মেসেজ
+                  <p className="text-[11px] text-slate-500">
+                    ইনকোয়ারি পাঠানো হয়েছে: {formatDate(selectedMessage.createdAt)} •{' '}
+                    {formatTime(selectedMessage.createdAt)}
                   </p>
                 </div>
-              </div>
 
-              {/* Close Button */}
-              <button
-                onClick={() => setSelectedMessage(null)}
-                className="w-9 h-9 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center transition-all cursor-pointer backdrop-blur-md border border-white/20 shrink-0"
-                title="বন্ধ করুন"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Scrollable Modal Content */}
-            <div className="overflow-y-auto p-5 sm:p-6 space-y-5 flex-1">
-              
-              {/* Structured Key-Value Details Card */}
-              <div className="bg-slate-50/90 border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-2xs space-y-3.5">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  
-                  {/* Client Name */}
-                  <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-sky-100 text-[#0284c7] font-black flex items-center justify-center shrink-0 text-xs">
-                      {selectedMessage.name ? selectedMessage.name.slice(0, 2).toUpperCase() : 'CL'}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
-                        ক্লায়েন্ট নাম:
-                      </span>
-                      <span className="font-extrabold text-slate-900 text-sm sm:text-base truncate block mt-0.5">
-                        {selectedMessage.name}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Email */}
-                  <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-sky-100 text-[#0284c7] flex items-center justify-center shrink-0">
-                      <Mail className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
-                        ইমেইল:
-                      </span>
-                      <a
-                        href={`mailto:${selectedMessage.email}`}
-                        className="font-bold text-[#0284c7] hover:underline text-xs sm:text-sm truncate block mt-0.5"
-                        title={selectedMessage.email}
+                {/* 1. Client's Initial Message (Left bubble) */}
+                <div className="flex flex-col items-start max-w-[85%] sm:max-w-[75%] space-y-1">
+                  <span className="text-[10px] font-bold text-slate-500 ml-2">
+                    {selectedMessage.name} (ক্লায়েন্ট)
+                  </span>
+                  <div className="bg-white text-slate-900 rounded-2xl rounded-tl-xs p-3.5 sm:p-4 shadow-sm border border-slate-200/90 relative group">
+                    <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap select-text">
+                      {selectedMessage.message}
+                    </p>
+                    <div className="flex items-center justify-between gap-3 mt-2 pt-1 border-t border-slate-100 text-[10px] text-slate-400">
+                      <span>{formatTime(selectedMessage.createdAt)}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(selectedMessage.message, 'initial')}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity hover:text-[#0284c7] cursor-pointer"
+                        title="মেসেজ কপি করুন"
                       >
-                        {selectedMessage.email}
-                      </a>
+                        {copiedField === 'initial' ? 'কপি হয়েছে' : 'কপি'}
+                      </button>
                     </div>
                   </div>
+                </div>
 
-                  {/* Phone / WhatsApp */}
-                  <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                      <Phone className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
-                        ফোন / WhatsApp:
+                {/* 2. Thread Replies (Client vs Admin conversation) */}
+                {selectedMessage.replies?.map((rep, idx) => {
+                  const isAdmin = rep.sender === 'admin';
+
+                  return (
+                    <div
+                      key={rep.id || idx}
+                      className={`flex flex-col ${isAdmin ? 'items-end ml-auto' : 'items-start mr-auto'} max-w-[85%] sm:max-w-[75%] space-y-1`}
+                    >
+                      <span
+                        className={`text-[10px] font-bold ${
+                          isAdmin ? 'text-[#0284c7] mr-2' : 'text-slate-500 ml-2'
+                        }`}
+                      >
+                        {isAdmin ? 'মুরাদ রহমান (Admin)' : rep.senderName || 'ক্লায়েন্ট'}
                       </span>
-                      {selectedMessage.phone ? (
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <span className="font-bold text-slate-900 text-xs sm:text-sm">
-                            {selectedMessage.phone}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => handleCopy(selectedMessage.phone || '', 'phone')}
-                            className="text-[10px] text-slate-500 hover:text-slate-800 px-1.5 py-0.5 bg-white border border-slate-200 rounded cursor-pointer"
-                            title="ফোন নাম্বার কপি করুন"
-                          >
-                            {copiedField === 'phone' ? 'কপি হয়েছে' : 'কপি'}
-                          </button>
+
+                      <div
+                        className={`p-3.5 sm:p-4 rounded-2xl shadow-sm text-xs sm:text-sm leading-relaxed whitespace-pre-wrap select-text relative group ${
+                          isAdmin
+                            ? 'bg-[#0284c7] text-white rounded-tr-xs'
+                            : 'bg-white text-slate-900 rounded-tl-xs border border-slate-200/90'
+                        }`}
+                      >
+                        <p>{rep.text}</p>
+
+                        <div
+                          className={`flex items-center justify-end gap-1.5 mt-2 pt-1 text-[10px] ${
+                            isAdmin ? 'text-sky-200 border-t border-sky-500/40' : 'text-slate-400 border-t border-slate-100'
+                          }`}
+                        >
+                          <span>{formatTime(rep.createdAt)}</span>
+                          {isAdmin && (
+                            <span title="পাঠানো হয়েছে">
+                              <CheckCheck className="w-3.5 h-3.5 text-sky-200" />
+                            </span>
+                          )}
                         </div>
-                      ) : (
-                        <span className="text-slate-400 text-xs mt-0.5 block">প্রদান করা হয়নি</span>
-                      )}
+                      </div>
                     </div>
-                  </div>
-
-                  {/* Received Time */}
-                  <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
-                      <Calendar className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
-                        সময়:
-                      </span>
-                      <span className="font-semibold text-slate-700 text-xs sm:text-sm block mt-0.5">
-                        {formatDateTime(selectedMessage.createdAt)}
-                      </span>
-                    </div>
-                  </div>
-
-                </div>
-
-                {/* Inquiry Subject */}
-                <div className="pt-3 border-t border-slate-200/80 flex items-center gap-2.5 flex-wrap">
-                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                    বিষয়:
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-sky-100 text-[#0284c7] font-bold text-xs sm:text-sm border border-sky-200">
-                    <Tag className="w-3.5 h-3.5" />
-                    {selectedMessage.subject || 'সাধারণ যোগাযোগ'}
-                  </span>
-                </div>
-
+                  );
+                })}
               </div>
 
-              {/* Message Box with Accent Border */}
-              <div className="rounded-2xl border border-sky-200/80 bg-white p-4 sm:p-5 shadow-xs relative border-l-4 border-l-[#0284c7]">
-                <div className="flex items-center justify-between mb-3 pb-2.5 border-b border-slate-100">
-                  <div className="flex items-center gap-2">
-                    <MessageSquare className="w-4 h-4 text-[#0284c7]" />
-                    <span className="text-xs sm:text-sm font-black text-slate-900 tracking-tight">
-                      মেসেজ বিবরণ:
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => handleCopy(selectedMessage.message, 'message')}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold text-slate-600 hover:text-[#0284c7] hover:bg-sky-50 transition-colors cursor-pointer border border-transparent hover:border-sky-200"
-                  >
-                    {copiedField === 'message' ? (
-                      <>
-                        <Check className="w-3.5 h-3.5 text-emerald-600" />
-                        <span className="text-emerald-600 font-bold">কপি হয়েছে!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3.5 h-3.5" />
-                        <span>কপি করুন</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-
-                <div className="text-slate-800 text-xs sm:text-sm leading-relaxed whitespace-pre-wrap font-medium select-text">
-                  {selectedMessage.message}
-                </div>
-              </div>
-
-            </div>
-
-            {/* Modal Action Footer */}
-            <div className="px-5 sm:px-6 py-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
+              {/* Quick Template Replies for Admin */}
+              <div className="px-4 py-2 bg-slate-100/70 border-t border-slate-200 flex items-center gap-2 overflow-x-auto text-[11px] no-scrollbar">
+                <span className="text-slate-400 font-bold shrink-0 flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-[#0284c7]" />
+                  কুইক রিপ্লাই:
+                </span>
                 <button
                   type="button"
-                  onClick={(e) => handleToggleRead(selectedMessage, e)}
-                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold transition-colors cursor-pointer"
-                  title={selectedMessage.isRead ? 'অপঠিত হিসেবে চিহ্নিত করুন' : 'পঠিত হিসেবে চিহ্নিত করুন'}
+                  onClick={() => setReplyText('ধন্যবাদ, আমি আপনার কাজটি দ্রুত শুরু করছি।')}
+                  className="px-2.5 py-1 bg-white hover:bg-sky-50 text-slate-700 hover:text-[#0284c7] rounded-lg border border-slate-200 shrink-0 cursor-pointer transition-colors"
                 >
-                  <CheckCircle2 className={`w-3.5 h-3.5 ${selectedMessage.isRead ? 'text-slate-400' : 'text-[#0284c7]'}`} />
-                  <span>{selectedMessage.isRead ? 'অপঠিত চিহ্নিত করুন' : 'পঠিত চিহ্নিত করুন'}</span>
+                  কাজ শুরু করছি
                 </button>
-
                 <button
                   type="button"
-                  onClick={(e) => handleDelete(selectedMessage.id, e)}
-                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-rose-200 bg-white hover:bg-rose-50 text-rose-600 text-xs font-semibold transition-colors cursor-pointer"
-                  title="মেসেজটি মুছে ফেলুন"
+                  onClick={() =>
+                    setReplyText('আপনার সাথে কথা বলে ভালো লাগলো। কাজের বিস্তারিত জানাতে পারবেন কি?')
+                  }
+                  className="px-2.5 py-1 bg-white hover:bg-sky-50 text-slate-700 hover:text-[#0284c7] rounded-lg border border-slate-200 shrink-0 cursor-pointer transition-colors"
                 >
-                  <Trash2 className="w-3.5 h-3.5" />
-                  <span>মুছে ফেলুন</span>
+                  বিস্তারিত জানতে চাই
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setReplyText('আপনার প্রজেক্টের বাজেট ও সময়সীমা কত নির্ধারণ করেছেন?')
+                  }
+                  className="px-2.5 py-1 bg-white hover:bg-sky-50 text-slate-700 hover:text-[#0284c7] rounded-lg border border-slate-200 shrink-0 cursor-pointer transition-colors"
+                >
+                  বাজেট ও ডেডলাইন
                 </button>
               </div>
 
-              <div className="flex items-center gap-2 ml-auto">
-                {selectedMessage.phone && (
-                  <a
-                    href={getWhatsAppUrl(selectedMessage.phone, selectedMessage.name, selectedMessage.subject) || '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer"
-                  >
-                    <Send className="w-3.5 h-3.5" />
-                    <span>WhatsApp রিপ্লাই</span>
-                  </a>
-                )}
+              {/* Chat Input Bar */}
+              <div className="p-3 sm:p-4 bg-white border-t border-slate-200 flex items-end gap-2.5 shrink-0">
+                <div className="flex-1 bg-slate-100 rounded-2xl border border-slate-200 focus-within:border-[#0284c7] focus-within:bg-white focus-within:ring-2 focus-within:ring-sky-100 transition-all">
+                  <textarea
+                    ref={textareaRef}
+                    rows={1}
+                    value={replyText}
+                    onChange={(e) => setReplyText(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="এখানে রিপ্লাই মেসেজ লিখুন... (Enter চাপলে সেন্ড হবে)"
+                    className="w-full px-4 py-2.5 bg-transparent resize-none text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none max-h-32 leading-relaxed"
+                  />
+                </div>
 
-                <a
-                  href={`mailto:${selectedMessage.email}?subject=Re: ${encodeURIComponent(selectedMessage.subject || '')}`}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white text-xs sm:text-sm font-bold rounded-xl shadow-xs transition-colors cursor-pointer"
+                {/* Send Button */}
+                <button
+                  type="button"
+                  onClick={handleSendReply}
+                  disabled={!replyText.trim() || isSending}
+                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white flex items-center justify-center shrink-0 shadow-md transition-all disabled:opacity-40 cursor-pointer hover:scale-105 active:scale-95"
+                  title="মেসেজ পাঠান"
                 >
-                  <Mail className="w-3.5 h-3.5" />
-                  <span>সরাসরি রিপ্লাই দিন</span>
-                </a>
+                  {isSending ? (
+                    <RefreshCw className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <Send className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+            </>
+          ) : (
+            /* Empty State when no chat is selected (WhatsApp Web style) */
+            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50/50">
+              <div className="w-20 h-20 rounded-3xl bg-sky-50 border border-sky-100 text-[#0284c7] flex items-center justify-center mb-4 shadow-sm">
+                <MessageSquare className="w-10 h-10" />
+              </div>
+              <h2 className="text-lg font-black text-slate-800">মুরাদ রহমান লাইভ চ্যাট ইনবক্স</h2>
+              <p className="text-xs text-slate-500 max-w-sm mt-1 leading-relaxed">
+                ক্লায়েন্টের সাথে সরাসরি কথা বলতে এবং তাৎক্ষণিক রিপ্লাই দিতে বাঁপাশের তালিকা থেকে একটি চ্যাট
+                নির্বাচন করুন।
+              </p>
+              <div className="mt-6 flex items-center gap-1.5 text-[11px] text-slate-400 bg-white px-3 py-1.5 rounded-full border border-slate-200 shadow-2xs">
+                <span>🔒 রিয়েল-টাইম নিরাপদ টেক্সট মেসেজিং</span>
               </div>
             </div>
-
-          </div>
+          )}
         </div>
-      )}
 
+      </div>
     </div>
   );
 };

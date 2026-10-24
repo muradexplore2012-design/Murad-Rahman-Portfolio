@@ -98,6 +98,16 @@ export interface Testimonial {
   createdAt?: any;
 }
 
+export interface ChatReply {
+  id: string;
+  sender: 'admin' | 'user';
+  senderName: string;
+  senderEmail?: string;
+  senderPhoto?: string;
+  text: string;
+  createdAt: any;
+}
+
 export interface ContactMessage {
   id: string;
   name: string;
@@ -109,6 +119,12 @@ export interface ContactMessage {
   userPhoto?: string;
   isRead: boolean;
   isArchived: boolean;
+  replies?: ChatReply[];
+  lastMessage?: string;
+  lastMessageAt?: any;
+  lastSender?: 'admin' | 'user';
+  unreadByAdmin?: boolean;
+  unreadByUser?: boolean;
   createdAt: any;
 }
 

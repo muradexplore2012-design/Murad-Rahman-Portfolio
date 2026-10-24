@@ -18,6 +18,7 @@ import { onAuthStateChanged, type User } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import { signInWithGoogle, signOutUser } from '../lib/auth';
 import { GoogleSignInButton } from '../components/GoogleSignInButton';
+import { UserChatModal } from '../components/UserChatModal';
 import { submitContactMessage, getSiteProfile, getSiteSettings } from '../services/firestoreService';
 import { starterProfile, starterSettings } from '../services/starterData';
 import type { SiteProfile, SiteSettings } from '../types';
@@ -105,6 +106,7 @@ export const ContactPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [status, setStatus] = useState<{ type: 'idle' | 'success' | 'error'; message: string }>({
     type: 'idle',
     message: '',
@@ -389,6 +391,30 @@ export const ContactPage: React.FC = () => {
             ) : (
               /* User IS logged in: Show active message form */
               <div className="space-y-6">
+                {/* Active User Greeting & Direct Chat Box Button */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 bg-sky-50/70 border border-sky-200/90 rounded-2xl">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">
+                        লগইন রয়েছেন: {currentUser.displayName || currentUser.email}
+                      </span>
+                      <span className="text-[11px] text-slate-500 block">
+                        নতুন মেসেজ পাঠান অথবা পূর্বের চ্যাট ও রিপ্লাই দেখুন
+                      </span>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsChatModalOpen(true)}
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer shrink-0"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    <span>আমার চ্যাট ইনবক্স</span>
+                  </button>
+                </div>
+
                 {/* Contact Form */}
                 <form onSubmit={handleSubmit} className="space-y-4">
                   
@@ -612,6 +638,14 @@ export const ContactPage: React.FC = () => {
           setIsSignInModalOpen(false);
           setStatus({ type: 'success', message: 'সফলভাবে সাইন-ইন সম্পন্ন হয়েছে!' });
         }}
+      />
+
+      {/* Real-time 2-Way Client Chat / Inbox Modal */}
+      <UserChatModal
+        isOpen={isChatModalOpen}
+        onClose={() => setIsChatModalOpen(false)}
+        currentUser={currentUser}
+        profile={profile}
       />
 
     </div>

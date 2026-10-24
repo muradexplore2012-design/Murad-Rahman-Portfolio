@@ -10,7 +10,9 @@ import {
   query,
   where,
   orderBy,
-  serverTimestamp
+  serverTimestamp,
+  onSnapshot,
+  arrayUnion
 } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import type {
@@ -20,6 +22,7 @@ import type {
   SkillGroup,
   Testimonial,
   ContactMessage,
+  ChatReply,
   SiteSettings
 } from '../types';
 import {
@@ -458,6 +461,144 @@ export async function deleteContactMessage(id: string): Promise<void> {
   if (!db) throw new Error("Firestore is not initialized.");
   const docRef = doc(db, COLLECTIONS.CONTACT_MESSAGES, id);
   await deleteDoc(docRef);
+}
+
+/**
+ * Real-time subscription to all contact messages/conversations for Admin
+ */
+export function subscribeToContactMessages(
+  callback: (messages: ContactMessage[]) => void,
+  onError?: (err: any) => void
+): () => void {
+  if (!db) {
+    callback([]);
+    return () => {};
+  }
+  const colRef = collection(db, COLLECTIONS.CONTACT_MESSAGES);
+  const q = query(colRef, orderBy('createdAt', 'desc'));
+
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const messages = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as ContactMessage[];
+      callback(messages);
+    },
+    (err) => {
+      console.error("Real-time contact messages subscription error:", err);
+      if (onError) onError(err);
+    }
+  );
+}
+
+/**
+ * Real-time subscription to a specific user's conversation threads
+ */
+export function subscribeToUserMessages(
+  userId: string,
+  userEmail: string,
+  callback: (messages: ContactMessage[]) => void,
+  onError?: (err: any) => void
+): () => void {
+  if (!db || (!userId && !userEmail)) {
+    callback([]);
+    return () => {};
+  }
+
+  const colRef = collection(db, COLLECTIONS.CONTACT_MESSAGES);
+  // Prefer querying by userId if present, otherwise by email
+  const q = userId
+    ? query(colRef, where('userId', '==', userId))
+    : query(colRef, where('email', '==', userEmail.trim().toLowerCase()));
+
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const messages = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as ContactMessage[];
+
+      // Sort client-side by createdAt descending to avoid requiring composite Firestore indexes
+      messages.sort((a, b) => {
+        const timeA = a.createdAt?.seconds ? a.createdAt.seconds * 1000 : new Date(a.createdAt || 0).getTime();
+        const timeB = b.createdAt?.seconds ? b.createdAt.seconds * 1000 : new Date(b.createdAt || 0).getTime();
+        return timeB - timeA;
+      });
+
+      callback(messages);
+    },
+    (err) => {
+      console.error("Real-time user messages subscription error:", err);
+      if (onError) onError(err);
+    }
+  );
+}
+
+/**
+ * Send an Admin reply to a conversation thread
+ */
+export async function sendAdminReply(
+  messageId: string,
+  replyText: string,
+  adminProfile?: { name?: string; email?: string; photo?: string }
+): Promise<void> {
+  if (!db) throw new Error("Firestore is not initialized.");
+  if (!replyText.trim()) throw new Error("রিপ্লাই মেসেজ খালি রাখা যাবে না।");
+
+  const reply: ChatReply = {
+    id: 'rep_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+    sender: 'admin',
+    senderName: adminProfile?.name || 'Murad Rahman',
+    senderEmail: adminProfile?.email || 'muradexplore2012@gmail.com',
+    senderPhoto: adminProfile?.photo || '',
+    text: replyText.trim(),
+    createdAt: new Date().toISOString(),
+  };
+
+  const docRef = doc(db, COLLECTIONS.CONTACT_MESSAGES, messageId);
+  await updateDoc(docRef, {
+    replies: arrayUnion(reply),
+    lastMessage: replyText.trim(),
+    lastMessageAt: serverTimestamp(),
+    lastSender: 'admin',
+    isRead: true,
+    unreadByUser: true,
+  });
+}
+
+/**
+ * Send a Client/User reply to a conversation thread
+ */
+export async function sendUserReply(
+  messageId: string,
+  replyText: string,
+  user: { name: string; email: string; photo?: string }
+): Promise<void> {
+  if (!db) throw new Error("Firestore is not initialized.");
+  if (!replyText.trim()) throw new Error("মেসেজ খালি রাখা যাবে না।");
+
+  const reply: ChatReply = {
+    id: 'rep_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+    sender: 'user',
+    senderName: user.name || 'Client',
+    senderEmail: user.email,
+    senderPhoto: user.photo || '',
+    text: replyText.trim(),
+    createdAt: new Date().toISOString(),
+  };
+
+  const docRef = doc(db, COLLECTIONS.CONTACT_MESSAGES, messageId);
+  await updateDoc(docRef, {
+    replies: arrayUnion(reply),
+    lastMessage: replyText.trim(),
+    lastMessageAt: serverTimestamp(),
+    lastSender: 'user',
+    isRead: false,
+    unreadByAdmin: true,
+  });
 }
 
 /* =========================================================================
