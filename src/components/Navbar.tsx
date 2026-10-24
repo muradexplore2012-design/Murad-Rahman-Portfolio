@@ -233,7 +233,7 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
                             className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:text-[#0284c7] hover:bg-sky-50 rounded-lg transition-colors"
                           >
                             <Shield className="w-3.5 h-3.5 text-[#0284c7]" />
-                            <span>Admin CMS Dashboard</span>
+                            <span>Admin Dashboard</span>
                           </a>
                         )}
 
@@ -305,7 +305,7 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
                             className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:text-[#0284c7] hover:bg-sky-50 rounded-lg transition-colors"
                           >
                             <Shield className="w-3.5 h-3.5 text-[#0284c7]" />
-                            <span>Admin CMS Dashboard</span>
+                            <span>Admin Dashboard</span>
                           </a>
                         )}
 
@@ -449,7 +449,7 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
                   className="w-full py-2 px-3 bg-white text-[#0284c7] border border-sky-200 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow-2xs hover:bg-sky-50"
                 >
                   <Shield className="w-3.5 h-3.5" />
-                  <span>Admin CMS Dashboard</span>
+                  <span>Admin Dashboard</span>
                 </a>
               )}
 
