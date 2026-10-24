@@ -344,7 +344,7 @@ export const UserChatModal: React.FC<UserChatModalProps> = ({
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="মেসেজ লিখুন..."
+                  placeholder="মুরাদ রহমানকে মেসেজ লিখুন..."
                   className="w-full px-3.5 py-2.5 bg-transparent resize-none text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none max-h-28 leading-relaxed"
                 />
               </div>

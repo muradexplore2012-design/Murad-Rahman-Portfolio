@@ -741,7 +741,7 @@ export const AdminInbox: React.FC = () => {
                     value={replyText}
                     onChange={(e) => setReplyText(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="এখানে রিপ্লাই মেসেজ লিখুন... (Enter চাপলে সেন্ড হবে)"
+                    placeholder="এখানে রিপ্লাই মেসেজ লিখুন..."
                     className="w-full px-4 py-2.5 bg-transparent resize-none text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none max-h-32 leading-relaxed"
                   />
                 </div>
