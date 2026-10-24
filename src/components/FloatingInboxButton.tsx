@@ -99,10 +99,10 @@ export const FloatingInboxButton: React.FC<FloatingInboxButtonProps> = ({
     <button
       type="button"
       onClick={onClick}
-      className={`fixed bottom-3.5 right-3.5 sm:bottom-6 sm:right-6 z-40 group flex flex-col items-center justify-center w-[50px] h-[50px] sm:w-16 sm:h-16 rounded-full bg-gradient-to-tr from-[#0284c7] via-[#0369a1] to-[#0284c7] bg-[length:200%_auto] hover:bg-right text-white shadow-lg shadow-sky-600/30 sm:shadow-xl sm:shadow-sky-600/35 hover:shadow-2xl hover:shadow-sky-600/50 hover:scale-105 active:scale-95 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer border-2 border-white/50 backdrop-blur-xs select-none ${
+      className={`fixed bottom-3.5 right-3.5 sm:bottom-6 sm:right-6 z-40 group flex flex-col items-center justify-center w-[50px] h-[50px] sm:w-16 sm:h-16 rounded-full bg-gradient-to-tr from-[#0284c7] via-[#0369a1] to-[#0284c7] bg-[length:200%_auto] hover:bg-right text-white shadow-lg shadow-sky-600/30 sm:shadow-xl sm:shadow-sky-600/35 hover:shadow-2xl hover:shadow-sky-600/50 hover:scale-105 active:scale-95 transition-all duration-300 ease-in-out cursor-pointer border-2 border-white/50 backdrop-blur-xs select-none ${
         shouldHide
-          ? 'opacity-0 translate-y-12 scale-50 pointer-events-none'
-          : 'opacity-100 translate-y-0 scale-100 pointer-events-auto'
+          ? 'opacity-0 pointer-events-none'
+          : 'opacity-100 pointer-events-auto'
       }`}
       title="Live chat - সরাসরি চ্যাট করুন"
       aria-label="Open Live Chat"
