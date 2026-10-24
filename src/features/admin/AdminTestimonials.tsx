@@ -81,6 +81,28 @@ export const AdminTestimonials: React.FC = () => {
     }
   };
 
+  const handleQuickRate = async (item: Testimonial, newRating: number) => {
+    try {
+      await saveTestimonial({ id: item.id, rating: newRating });
+      const updated = testimonials.map((t) =>
+        t.id === item.id ? { ...t, rating: newRating } : t
+      );
+      setTestimonials(updated);
+      try {
+        localStorage.setItem(
+          'mr_cache_testimonials',
+          JSON.stringify(updated.filter((t) => t.isApproved !== false))
+        );
+      } catch {}
+      setStatus({
+        type: 'success',
+        message: `"${item.clientName}" এর রেটিং ${newRating} স্টার সেভ হয়েছে!`,
+      });
+    } catch (err: any) {
+      alert('রেটিং পরিবর্তন করতে সমস্যা হয়েছে: ' + (err.message || 'Error'));
+    }
+  };
+
   const handleToggleApproval = async (item: Testimonial) => {
     try {
       await saveTestimonial({ id: item.id, isApproved: !item.isApproved });
@@ -115,11 +137,23 @@ export const AdminTestimonials: React.FC = () => {
 
     try {
       setIsSaving(true);
-      await saveTestimonial(editingItem);
+      const toSave = {
+        ...editingItem,
+        rating: Number(editingItem.rating) || 5,
+      };
+      await saveTestimonial(toSave);
       setIsModalOpen(false);
       setEditingItem(null);
-      setStatus({ type: 'success', message: 'রিভিউ সফলভাবে সেভ হয়েছে!' });
-      await loadTestimonials();
+      setStatus({ type: 'success', message: 'রিভিউ ও স্টার সফলভাবে সেভ হয়েছে!' });
+      
+      const freshData = await getTestimonials(false);
+      setTestimonials(freshData);
+      try {
+        localStorage.setItem(
+          'mr_cache_testimonials',
+          JSON.stringify(freshData.filter((t) => t.isApproved !== false))
+        );
+      } catch {}
     } catch (err: any) {
       alert(err.message || 'সেভ করতে সমস্যা হয়েছে।');
     } finally {
@@ -211,11 +245,33 @@ export const AdminTestimonials: React.FC = () => {
                           ({item.clientRole || 'Client'}{item.clientCompany ? ` @ ${item.clientCompany}` : ''})
                         </span>
                       )}
-                      {/* Rating stars */}
-                      <div className="flex items-center gap-0.5 text-amber-400 text-xs">
-                        {Array.from({ length: item.rating || 5 }).map((_, i) => (
-                          <span key={i}>★</span>
+                      {/* Quick Rating Selector (Interactive 1-5 Stars) */}
+                      <div
+                        className="flex items-center gap-0.5 bg-amber-50/80 border border-amber-200/60 px-2 py-0.5 rounded-md"
+                        title="ক্লিক করে সরাসরি রেটিং পরিবর্তন করুন"
+                      >
+                        {[1, 2, 3, 4, 5].map((starVal) => (
+                          <button
+                            key={starVal}
+                            type="button"
+                            onClick={() => handleQuickRate(item, starVal)}
+                            className="text-sm transition-transform hover:scale-125 cursor-pointer leading-none p-0.5"
+                            title={`${starVal} স্টার দিন`}
+                          >
+                            <span
+                              className={
+                                starVal <= (item.rating || 5)
+                                  ? 'text-amber-400'
+                                  : 'text-slate-300'
+                              }
+                            >
+                              ★
+                            </span>
+                          </button>
                         ))}
+                        <span className="text-[11px] font-extrabold text-amber-700 ml-1">
+                          {item.rating || 5}★
+                        </span>
                       </div>
                     </div>
                     <p className="text-xs text-slate-600 mt-1 italic max-w-xl">
@@ -362,26 +418,43 @@ export const AdminTestimonials: React.FC = () => {
               </div>
 
               {/* Star Rating Selection */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                  রেটিং (Star Rating)
-                </label>
-                <div className="flex items-center gap-1.5">
-                  {[1, 2, 3, 4, 5].map((starVal) => (
-                    <button
-                      type="button"
-                      key={starVal}
-                      onClick={() => setEditingItem({ ...editingItem, rating: starVal })}
-                      className="p-1 text-xl transition-transform hover:scale-110 cursor-pointer"
-                    >
-                      <span className={starVal <= (editingItem.rating || 5) ? 'text-amber-400' : 'text-slate-300'}>
-                        ★
-                      </span>
-                    </button>
-                  ))}
-                  <span className="text-xs font-bold text-slate-600 ml-2">
-                    {editingItem.rating || 5} স্টার
+              <div className="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200/90">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                    <span>⭐ ক্লায়েন্টের রেটিং (Star Rating) *</span>
+                  </label>
+                  <span className="text-xs font-black text-amber-700 bg-white px-2.5 py-0.5 rounded-full border border-amber-200 shadow-2xs">
+                    {editingItem.rating || 5} স্টার রেটিং
                   </span>
+                </div>
+
+                <div className="grid grid-cols-5 gap-2">
+                  {[1, 2, 3, 4, 5].map((starVal) => {
+                    const isSelected = starVal === (editingItem.rating || 5);
+                    const isFilled = starVal <= (editingItem.rating || 5);
+
+                    return (
+                      <button
+                        type="button"
+                        key={starVal}
+                        onClick={() => setEditingItem({ ...editingItem, rating: starVal })}
+                        className={`py-2 px-1 rounded-xl border flex flex-col items-center justify-center transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-white border-amber-400 ring-2 ring-amber-300 shadow-xs scale-105'
+                            : isFilled
+                            ? 'bg-amber-100/50 border-amber-200 text-amber-500'
+                            : 'bg-white border-slate-200 text-slate-400 hover:border-amber-200'
+                        }`}
+                      >
+                        <span className={`text-2xl leading-none ${isFilled ? 'text-amber-400' : 'text-slate-300'}`}>
+                          ★
+                        </span>
+                        <span className={`text-[11px] font-bold mt-1 ${isSelected ? 'text-amber-900 font-extrabold' : 'text-slate-500'}`}>
+                          {starVal} Star
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 

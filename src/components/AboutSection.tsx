@@ -61,12 +61,12 @@ const CounterBox: React.FC<CounterBoxProps> = ({ targetValue, suffix = '+', labe
   const formattedCount = hasLeadingZero && count < 10 ? `0${count}` : `${count}`;
 
   return (
-    <div className="border border-[#0284c7]/40 p-4 sm:p-5 bg-white text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-[#0284c7] rounded-xl shadow-2xs group">
-      <div className="text-2xl sm:text-3xl font-black text-[#0284c7] leading-none mb-2 tabular-nums">
+    <div className="border border-[#0284c7]/40 p-2.5 sm:p-4 md:p-5 bg-white text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-[#0284c7] rounded-xl shadow-2xs group flex flex-col justify-between h-full">
+      <div className="text-lg sm:text-2xl md:text-3xl font-black text-[#0284c7] leading-none mb-1.5 sm:mb-2 tabular-nums">
         {formattedCount}
         {suffix}
       </div>
-      <div className="text-xs sm:text-sm font-bold text-slate-800">
+      <div className="text-[10px] sm:text-xs md:text-sm font-bold text-slate-800 leading-tight">
         {label}
       </div>
     </div>
@@ -197,7 +197,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
 
             {/* 3 Counter Boxes in a Row with smooth staggered rise-up & count-up */}
             {visibleCounters.length > 0 && (
-              <div ref={countersRef} className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+              <div ref={countersRef} className="grid grid-cols-3 gap-2 sm:gap-4 w-full">
                 {visibleCounters.map((counter, idx) => (
                   <div
                     key={counter.id}

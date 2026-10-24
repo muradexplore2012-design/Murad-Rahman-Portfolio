@@ -51,7 +51,15 @@ export async function getSiteProfile(): Promise<SiteProfile> {
     const docRef = doc(db, COLLECTIONS.PROFILE, 'main');
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      return { ...starterProfile, ...docSnap.data() } as SiteProfile;
+      const data = docSnap.data();
+      return {
+        ...starterProfile,
+        ...data,
+        socialLinks: {
+          ...starterProfile.socialLinks,
+          ...(data.socialLinks || {})
+        }
+      } as SiteProfile;
     }
   } catch (error) {
     console.warn("Could not load profile from Firestore, using starter profile:", error);

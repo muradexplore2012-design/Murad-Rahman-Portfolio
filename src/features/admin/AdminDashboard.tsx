@@ -3,21 +3,15 @@ import {
   FolderGit2,
   Layers,
   Inbox,
-  Sparkles,
-  CheckCircle,
-  Database,
   ArrowRight,
-  ShieldCheck,
   RefreshCw
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
   getProjects,
   getServices,
-  getContactMessages,
-  seedStarterContentToFirestore
+  getContactMessages
 } from '../../services/firestoreService';
-import { isFirebaseConfigured } from '../../lib/firebase';
 
 export const AdminDashboard: React.FC = () => {
   const [stats, setStats] = useState({
@@ -28,8 +22,6 @@ export const AdminDashboard: React.FC = () => {
     unreadMessages: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [isSeeding, setIsSeeding] = useState(false);
-  const [seedResult, setSeedResult] = useState<string | null>(null);
 
   const fetchStats = async () => {
     try {
@@ -58,23 +50,6 @@ export const AdminDashboard: React.FC = () => {
     fetchStats();
   }, []);
 
-  const handleSeedDatabase = async () => {
-    if (!window.confirm("আপনি কি ফায়ারবেস ডেটাবেসে স্টার্টার কন্টেন্ট (প্রোফাইল, প্রজেক্ট, সার্ভিস) যুক্ত করতে চান?")) {
-      return;
-    }
-    try {
-      setIsSeeding(true);
-      setSeedResult(null);
-      const res = await seedStarterContentToFirestore();
-      setSeedResult(res.message);
-      await fetchStats();
-    } catch (err: any) {
-      alert("Seeding failed: " + err.message);
-    } finally {
-      setIsSeeding(false);
-    }
-  };
-
   return (
     <div className="max-w-6xl mx-auto space-y-8">
       
@@ -92,48 +67,12 @@ export const AdminDashboard: React.FC = () => {
         <button
           onClick={fetchStats}
           disabled={isLoading}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:text-[#0284c7] hover:bg-slate-50 hover:border-slate-300 shadow-xs transition-colors self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:text-[#0284c7] hover:bg-slate-50 hover:border-slate-300 shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
           <span>রিফ্রেশ</span>
         </button>
       </div>
-
-      {/* Firebase Status Badge & Seed Button */}
-      <div className="rounded-2xl p-6 border border-slate-200 bg-white shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-sky-50 border border-sky-200 text-[#0284c7] flex items-center justify-center">
-            <Database className="w-5 h-5" />
-          </div>
-          <div>
-            <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-              <span>Firebase কানেকশন স্ট্যাটাস</span>
-              <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse" />
-            </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
-              {isFirebaseConfigured
-                ? 'Firebase SDK কনফিগার করা আছে।'
-                : 'Firebase কনফিগারেশন চেক করুন।'}
-            </p>
-          </div>
-        </div>
-
-        <button
-          onClick={handleSeedDatabase}
-          disabled={isSeeding}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sky-50 hover:bg-[#0284c7] border border-sky-300/80 text-[#0284c7] hover:text-white text-xs font-semibold transition-all shadow-xs"
-        >
-          <Sparkles className="w-4 h-4 text-amber-500" />
-          <span>{isSeeding ? 'ডেটাবেসে যুক্ত হচ্ছে...' : 'ফায়ারবেস স্টার্টার ডেটা লোড করুন'}</span>
-        </button>
-      </div>
-
-      {seedResult && (
-        <div className="p-4 rounded-xl bg-sky-50 border border-sky-200 text-sky-800 text-xs flex items-center gap-2">
-          <CheckCircle className="w-4 h-4 shrink-0" />
-          <span>{seedResult}</span>
-        </div>
-      )}
 
       {/* Real Statistics Grid (No fabricated data) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Menu, X, ChevronDown, LogOut, Shield, User } from 'lucide-react';
 import type { SiteProfile } from '../types';
 import { SignInModal } from './SignInModal';
+import { UserAvatar, getUserDisplayName } from './UserAvatar';
 import { subscribeToAuthState, signOutUser, verifyAdminStatus } from '../lib/auth';
 import type { User as FirebaseUser } from 'firebase/auth';
 
@@ -19,10 +20,8 @@ const TwitterXIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => 
 );
 
 const InstagramIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
-  <svg className={`${className} fill-none stroke-current stroke-2 transition-transform duration-200 group-hover:scale-125`} viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-    <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
-    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+  <svg className={`${className} fill-current transition-transform duration-200 group-hover:scale-125`} viewBox="0 0 24 24">
+    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
   </svg>
 );
 
@@ -123,7 +122,7 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
               {/* Social Icons with Smooth Zoom on Hover */}
               <div className="flex items-center gap-1.5 mr-1">
                 <a
-                  href={socialLinks.facebook || "https://facebook.com"}
+                  href={socialLinks.facebook?.trim() || "https://www.facebook.com/profile.php?id=100085471628384"}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Facebook"
@@ -134,7 +133,7 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
                 </a>
 
                 <a
-                  href={socialLinks.twitter || "https://x.com"}
+                  href={socialLinks.twitter?.trim() || "https://x.com"}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="X / Twitter"
@@ -145,7 +144,7 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
                 </a>
 
                 <a
-                  href={socialLinks.instagram || "https://instagram.com"}
+                  href={socialLinks.instagram?.trim() || "https://instagram.com"}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram"
@@ -156,7 +155,7 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
                 </a>
 
                 <a
-                  href={socialLinks.youtube || "https://youtube.com"}
+                  href={socialLinks.youtube?.trim() || "https://youtube.com"}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="YouTube"
@@ -176,19 +175,9 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
                     onClick={() => setUserDropdownOpen(!userDropdownOpen)}
                     className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 transition-colors cursor-pointer"
                   >
-                    {currentUser.photoURL ? (
-                      <img
-                        src={currentUser.photoURL}
-                        alt={currentUser.displayName || 'User'}
-                        className="w-7 h-7 rounded-full object-cover border border-slate-200"
-                      />
-                    ) : (
-                      <div className="w-7 h-7 rounded-full bg-sky-100 text-[#0284c7] font-bold text-xs flex items-center justify-center">
-                        {(currentUser.displayName || currentUser.email || 'U')[0].toUpperCase()}
-                      </div>
-                    )}
-                    <span className="text-xs font-bold text-slate-800 max-w-[90px] truncate">
-                      {currentUser.displayName || currentUser.email?.split('@')[0]}
+                    <UserAvatar user={currentUser} className="w-7 h-7" adminFallbackImage={profile.profileImage} />
+                    <span className="text-xs font-bold text-slate-800 max-w-[120px] truncate">
+                      {getUserDisplayName(currentUser, profile.name)}
                     </span>
                     <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
                   </button>
@@ -196,13 +185,16 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
                   {/* Dropdown Menu */}
                   {userDropdownOpen && (
                     <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
-                      <div className="px-3 py-2 border-b border-slate-100">
-                        <p className="text-xs font-bold text-slate-900 truncate">
-                          {currentUser.displayName || 'Signed in User'}
-                        </p>
-                        <p className="text-[11px] text-slate-500 truncate mt-0.5">
-                          {currentUser.email}
-                        </p>
+                      <div className="px-3 py-2 border-b border-slate-100 flex items-center gap-2.5">
+                        <UserAvatar user={currentUser} className="w-9 h-9" adminFallbackImage={profile.profileImage} />
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-slate-900 truncate">
+                            {getUserDisplayName(currentUser, profile.name)}
+                          </p>
+                          <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                            {currentUser.email}
+                          </p>
+                        </div>
                       </div>
 
                       <div className="py-1">
@@ -252,13 +244,7 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
             {/* Mobile Menu Button */}
             <div className="flex items-center gap-2 md:hidden">
               {currentUser && (
-                <div className="w-8 h-8 rounded-full overflow-hidden border border-slate-200 bg-sky-100 flex items-center justify-center text-xs font-bold text-[#0284c7]">
-                  {currentUser.photoURL ? (
-                    <img src={currentUser.photoURL} alt="User" className="w-full h-full object-cover" />
-                  ) : (
-                    (currentUser.displayName || currentUser.email || 'U')[0].toUpperCase()
-                  )}
-                </div>
+                <UserAvatar user={currentUser} className="w-8 h-8" adminFallbackImage={profile.profileImage} />
               )}
               <button
                 type="button"
@@ -290,7 +276,7 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
               {/* Mobile Socials */}
               <div className="flex items-center gap-2 py-3 px-3 border-y border-slate-100 mt-2">
                 <a
-                  href={socialLinks.facebook || "https://facebook.com"}
+                  href={socialLinks.facebook?.trim() || "https://www.facebook.com/profile.php?id=100085471628384"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-600 hover:text-[#0284c7] hover:border-[#0284c7] hover:scale-110 transition-all duration-200 group"
@@ -298,7 +284,7 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
                   <FacebookIcon />
                 </a>
                 <a
-                  href={socialLinks.twitter || "https://x.com"}
+                  href={socialLinks.twitter?.trim() || "https://x.com"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-600 hover:text-[#0284c7] hover:border-[#0284c7] hover:scale-110 transition-all duration-200 group"
@@ -306,7 +292,7 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
                   <TwitterXIcon />
                 </a>
                 <a
-                  href={socialLinks.instagram || "https://instagram.com"}
+                  href={socialLinks.instagram?.trim() || "https://instagram.com"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-600 hover:text-[#0284c7] hover:border-[#0284c7] hover:scale-110 transition-all duration-200 group"
@@ -314,7 +300,7 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
                   <InstagramIcon />
                 </a>
                 <a
-                  href={socialLinks.youtube || "https://youtube.com"}
+                  href={socialLinks.youtube?.trim() || "https://youtube.com"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-600 hover:text-[#0284c7] hover:border-[#0284c7] hover:scale-110 transition-all duration-200 group"
@@ -328,16 +314,10 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
                 {currentUser ? (
                   <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-9 h-9 rounded-full bg-sky-100 text-[#0284c7] font-bold text-xs flex items-center justify-center shrink-0">
-                        {currentUser.photoURL ? (
-                          <img src={currentUser.photoURL} alt="User" className="w-full h-full rounded-full object-cover" />
-                        ) : (
-                          (currentUser.displayName || currentUser.email || 'U')[0].toUpperCase()
-                        )}
-                      </div>
+                      <UserAvatar user={currentUser} className="w-9 h-9" adminFallbackImage={profile.profileImage} />
                       <div className="min-w-0">
                         <p className="text-xs font-bold text-slate-900 truncate">
-                          {currentUser.displayName || 'User'}
+                          {getUserDisplayName(currentUser, profile.name)}
                         </p>
                         <p className="text-[11px] text-slate-500 truncate">
                           {currentUser.email}

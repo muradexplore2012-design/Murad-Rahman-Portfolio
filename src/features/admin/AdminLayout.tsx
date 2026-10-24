@@ -15,8 +15,9 @@ import {
   X,
   ShieldCheck
 } from 'lucide-react';
-import { signOutAdmin } from '../../lib/auth';
+import { signOutAdmin, ADMIN_EMAIL } from '../../lib/auth';
 import { auth } from '../../lib/firebase';
+import { UserAvatar } from '../../components/UserAvatar';
 
 export const AdminLayout: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -68,19 +69,21 @@ export const AdminLayout: React.FC = () => {
       >
         <div>
           {/* Brand header */}
-          <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-            <div>
-              <h2 className="font-black text-base tracking-tight text-slate-900 flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-[#0284c7]" />
-                <span>Admin CMS</span>
-              </h2>
-              <p className="text-xs text-slate-500 mt-0.5 truncate max-w-[180px]">
-                {auth?.currentUser?.email || 'Murad Rahman'}
-              </p>
+          <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
+            <div className="flex items-center gap-3 min-w-0">
+              <UserAvatar user={auth?.currentUser || null} className="w-10 h-10" />
+              <div className="min-w-0">
+                <h2 className="font-black text-sm tracking-tight text-slate-900 truncate">
+                  {auth?.currentUser?.displayName || 'Murad Rahman'}
+                </h2>
+                <p className="text-xs text-slate-500 truncate max-w-[130px]">
+                  {auth?.currentUser?.email || ADMIN_EMAIL}
+                </p>
+              </div>
             </div>
             <button
               onClick={() => setMobileMenuOpen(false)}
-              className="md:hidden text-slate-400 hover:text-slate-700"
+              className="md:hidden text-slate-400 hover:text-slate-700 p-1"
             >
               <X className="w-5 h-5" />
             </button>

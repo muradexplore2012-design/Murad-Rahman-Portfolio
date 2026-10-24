@@ -77,7 +77,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
         {/* Services Grid: Observed directly so animation plays right in front of user */}
         <div
           ref={cardsRef}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 max-w-6xl mx-auto"
+          className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 md:gap-7 max-w-6xl mx-auto"
         >
           {publishedServices.map((service, index) => {
             const waUrl = getWhatsAppUrl(service.title);
@@ -91,13 +91,13 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
                     ? `serviceCardRise 1.5s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.35 + 0.15}s both`
                     : 'none',
                 }}
-                className={`bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 flex flex-col justify-between shadow-xs hover:shadow-xl hover:-translate-y-2 transition-all duration-300 service-card-animated ${
+                className={`bg-white rounded-xl sm:rounded-2xl border border-slate-200/90 p-2.5 sm:p-5 flex flex-col justify-between shadow-xs hover:shadow-xl hover:-translate-y-2 transition-all duration-300 service-card-animated ${
                   inView ? '' : 'opacity-0 translate-y-36'
                 }`}
               >
                 <div>
                   {/* Banner Image / Card Header Visual */}
-                  <div className="relative w-full aspect-[299/240] rounded-xl overflow-hidden bg-slate-900 select-none shadow-xs border border-slate-200/50">
+                  <div className="relative w-full aspect-[299/240] rounded-lg sm:rounded-xl overflow-hidden bg-slate-900 select-none shadow-xs border border-slate-200/50">
                     {service.coverImage ? (
                       <img
                         src={service.coverImage}
@@ -107,17 +107,17 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
                       />
                     ) : (
                       /* Fallback styled card banner if no coverImage is provided */
-                      <div className="w-full h-full bg-gradient-to-br from-slate-900 via-sky-950 to-slate-950 p-5 flex flex-col justify-between text-white relative">
+                      <div className="w-full h-full bg-gradient-to-br from-slate-900 via-sky-950 to-slate-950 p-3 sm:p-5 flex flex-col justify-between text-white relative">
                         {/* Orange Price Badge */}
                         {(service.badgeText || service.startingPrice) && (
-                          <div className="w-14 h-14 rounded-full bg-[#e04f16] text-white flex flex-col items-center justify-center font-bold shadow-md text-[10px] leading-tight">
+                          <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-[#e04f16] text-white flex flex-col items-center justify-center font-bold shadow-md text-[8px] sm:text-[10px] leading-tight">
                             <span>শুরু</span>
-                            <span className="text-xs">{service.startingPrice || '২৯৯৳'}</span>
+                            <span className="text-[10px] sm:text-xs">{service.startingPrice || '২৯৯৳'}</span>
                             <span>থেকে</span>
                           </div>
                         )}
                         <div className="mt-auto">
-                          <p className="text-base sm:text-lg font-bold text-white leading-snug">
+                          <p className="text-xs sm:text-lg font-bold text-white leading-snug line-clamp-2">
                             {service.description || service.title}
                           </p>
                         </div>
@@ -126,18 +126,18 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-sm sm:text-base font-bold text-slate-800 leading-snug my-3.5 sm:my-4 line-clamp-2 min-h-[44px] flex items-center">
+                  <h3 className="text-xs sm:text-base font-bold text-slate-800 leading-snug my-2 sm:my-4 line-clamp-2 min-h-[32px] sm:min-h-[44px] flex items-center">
                     {service.title}
                   </h3>
                 </div>
 
                 {/* Bottom Frame: Delivery Info & WhatsApp Button */}
-                <div className="border border-[#0284c7]/40 rounded-lg p-3 sm:p-3.5 flex items-center justify-between mt-auto bg-white gap-2">
+                <div className="border border-[#0284c7]/40 rounded-lg p-2 sm:p-3.5 flex flex-col sm:flex-row sm:items-center justify-between mt-auto bg-white gap-2">
                   <div className="min-w-0">
-                    <p className="text-xs sm:text-sm font-extrabold text-slate-900 leading-tight truncate">
+                    <p className="text-[11px] sm:text-sm font-extrabold text-slate-900 leading-tight truncate">
                       {service.deliveryTime || '3-5Days Delivery'}
                     </p>
-                    <p className="text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5 truncate">
+                    <p className="text-[10px] sm:text-xs text-slate-500 font-medium mt-0.5 truncate">
                       {service.ratingText || '4.9 (210+ Reviews)'}
                     </p>
                   </div>
@@ -147,7 +147,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
                     target={isExternal ? '_blank' : '_self'}
                     rel={isExternal ? 'noopener noreferrer' : undefined}
                     onClick={() => onSelectService && onSelectService(service.title)}
-                    className="shrink-0 px-4 sm:px-5 py-2 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white text-xs sm:text-sm font-semibold rounded-md shadow-xs transition-colors duration-150 inline-flex items-center justify-center cursor-pointer"
+                    className="w-full sm:w-auto shrink-0 px-3 sm:px-5 py-1.5 sm:py-2 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white text-[11px] sm:text-sm font-semibold rounded-md shadow-xs transition-colors duration-150 inline-flex items-center justify-center cursor-pointer text-center"
                   >
                     WhatsApp
                   </a>

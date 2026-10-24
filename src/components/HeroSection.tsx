@@ -9,7 +9,8 @@ interface HeroSectionProps {
 export const HeroSection: React.FC<HeroSectionProps> = ({ profile }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasSettled, setHasSettled] = useState(false);
-  const [progressWidth, setProgressWidth] = useState(0);
+  const [progressActive, setProgressActive] = useState(false);
+  const [progressInstant, setProgressInstant] = useState(false);
 
   const fullBio =
     profile.heroSubheadline ||
@@ -28,38 +29,43 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ profile }) => {
       setHasSettled(true);
     }, 1350);
 
-    // 2. Synchronized Progress Bar & Typewriter Effect
+    // 2. Synchronized Smooth Progress Bar & Typewriter Effect
     let charIndex = 0;
     setDisplayedBio('');
-    setProgressWidth(0);
+    setProgressActive(false);
+    setProgressInstant(false);
     setShowCursor(true);
 
     let typingInterval: ReturnType<typeof setInterval> | null = null;
     let cursorTimeout: ReturnType<typeof setTimeout> | null = null;
 
-    // Both progress bar and typing take ~3.2 seconds total, finishing at the exact same instant
+    // Total duration for both progress bar and typewriter
     const targetDurationMs = 3200;
     const speedMs = Math.max(8, Math.round(targetDurationMs / fullBio.length));
+
+    // Start continuous hardware-accelerated CSS progress bar
+    const startProgressTimer = setTimeout(() => {
+      setProgressActive(true);
+    }, 150);
 
     const startTypingTimer = setTimeout(() => {
       typingInterval = setInterval(() => {
         charIndex++;
         if (charIndex <= fullBio.length) {
           setDisplayedBio(fullBio.slice(0, charIndex));
-          setProgressWidth((charIndex / fullBio.length) * 100);
         } else {
-          setProgressWidth(100);
           if (typingInterval) clearInterval(typingInterval);
           cursorTimeout = setTimeout(() => {
             setShowCursor(false);
           }, 2000);
         }
       }, speedMs);
-    }, 200);
+    }, 150);
 
     return () => {
       clearTimeout(enterTimer);
       clearTimeout(settleTimer);
+      clearTimeout(startProgressTimer);
       clearTimeout(startTypingTimer);
       if (typingInterval) clearInterval(typingInterval);
       if (cursorTimeout) clearTimeout(cursorTimeout);
@@ -82,11 +88,19 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ profile }) => {
               </span>
             </h1>
 
-            {/* 2. Progress Bar Line 100% synchronized with text typing */}
+            {/* 2. Progress Bar Line 100% smooth GPU-accelerated transition */}
             <div className="w-48 sm:w-64 h-2 sm:h-2.5 bg-sky-50 rounded-full overflow-hidden relative mt-3 mb-6 sm:mb-8 border border-sky-100 shadow-inner">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-sky-400 via-[#0284c7] to-[#0369a1] relative transition-[width] duration-75 ease-linear shadow-xs"
-                style={{ width: `${progressWidth}%` }}
+                className="h-full rounded-full bg-gradient-to-r from-sky-400 via-[#0284c7] to-[#0369a1] relative shadow-xs"
+                style={{
+                  width: progressActive ? '100%' : '0%',
+                  transition: progressInstant
+                    ? 'none'
+                    : progressActive
+                    ? 'width 3200ms linear'
+                    : 'none',
+                  willChange: 'width',
+                }}
               >
                 {/* Moving light shimmer sweep inside progress bar */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-progress-shimmer pointer-events-none" />
@@ -98,7 +112,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ profile }) => {
               className="relative w-full max-w-xl mb-8 cursor-pointer select-text"
               onClick={() => {
                 setDisplayedBio(fullBio);
-                setProgressWidth(100);
+                setProgressInstant(true);
+                setProgressActive(true);
                 setShowCursor(false);
               }}
               title="সম্পূর্ণ লেখা দেখতে ক্লিক করুন"

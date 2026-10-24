@@ -57,6 +57,7 @@ export function App() {
         <Route path="/contact" element={<ContactPage />} />
 
         {/* Admin Login */}
+        <Route path="/login" element={<Navigate to="/admin/login" replace />} />
         <Route
           path="/admin/login"
           element={

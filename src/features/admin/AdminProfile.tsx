@@ -20,7 +20,16 @@ export const AdminProfile: React.FC = () => {
     async function load() {
       try {
         const data = await getSiteProfile();
-        if (data) setProfile(data);
+        if (data) {
+          setProfile({
+            ...starterProfile,
+            ...data,
+            socialLinks: {
+              ...starterProfile.socialLinks,
+              ...(data.socialLinks || {})
+            }
+          });
+        }
       } catch (err) {
         console.error("Profile load error:", err);
       } finally {

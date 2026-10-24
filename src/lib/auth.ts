@@ -57,8 +57,26 @@ export async function verifyAdminStatus(user: User | null): Promise<boolean> {
 export async function signInWithGoogle(): Promise<User> {
   if (!auth) throw new Error("Firebase Auth is not initialized.");
   const provider = new GoogleAuthProvider();
+  provider.addScope('profile');
+  provider.addScope('email');
   provider.setCustomParameters({ prompt: 'select_account' });
   const result = await signInWithPopup(auth, provider);
+
+  // Guarantee photoURL & displayName are synced to root user profile
+  const photo = result.user.photoURL || result.user.providerData?.find(p => p.photoURL)?.photoURL;
+  const name = result.user.displayName || result.user.providerData?.find(p => p.displayName)?.displayName;
+
+  if ((!result.user.photoURL && photo) || (!result.user.displayName && name)) {
+    try {
+      await updateProfile(result.user, {
+        ...(photo ? { photoURL: photo } : {}),
+        ...(name ? { displayName: name } : {})
+      });
+    } catch (e) {
+      console.warn("Could not sync Google profile data to Firebase user:", e);
+    }
+  }
+
   return result.user;
 }
 
@@ -106,7 +124,20 @@ export function subscribeToAuthState(callback: (user: User | null) => void) {
     callback(null);
     return () => {};
   }
-  return onAuthStateChanged(auth, callback);
+  return onAuthStateChanged(auth, async (user) => {
+    if (user && !user.displayName) {
+      const emailLower = (user.email || '').toLowerCase().trim();
+      if (
+        emailLower === ADMIN_EMAIL.toLowerCase() ||
+        emailLower === 'muradrahman2026@gmail.com'
+      ) {
+        try {
+          await updateProfile(user, { displayName: 'Murad Rahman' });
+        } catch {}
+      }
+    }
+    callback(user);
+  });
 }
 
 export { ADMIN_UID, ADMIN_EMAIL };
