@@ -65,6 +65,29 @@ export async function verifyAdminStatus(user: User | null): Promise<boolean> {
 }
 
 /**
+ * Decodes JWT payload without external library to extract Google user picture and name
+ */
+function parseJwtPayload(token: string): { picture?: string; name?: string; email?: string } | null {
+  try {
+    const parts = token.split('.');
+    if (parts.length < 2) return null;
+    const base64Url = parts[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      window
+        .atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    console.warn("Could not decode JWT payload:", e);
+    return null;
+  }
+}
+
+/**
  * User Sign-in with Google Identity Services (GIS) Credential
  * Bulletproof pattern: converts Google JWT ID token into a Firebase credential
  * and logs in via signInWithCredential. No 3rd-party cookie issues, no popups.
@@ -74,15 +97,31 @@ export async function signInWithGoogleCredential(idToken: string): Promise<User>
   const credential = GoogleAuthProvider.credential(idToken);
   const result = await signInWithCredential(auth, credential);
 
-  // Guarantee photoURL & displayName are synced to root user profile
-  const photo = result.user.photoURL || result.user.providerData?.find(p => p.photoURL)?.photoURL;
-  const name = result.user.displayName || result.user.providerData?.find(p => p.displayName)?.displayName;
+  // Directly parse JWT payload from Google Identity Services
+  const payload = parseJwtPayload(idToken);
+  const photo =
+    payload?.picture ||
+    result.user.photoURL ||
+    result.user.providerData?.find((p) => p.photoURL)?.photoURL;
+  const name =
+    payload?.name ||
+    result.user.displayName ||
+    result.user.providerData?.find((p) => p.displayName)?.displayName;
 
-  if ((!result.user.photoURL && photo) || (!result.user.displayName && name)) {
+  // Cache photo in localStorage for instant fallback and cross-tab access
+  if (result.user.email && photo) {
+    try {
+      localStorage.setItem('user_avatar_' + result.user.email.toLowerCase().trim(), photo);
+      localStorage.setItem('user_avatar_' + result.user.uid, photo);
+    } catch {}
+  }
+
+  // Guarantee photoURL & displayName are synced to root Firebase user profile
+  if (photo || name) {
     try {
       await updateProfile(result.user, {
         ...(photo ? { photoURL: photo } : {}),
-        ...(name ? { displayName: name } : {})
+        ...(name ? { displayName: name } : {}),
       });
     } catch (e) {
       console.warn("Could not sync Google profile data to Firebase user:", e);
@@ -166,15 +205,26 @@ export function subscribeToAuthState(callback: (user: User | null) => void) {
     return () => {};
   }
   return onAuthStateChanged(auth, async (user) => {
-    if (user && !user.displayName) {
-      const emailLower = (user.email || '').toLowerCase().trim();
-      if (
-        emailLower === ADMIN_EMAIL.toLowerCase() ||
-        emailLower === 'muradrahman2026@gmail.com'
-      ) {
+    if (user) {
+      if (!user.photoURL && user.email) {
         try {
-          await updateProfile(user, { displayName: 'Murad Rahman' });
+          const cachedPhoto = localStorage.getItem('user_avatar_' + user.email.toLowerCase().trim());
+          if (cachedPhoto) {
+            await updateProfile(user, { photoURL: cachedPhoto });
+          }
         } catch {}
+      }
+
+      if (!user.displayName) {
+        const emailLower = (user.email || '').toLowerCase().trim();
+        if (
+          emailLower === ADMIN_EMAIL.toLowerCase() ||
+          emailLower === 'muradrahman2026@gmail.com'
+        ) {
+          try {
+            await updateProfile(user, { displayName: 'Murad Rahman' });
+          } catch {}
+        }
       }
     }
     callback(user);

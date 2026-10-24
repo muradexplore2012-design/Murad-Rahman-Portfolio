@@ -21,6 +21,98 @@ import {
   sendAdminReply
 } from '../../services/firestoreService';
 
+interface ClientAvatarProps {
+  name: string;
+  email?: string;
+  photo?: string;
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
+}
+
+const ClientAvatar: React.FC<ClientAvatarProps> = ({
+  name,
+  email,
+  photo,
+  size = 'md',
+  className = '',
+}) => {
+  const [imgError, setImgError] = useState(false);
+  const [triedUnavatar, setTriedUnavatar] = useState(false);
+
+  // 1. Resolve photo candidate: explicit photo URL
+  let initialPhoto = photo?.trim() || null;
+
+  // 2. Local storage check for cached user photo
+  if (!initialPhoto && email && typeof window !== 'undefined') {
+    try {
+      const cached = localStorage.getItem('user_avatar_' + email.toLowerCase().trim());
+      if (cached && cached.trim()) initialPhoto = cached.trim();
+    } catch {}
+  }
+
+  const sizeClasses = {
+    sm: 'w-7 h-7 rounded-xl text-xs',
+    md: 'w-11 h-11 rounded-2xl text-sm',
+    lg: 'w-10 h-10 rounded-2xl text-sm',
+  }[size];
+
+  const initials = name
+    ? name
+        .trim()
+        .split(/\s+/)
+        .map((w) => w[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase()
+    : 'CL';
+
+  // Determine current image URL to try
+  const currentSrc = !imgError
+    ? initialPhoto || (email && !triedUnavatar ? `https://unavatar.io/${encodeURIComponent(email.toLowerCase().trim())}?fallback=false` : null)
+    : !triedUnavatar && email && initialPhoto
+    ? `https://unavatar.io/${encodeURIComponent(email.toLowerCase().trim())}?fallback=false`
+    : null;
+
+  if (currentSrc) {
+    return (
+      <img
+        src={currentSrc}
+        alt={name || 'Client'}
+        referrerPolicy="no-referrer"
+        onError={() => {
+          if (!triedUnavatar && email) {
+            setTriedUnavatar(true);
+          } else {
+            setImgError(true);
+          }
+        }}
+        className={`${sizeClasses} object-cover border border-slate-200/90 shadow-2xs shrink-0 bg-slate-100 ${className}`}
+      />
+    );
+  }
+
+  return (
+    <div
+      className={`${sizeClasses} bg-gradient-to-br from-sky-400 to-[#0284c7] text-white font-extrabold flex items-center justify-center shadow-xs shrink-0 ${className}`}
+    >
+      {initials}
+    </div>
+  );
+};
+
+function getResolvedClientPhoto(msg?: ContactMessage | null): string | undefined {
+  if (!msg) return undefined;
+  if (msg.userPhoto && msg.userPhoto.trim()) return msg.userPhoto.trim();
+  if (msg.replies && msg.replies.length > 0) {
+    for (const r of msg.replies) {
+      if (r.sender === 'user' && r.senderPhoto && r.senderPhoto.trim()) {
+        return r.senderPhoto.trim();
+      }
+    }
+  }
+  return undefined;
+}
+
 export const AdminInbox: React.FC = () => {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -340,11 +432,14 @@ export const AdminInbox: React.FC = () => {
                         : 'bg-white/60 border-l-transparent hover:bg-slate-50'
                     }`}
                   >
-                    {/* User Avatar with initials & green dot */}
+                    {/* User Avatar with Google Photo / Unavatar & active green dot */}
                     <div className="relative shrink-0">
-                      <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-400 to-[#0284c7] text-white font-extrabold flex items-center justify-center text-sm shadow-xs">
-                        {msg.name ? msg.name.slice(0, 2).toUpperCase() : 'CL'}
-                      </div>
+                      <ClientAvatar
+                        name={msg.name}
+                        email={msg.email}
+                        photo={getResolvedClientPhoto(msg)}
+                        size="md"
+                      />
                       {/* Active indicator dot */}
                       <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white" />
                     </div>
@@ -429,11 +524,14 @@ export const AdminInbox: React.FC = () => {
                     <ArrowLeft className="w-5 h-5" />
                   </button>
 
-                  {/* Client Avatar */}
+                  {/* Client Avatar with Google Photo / Unavatar */}
                   <div className="relative shrink-0">
-                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-400 to-[#0284c7] text-white font-extrabold flex items-center justify-center text-sm shadow-xs">
-                      {selectedMessage.name ? selectedMessage.name.slice(0, 2).toUpperCase() : 'CL'}
-                    </div>
+                    <ClientAvatar
+                      name={selectedMessage.name}
+                      email={selectedMessage.email}
+                      photo={getResolvedClientPhoto(selectedMessage)}
+                      size="lg"
+                    />
                     <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white" />
                   </div>
 
@@ -522,25 +620,34 @@ export const AdminInbox: React.FC = () => {
                   </p>
                 </div>
 
-                {/* 1. Client's Initial Message (Left bubble) */}
-                <div className="flex flex-col items-start max-w-[85%] sm:max-w-[75%] space-y-1">
-                  <span className="text-[10px] font-bold text-slate-500 ml-2">
-                    {selectedMessage.name} (ক্লায়েন্ট)
-                  </span>
-                  <div className="bg-white text-slate-900 rounded-2xl rounded-tl-xs p-3.5 sm:p-4 shadow-sm border border-slate-200/90 relative group">
-                    <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap select-text">
-                      {selectedMessage.message}
-                    </p>
-                    <div className="flex items-center justify-between gap-3 mt-2 pt-1 border-t border-slate-100 text-[10px] text-slate-400">
-                      <span>{formatTime(selectedMessage.createdAt)}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleCopy(selectedMessage.message, 'initial')}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity hover:text-[#0284c7] cursor-pointer"
-                        title="মেসেজ কপি করুন"
-                      >
-                        {copiedField === 'initial' ? 'কপি হয়েছে' : 'কপি'}
-                      </button>
+                {/* 1. Client's Initial Message (Left bubble with Avatar) */}
+                <div className="flex items-start gap-2 max-w-[85%] sm:max-w-[75%]">
+                  <ClientAvatar
+                    name={selectedMessage.name}
+                    email={selectedMessage.email}
+                    photo={getResolvedClientPhoto(selectedMessage)}
+                    size="sm"
+                    className="mt-4"
+                  />
+                  <div className="flex flex-col items-start space-y-1 min-w-0">
+                    <span className="text-[10px] font-bold text-slate-500 ml-2">
+                      {selectedMessage.name} (ক্লায়েন্ট)
+                    </span>
+                    <div className="bg-white text-slate-900 rounded-2xl rounded-tl-xs p-3.5 sm:p-4 shadow-sm border border-slate-200/90 relative group">
+                      <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap select-text">
+                        {selectedMessage.message}
+                      </p>
+                      <div className="flex items-center justify-between gap-3 mt-2 pt-1 border-t border-slate-100 text-[10px] text-slate-400">
+                        <span>{formatTime(selectedMessage.createdAt)}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(selectedMessage.message, 'initial')}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity hover:text-[#0284c7] cursor-pointer"
+                          title="মেসেজ কপি করুন"
+                        >
+                          {copiedField === 'initial' ? 'কপি হয়েছে' : 'কপি'}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -552,36 +659,56 @@ export const AdminInbox: React.FC = () => {
                   return (
                     <div
                       key={rep.id || idx}
-                      className={`flex flex-col ${isAdmin ? 'items-end ml-auto' : 'items-start mr-auto'} max-w-[85%] sm:max-w-[75%] space-y-1`}
+                      className={`flex items-start gap-2 max-w-[85%] sm:max-w-[75%] ${
+                        isAdmin ? 'ml-auto flex-row-reverse' : 'mr-auto'
+                      }`}
                     >
-                      <span
-                        className={`text-[10px] font-bold ${
-                          isAdmin ? 'text-[#0284c7] mr-2' : 'text-slate-500 ml-2'
-                        }`}
-                      >
-                        {isAdmin ? 'মুরাদ রহমান (Admin)' : rep.senderName || 'ক্লায়েন্ট'}
-                      </span>
+                      {isAdmin ? (
+                        <img
+                          src="/images/murad-rahman.jpg"
+                          alt="Murad Rahman"
+                          className="w-7 h-7 rounded-xl object-cover border border-sky-300 mt-4 shrink-0 shadow-2xs"
+                        />
+                      ) : (
+                        <ClientAvatar
+                          name={rep.senderName || selectedMessage.name}
+                          email={rep.senderEmail || selectedMessage.email}
+                          photo={rep.senderPhoto || getResolvedClientPhoto(selectedMessage)}
+                          size="sm"
+                          className="mt-4"
+                        />
+                      )}
 
-                      <div
-                        className={`p-3.5 sm:p-4 rounded-2xl shadow-sm text-xs sm:text-sm leading-relaxed whitespace-pre-wrap select-text relative group ${
-                          isAdmin
-                            ? 'bg-[#0284c7] text-white rounded-tr-xs'
-                            : 'bg-white text-slate-900 rounded-tl-xs border border-slate-200/90'
-                        }`}
-                      >
-                        <p>{rep.text}</p>
-
-                        <div
-                          className={`flex items-center justify-end gap-1.5 mt-2 pt-1 text-[10px] ${
-                            isAdmin ? 'text-sky-200 border-t border-sky-500/40' : 'text-slate-400 border-t border-slate-100'
+                      <div className={`flex flex-col ${isAdmin ? 'items-end' : 'items-start'} space-y-1 min-w-0`}>
+                        <span
+                          className={`text-[10px] font-bold ${
+                            isAdmin ? 'text-[#0284c7] mr-2' : 'text-slate-500 ml-2'
                           }`}
                         >
-                          <span>{formatTime(rep.createdAt)}</span>
-                          {isAdmin && (
-                            <span title="পাঠানো হয়েছে">
-                              <CheckCheck className="w-3.5 h-3.5 text-sky-200" />
-                            </span>
-                          )}
+                          {isAdmin ? 'মুরাদ রহমান (Admin)' : rep.senderName || 'ক্লায়েন্ট'}
+                        </span>
+
+                        <div
+                          className={`p-3.5 sm:p-4 rounded-2xl shadow-sm text-xs sm:text-sm leading-relaxed whitespace-pre-wrap select-text relative group ${
+                            isAdmin
+                              ? 'bg-[#0284c7] text-white rounded-tr-xs'
+                              : 'bg-white text-slate-900 rounded-tl-xs border border-slate-200/90'
+                          }`}
+                        >
+                          <p>{rep.text}</p>
+
+                          <div
+                            className={`flex items-center justify-end gap-1.5 mt-2 pt-1 text-[10px] ${
+                              isAdmin ? 'text-sky-200 border-t border-sky-500/40' : 'text-slate-400 border-t border-slate-100'
+                            }`}
+                          >
+                            <span>{formatTime(rep.createdAt)}</span>
+                            {isAdmin && (
+                              <span title="পাঠানো হয়েছে">
+                                <CheckCheck className="w-3.5 h-3.5 text-sky-200" />
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>

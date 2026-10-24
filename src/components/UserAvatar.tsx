@@ -33,8 +33,16 @@ export function getCandidateAvatarUrl(user: User | null, adminFallbackImage?: st
     }
   }
 
-  // 3. Murad Rahman / Admin Account
+  // 3. Cached Google profile photo in localStorage
   const emailLower = (user.email || '').toLowerCase().trim();
+  if (emailLower && typeof window !== 'undefined') {
+    try {
+      const cached = localStorage.getItem('user_avatar_' + emailLower);
+      if (cached && cached.trim()) return cached.trim();
+    } catch {}
+  }
+
+  // 4. Murad Rahman / Admin Account
   if (
     emailLower === ADMIN_EMAIL.toLowerCase() ||
     emailLower === 'muradrahman2026@gmail.com'
@@ -42,7 +50,7 @@ export function getCandidateAvatarUrl(user: User | null, adminFallbackImage?: st
     return adminFallbackImage || '/images/murad-rahman.jpg';
   }
 
-  // 4. Any email user: Try public Gravatar / avatar fetcher
+  // 5. Any email user: Try public Gravatar / unavatar fetcher
   if (emailLower) {
     return `https://unavatar.io/${encodeURIComponent(emailLower)}?fallback=false`;
   }
@@ -108,7 +116,6 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
         src={avatarUrl}
         alt={user?.displayName || user?.email || 'User'}
         referrerPolicy="no-referrer"
-        crossOrigin="anonymous"
         onError={() => setHasError(true)}
         className={`${className} rounded-full object-cover border border-slate-200 shrink-0 bg-slate-100 shadow-2xs`}
       />

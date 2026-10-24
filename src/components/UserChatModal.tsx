@@ -96,12 +96,18 @@ export const UserChatModal: React.FC<UserChatModalProps> = ({
       const text = inputText.trim();
       setInputText('');
 
+      const userPhoto =
+        currentUser.photoURL ||
+        (currentUser.email
+          ? localStorage.getItem('user_avatar_' + currentUser.email.toLowerCase().trim()) || ''
+          : '');
+
       if (selectedThread) {
         // Reply to existing conversation
         await sendUserReply(selectedThread.id, text, {
           name: currentUser.displayName || 'Client',
           email: currentUser.email || '',
-          photo: currentUser.photoURL || '',
+          photo: userPhoto,
         });
       } else {
         // Create initial conversation
@@ -111,7 +117,7 @@ export const UserChatModal: React.FC<UserChatModalProps> = ({
           message: text,
           subject: 'সরাসরি চ্যাট বার্তা',
           userId: currentUser.uid,
-          userPhoto: currentUser.photoURL || '',
+          userPhoto: userPhoto,
         });
       }
 

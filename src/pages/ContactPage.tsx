@@ -181,6 +181,12 @@ export const ContactPage: React.FC = () => {
       const finalPhone = phone.trim();
 
       // 1. Save to Firestore
+      const userPhoto =
+        currentUser.photoURL ||
+        (currentUser.email
+          ? localStorage.getItem('user_avatar_' + currentUser.email.toLowerCase().trim()) || undefined
+          : undefined);
+
       const newDocId = await submitContactMessage({
         name: finalName,
         email: finalEmail,
@@ -188,7 +194,7 @@ export const ContactPage: React.FC = () => {
         subject: finalSubject,
         message: finalMessage,
         userId: currentUser.uid,
-        userPhoto: currentUser.photoURL || undefined,
+        userPhoto: userPhoto,
       });
 
       // 2. Trigger Google Sheets & Gmail Webhook if configured

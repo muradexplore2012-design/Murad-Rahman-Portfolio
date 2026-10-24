@@ -14,7 +14,7 @@ import {
   onSnapshot,
   arrayUnion
 } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { db, auth } from '../lib/firebase';
 import type {
   SiteProfile,
   Project,
@@ -418,6 +418,18 @@ export async function submitContactMessage(params: {
     throw new Error("অনুগ্রহ করে একটি সঠিক ইমেইল এড্রেস লিখুন।");
   }
 
+  // Resolve user photo & ID from auth or local cache if not explicitly provided
+  const currentUser = auth?.currentUser;
+  const resolvedUserId = params.userId || currentUser?.uid || '';
+  let resolvedUserPhoto = params.userPhoto || currentUser?.photoURL || '';
+
+  if (!resolvedUserPhoto && params.email && typeof window !== 'undefined') {
+    try {
+      const cached = localStorage.getItem('user_avatar_' + params.email.toLowerCase().trim());
+      if (cached) resolvedUserPhoto = cached;
+    } catch {}
+  }
+
   const colRef = collection(db, COLLECTIONS.CONTACT_MESSAGES);
   const docRef = await addDoc(colRef, {
     name: params.name.trim(),
@@ -425,8 +437,8 @@ export async function submitContactMessage(params: {
     phone: params.phone?.trim() || '',
     subject: params.subject?.trim() || 'Website Inquiry',
     message: params.message.trim(),
-    userId: params.userId || '',
-    userPhoto: params.userPhoto || '',
+    userId: resolvedUserId,
+    userPhoto: resolvedUserPhoto,
     isRead: false,
     isArchived: false,
     createdAt: serverTimestamp()
@@ -621,25 +633,38 @@ export async function sendUserReply(
   if (!db) throw new Error("Firestore is not initialized.");
   if (!replyText.trim()) throw new Error("মেসেজ খালি রাখা যাবে না।");
 
+  let photo = user.photo || auth?.currentUser?.photoURL || '';
+  if (!photo && user.email && typeof window !== 'undefined') {
+    try {
+      photo = localStorage.getItem('user_avatar_' + user.email.toLowerCase().trim()) || '';
+    } catch {}
+  }
+
   const reply: ChatReply = {
     id: 'rep_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
     sender: 'user',
     senderName: user.name || 'Client',
     senderEmail: user.email,
-    senderPhoto: user.photo || '',
+    senderPhoto: photo,
     text: replyText.trim(),
     createdAt: new Date().toISOString(),
   };
 
   const docRef = doc(db, COLLECTIONS.CONTACT_MESSAGES, messageId);
-  await updateDoc(docRef, {
+  const updates: Record<string, any> = {
     replies: arrayUnion(reply),
     lastMessage: replyText.trim(),
     lastMessageAt: serverTimestamp(),
     lastSender: 'user',
     isRead: false,
     unreadByAdmin: true,
-  });
+  };
+
+  if (photo) {
+    updates.userPhoto = photo;
+  }
+
+  await updateDoc(docRef, updates);
 }
 
 /* =========================================================================

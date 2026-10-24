@@ -201,15 +201,6 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
               {currentUser ? (
                 /* Authenticated User Menu */
                 <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsChatModalOpen(true)}
-                    className="p-1.5 rounded-full border border-slate-200 hover:border-sky-300 text-slate-600 hover:text-[#0284c7] hover:bg-sky-50 transition-colors cursor-pointer"
-                    title="আমার ইনবক্স / চ্যাট"
-                  >
-                    <MessageSquare className="w-4 h-4" />
-                  </button>
-
                   <div className="relative" ref={dropdownRef}>
                     <button
                       type="button"
