@@ -55,35 +55,6 @@ const QUICK_TOPICS = [
   'জরুরি প্রজেক্ট আলোচনা',
 ];
 
-/**
- * Automatically formats message text into clean 2-3 line segments (max ~38 chars per line)
- * so that Google Sheets cells auto-wrap and expand vertically without overflowing.
- */
-function formatMessageForSheet(text: string, maxLineLength = 38): string {
-  if (!text) return '';
-  const paragraphs = text.split('\n');
-  const formattedParagraphs = paragraphs.map((p) => {
-    const trimmed = p.trim();
-    if (!trimmed) return '';
-    const words = trimmed.split(/\s+/);
-    let currentLine = '';
-    const lines: string[] = [];
-    for (const w of words) {
-      if (!currentLine) {
-        currentLine = w;
-      } else if (currentLine.length + 1 + w.length <= maxLineLength) {
-        currentLine += ' ' + w;
-      } else {
-        lines.push(currentLine);
-        currentLine = w;
-      }
-    }
-    if (currentLine) lines.push(currentLine);
-    return lines.join('\n');
-  });
-  return formattedParagraphs.join('\n');
-}
-
 interface SentMessageItem {
   id: string;
   subject: string;
@@ -198,37 +169,7 @@ export const ContactPage: React.FC = () => {
         userPhoto: userPhoto,
       });
 
-      // 2. Trigger Google Sheets & Gmail Webhook if configured
-      const webhookUrl =
-        settings.googleSheetWebhookUrl?.trim() ||
-        'https://script.google.com/macros/s/AKfycbzi1_nElsw85vuLxhhMJKXEykbbdH68G_SSFshflYZtK_mT6aVv34cnCDDAfwnbJe56/exec';
-      if (webhookUrl && webhookUrl.startsWith('http')) {
-        try {
-          const payload = {
-            timestamp: new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' }),
-            name: finalName,
-            email: finalEmail,
-            phone: finalPhone || '-',
-            subject: finalSubject,
-            message: formatMessageForSheet(finalMessage, 38),
-            userId: currentUser.uid,
-          };
-
-          // mode: 'no-cors' allows safe submission to Google Apps Script without preflight blocks
-          await fetch(webhookUrl, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-              'Content-Type': 'text/plain;charset=utf-8',
-            },
-            body: JSON.stringify(payload),
-          });
-        } catch (webhookErr) {
-          console.warn('Google Sheets Webhook error:', webhookErr);
-        }
-      }
-
-      // 3. Add to local session sent messages
+      // 2. Add to local session sent messages
       const sentTime = new Date().toLocaleTimeString('bn-BD', {
         hour: '2-digit',
         minute: '2-digit',
