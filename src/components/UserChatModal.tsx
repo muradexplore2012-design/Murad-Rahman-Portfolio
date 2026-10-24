@@ -290,7 +290,7 @@ export const UserChatModal: React.FC<UserChatModalProps> = ({
                   )}
 
                   {/* 1. Client's Initial Message (Right side, Blue bubble) */}
-                  {selectedThread && (
+                  {selectedThread && selectedThread.message?.trim() && (
                     <div className="flex flex-col items-end max-w-[85%] ml-auto space-y-0.5">
                       <div className="bg-[#0284c7] text-white rounded-2xl rounded-tr-xs p-3.5 shadow-xs text-xs sm:text-sm leading-relaxed whitespace-pre-wrap select-text">
                         <FormattedMessageText text={selectedThread.message} isLight={false} />
@@ -311,10 +311,6 @@ export const UserChatModal: React.FC<UserChatModalProps> = ({
                         key={rep.id || idx}
                         className={`flex flex-col ${isAdmin ? 'items-start mr-auto' : 'items-end ml-auto'} max-w-[85%] space-y-0.5`}
                       >
-                        <span className="text-[10px] font-bold text-slate-400 px-1">
-                          {isAdmin ? 'মুরাদ রহমান' : 'আপনি'}
-                        </span>
-
                         <div
                           className={`p-3.5 rounded-2xl shadow-xs text-xs sm:text-sm leading-relaxed whitespace-pre-wrap select-text ${
                             isAdmin
@@ -348,7 +344,7 @@ export const UserChatModal: React.FC<UserChatModalProps> = ({
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="মুরাদ রহমানকে মেসেজ লিখুন... (Enter চাপলে সেন্ড হবে)"
+                  placeholder="মেসেজ লিখুন..."
                   className="w-full px-3.5 py-2.5 bg-transparent resize-none text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none max-h-28 leading-relaxed"
                 />
               </div>
