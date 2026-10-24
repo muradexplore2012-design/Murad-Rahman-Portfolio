@@ -20,6 +20,7 @@ import {
   deleteContactMessage,
   sendAdminReply
 } from '../../services/firestoreService';
+import { FormattedMessageText } from '../../components/FormattedMessageText';
 
 interface ClientAvatarProps {
   name: string;
@@ -615,7 +616,7 @@ export const AdminInbox: React.FC = () => {
                     </span>
                     <div className="bg-white text-slate-900 rounded-2xl rounded-tl-xs p-3.5 sm:p-4 shadow-sm border border-slate-200/90 relative group">
                       <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap select-text">
-                        {selectedMessage.message}
+                        <FormattedMessageText text={selectedMessage.message} isLight={true} />
                       </p>
                       <div className="flex items-center justify-between gap-3 mt-2 pt-1 border-t border-slate-100 text-[10px] text-slate-400">
                         <span>{formatTime(selectedMessage.createdAt)}</span>
@@ -675,7 +676,9 @@ export const AdminInbox: React.FC = () => {
                               : 'bg-white text-slate-900 rounded-tl-xs border border-slate-200/90'
                           }`}
                         >
-                          <p>{rep.text}</p>
+                          <p>
+                            <FormattedMessageText text={rep.text} isLight={!isAdmin} />
+                          </p>
 
                           <div
                             className={`flex items-center justify-end gap-1.5 mt-2 pt-1 text-[10px] ${

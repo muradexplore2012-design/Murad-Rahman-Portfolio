@@ -16,6 +16,7 @@ import {
   submitContactMessage
 } from '../services/firestoreService';
 import { GoogleSignInButton } from './GoogleSignInButton';
+import { FormattedMessageText } from './FormattedMessageText';
 
 interface UserChatModalProps {
   isOpen: boolean;
@@ -291,8 +292,8 @@ export const UserChatModal: React.FC<UserChatModalProps> = ({
                   {/* 1. Client's Initial Message (Right side, Blue bubble) */}
                   {selectedThread && (
                     <div className="flex flex-col items-end max-w-[85%] ml-auto space-y-0.5">
-                      <div className="bg-[#0284c7] text-white rounded-2xl rounded-tr-xs p-3.5 shadow-xs text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">
-                        {selectedThread.message}
+                      <div className="bg-[#0284c7] text-white rounded-2xl rounded-tr-xs p-3.5 shadow-xs text-xs sm:text-sm leading-relaxed whitespace-pre-wrap select-text">
+                        <FormattedMessageText text={selectedThread.message} isLight={false} />
                         <div className="flex items-center justify-end gap-1 mt-1 text-[10px] text-sky-200">
                           <span>{formatTime(selectedThread.createdAt)}</span>
                           <CheckCheck className="w-3.5 h-3.5 text-sky-200" />
@@ -315,13 +316,13 @@ export const UserChatModal: React.FC<UserChatModalProps> = ({
                         </span>
 
                         <div
-                          className={`p-3.5 rounded-2xl shadow-xs text-xs sm:text-sm leading-relaxed whitespace-pre-wrap ${
+                          className={`p-3.5 rounded-2xl shadow-xs text-xs sm:text-sm leading-relaxed whitespace-pre-wrap select-text ${
                             isAdmin
                               ? 'bg-slate-100 text-slate-900 rounded-tl-xs border border-slate-200/80'
                               : 'bg-[#0284c7] text-white rounded-tr-xs'
                           }`}
                         >
-                          {rep.text}
+                          <FormattedMessageText text={rep.text} isLight={isAdmin} />
                           <div
                             className={`flex items-center justify-end gap-1 mt-1 text-[10px] ${
                               isAdmin ? 'text-slate-400' : 'text-sky-200'
