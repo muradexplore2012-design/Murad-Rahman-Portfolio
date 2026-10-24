@@ -1,1 +1,3 @@
-/*    /index.html   200
+# Firebase Auth Proxy for custom authDomain
+/__/*  https://murad-rahman-994ed.firebaseapp.com/__/:splat  200!
+/*     /index.html                                          200

@@ -17,6 +17,7 @@ import {
   signUpWithEmail,
   verifyAdminStatus
 } from '../lib/auth';
+import { GoogleSignInButton } from './GoogleSignInButton';
 
 interface SignInModalProps {
   isOpen: boolean;
@@ -59,29 +60,14 @@ export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose, onSuc
 
   if (!isOpen) return null;
 
-  const handleGoogleSignIn = async () => {
-    try {
-      setIsGoogleLoading(true);
-      setErrorMsg('');
-      const user = await signInWithGoogle();
-      const isAdmin = await verifyAdminStatus(user);
-      setSuccessMsg(`স্বাগতম, ${user.displayName || user.email}!`);
-      setTimeout(() => {
-        if (onSuccess) onSuccess();
-        onClose();
-      }, 700);
-    } catch (err: any) {
-      console.error('Google sign in error:', err);
-      if (err.code === 'auth/popup-closed-by-user') {
-        setErrorMsg('সাইন-ইন উইন্ডো বন্ধ করা হয়েছে।');
-      } else if (err.code === 'auth/popup-blocked') {
-        setErrorMsg('ব্রাউজারে পপ-আপ ব্লক করা আছে। দয়া করে অনুমতি দিন।');
-      } else {
-        setErrorMsg(err.message || 'গুগল সাইন-ইন সম্পন্ন করা যায়নি।');
-      }
-    } finally {
-      setIsGoogleLoading(false);
-    }
+  const handleGoogleSuccess = async (user: any) => {
+    setErrorMsg('');
+    await verifyAdminStatus(user);
+    setSuccessMsg(`স্বাগতম, ${user.displayName || user.email}!`);
+    setTimeout(() => {
+      if (onSuccess) onSuccess();
+      onClose();
+    }, 600);
   };
 
   const handleEmailAuth = async (e: React.FormEvent) => {
@@ -178,20 +164,18 @@ export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose, onSuc
           </div>
         )}
 
-        {/* 1-Click Google Sign In */}
-        <button
-          type="button"
-          onClick={handleGoogleSignIn}
-          disabled={isGoogleLoading || isLoading}
-          className="w-full py-2.5 px-4 rounded-xl border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm flex items-center justify-center gap-3 shadow-2xs hover:shadow transition-all cursor-pointer disabled:opacity-60"
-        >
-          {isGoogleLoading ? (
-            <div className="w-4 h-4 border-2 border-slate-400 border-t-slate-800 rounded-full animate-spin" />
-          ) : (
-            <GoogleSvgIcon />
-          )}
-          <span>Continue with Google</span>
-        </button>
+        {/* Modern Google Identity Services (GIS) Button */}
+        <div className="mb-5 flex justify-center w-full">
+          <GoogleSignInButton
+            onSuccess={handleGoogleSuccess}
+            onError={(msg) => setErrorMsg(msg)}
+            text="continue_with"
+            theme="outline"
+            size="large"
+            width={340}
+            buttonText="Continue with Google"
+          />
+        </div>
 
         {/* Divider */}
         <div className="relative my-5">

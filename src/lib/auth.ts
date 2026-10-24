@@ -3,12 +3,25 @@ import {
   signOut as firebaseSignOut,
   signInWithPopup,
   GoogleAuthProvider,
+  signInWithCredential,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   updateProfile,
   type User
 } from 'firebase/auth';
 import { auth } from './firebase';
+
+/* 
+=============================================================================
+🔶 GOOGLE IDENTITY SERVICES (GIS) CONFIGURATION 🔶
+=============================================================================
+Configured in .env / .env.local:
+VITE_GOOGLE_CLIENT_ID
+=============================================================================
+*/
+export const GOOGLE_CLIENT_ID =
+  import.meta.env.VITE_GOOGLE_CLIENT_ID ||
+  "791694775814-88v1i7c4ikfv56bp4di6khc0dnrefnor.apps.googleusercontent.com";
 
 /* 
 =============================================================================
@@ -52,7 +65,35 @@ export async function verifyAdminStatus(user: User | null): Promise<boolean> {
 }
 
 /**
- * User Sign-in with Google popup
+ * User Sign-in with Google Identity Services (GIS) Credential
+ * Bulletproof pattern: converts Google JWT ID token into a Firebase credential
+ * and logs in via signInWithCredential. No 3rd-party cookie issues, no popups.
+ */
+export async function signInWithGoogleCredential(idToken: string): Promise<User> {
+  if (!auth) throw new Error("Firebase Auth is not initialized.");
+  const credential = GoogleAuthProvider.credential(idToken);
+  const result = await signInWithCredential(auth, credential);
+
+  // Guarantee photoURL & displayName are synced to root user profile
+  const photo = result.user.photoURL || result.user.providerData?.find(p => p.photoURL)?.photoURL;
+  const name = result.user.displayName || result.user.providerData?.find(p => p.displayName)?.displayName;
+
+  if ((!result.user.photoURL && photo) || (!result.user.displayName && name)) {
+    try {
+      await updateProfile(result.user, {
+        ...(photo ? { photoURL: photo } : {}),
+        ...(name ? { displayName: name } : {})
+      });
+    } catch (e) {
+      console.warn("Could not sync Google profile data to Firebase user:", e);
+    }
+  }
+
+  return result.user;
+}
+
+/**
+ * User Sign-in with Google popup (Legacy fallback)
  */
 export async function signInWithGoogle(): Promise<User> {
   if (!auth) throw new Error("Firebase Auth is not initialized.");

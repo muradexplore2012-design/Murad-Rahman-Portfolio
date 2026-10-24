@@ -15,6 +15,13 @@
 [context.branch-deploy.environment]
   NETLIFY_DRAWER_ENABLED = "false"
 
+# Firebase Auth Proxy: Routes /__/auth/handler to Firebase backend for custom authDomain
+[[redirects]]
+  from = "/__/*"
+  to = "https://murad-rahman-994ed.firebaseapp.com/__/:splat"
+  status = 200
+  force = true
+
 # SPA Fallback: Ensures /admin, /contact, etc. work without 404 on refresh
 [[redirects]]
   from = "/*"

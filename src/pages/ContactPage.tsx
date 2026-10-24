@@ -17,6 +17,7 @@ import {
 import { onAuthStateChanged, type User } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import { signInWithGoogle, signOutUser } from '../lib/auth';
+import { GoogleSignInButton } from '../components/GoogleSignInButton';
 import { submitContactMessage, getSiteProfile, getSiteSettings } from '../services/firestoreService';
 import { starterProfile, starterSettings } from '../services/starterData';
 import type { SiteProfile, SiteSettings } from '../types';
@@ -148,23 +149,11 @@ export const ContactPage: React.FC = () => {
     loadSiteData();
   }, []);
 
-  const handleGoogleSignIn = async () => {
-    try {
-      setIsGoogleSigningIn(true);
-      setStatus({ type: 'idle', message: '' });
-      const user = await signInWithGoogle();
-      setCurrentUser(user);
-      setName(user.displayName || '');
-      setEmail(user.email || '');
-      setStatus({ type: 'success', message: 'সফলভাবে সাইন-ইন হয়েছে! এখন মেসেজ লিখতে পারেন।' });
-    } catch (err: any) {
-      console.error('Google sign in error:', err);
-      if (err.code !== 'auth/popup-closed-by-user') {
-        setStatus({ type: 'error', message: err.message || 'গুগল সাইন-ইন ব্যর্থ হয়েছে।' });
-      }
-    } finally {
-      setIsGoogleSigningIn(false);
-    }
+  const handleGoogleSuccess = (user: User) => {
+    setCurrentUser(user);
+    setName(user.displayName || '');
+    setEmail(user.email || '');
+    setStatus({ type: 'success', message: 'সফলভাবে সাইন-ইন হয়েছে! এখন মেসেজ লিখতে পারেন।' });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -374,21 +363,23 @@ export const ContactPage: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-sm mx-auto">
-                  <button
-                    type="button"
-                    onClick={handleGoogleSignIn}
-                    disabled={isGoogleSigningIn}
-                    className="w-full inline-flex items-center justify-center gap-2.5 px-5 py-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-semibold text-xs shadow-xs transition-all hover:scale-[1.02] cursor-pointer"
-                  >
-                    <GoogleSvgIcon />
-                    <span>{isGoogleSigningIn ? 'লগইন হচ্ছে...' : 'Google দিয়ে সাইন-ইন'}</span>
-                  </button>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
+                  <div className="w-full sm:w-auto flex-1 flex justify-center">
+                    <GoogleSignInButton
+                      onSuccess={handleGoogleSuccess}
+                      onError={(msg) => setStatus({ type: 'error', message: msg })}
+                      text="signin_with"
+                      theme="outline"
+                      size="large"
+                      width={220}
+                      buttonText="Google দিয়ে সাইন-ইন"
+                    />
+                  </div>
 
                   <button
                     type="button"
                     onClick={() => setIsSignInModalOpen(true)}
-                    className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs transition-colors cursor-pointer"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs transition-colors cursor-pointer min-h-[44px]"
                   >
                     <Mail className="w-4 h-4 text-slate-600" />
                     <span>ইমেইল দিয়ে সাইন-ইন</span>

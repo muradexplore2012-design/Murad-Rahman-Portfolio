@@ -14,7 +14,7 @@ https://console.firebase.google.com/ > Project Settings > General > Your apps
 */
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDfl5pmu20OjAw9DJzFTxOFJmIzUDUhwuk",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "murad-rahman-994ed.firebaseapp.com",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "muradrahman.netlify.app",
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "murad-rahman-994ed",
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "murad-rahman-994ed.firebasestorage.app",
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "791694775814",
