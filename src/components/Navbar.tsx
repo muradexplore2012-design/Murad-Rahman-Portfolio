@@ -239,7 +239,7 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
                             className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:text-[#0284c7] hover:bg-sky-50 rounded-lg transition-colors cursor-pointer text-left"
                           >
                             <MessageSquare className="w-3.5 h-3.5 text-[#0284c7]" />
-                            <span>আমার ইনবক্স / চ্যাট</span>
+                            <span>Inbox (ইনবক্স)</span>
                           </button>
 
                           {isAdmin && (
@@ -315,6 +315,18 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
                       </div>
 
                       <div className="py-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setUserDropdownOpen(false);
+                            setIsChatModalOpen(true);
+                          }}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:text-[#0284c7] hover:bg-sky-50 rounded-lg transition-colors cursor-pointer text-left"
+                        >
+                          <MessageSquare className="w-3.5 h-3.5 text-[#0284c7]" />
+                          <span>Inbox (ইনবক্স)</span>
+                        </button>
+
                         {isAdmin && (
                           <a
                             href="/admin"
@@ -468,7 +480,7 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
                 className="w-full py-2 px-3 bg-sky-50 text-[#0284c7] hover:bg-sky-100 border border-sky-200 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
               >
                 <MessageSquare className="w-3.5 h-3.5" />
-                <span>আমার ইনবক্স / চ্যাট</span>
+                <span>Inbox (ইনবক্স)</span>
               </button>
 
               {isAdmin && (
