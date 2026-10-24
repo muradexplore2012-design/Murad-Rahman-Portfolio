@@ -35,6 +35,7 @@ export const UserChatModal: React.FC<UserChatModalProps> = ({
   const [inputText, setInputText] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const chatScrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -50,6 +51,7 @@ export const UserChatModal: React.FC<UserChatModalProps> = ({
     if (!isOpen || !currentUser) {
       setMessages([]);
       setSelectedThread(null);
+      setErrorMsg(null);
       return;
     }
 
@@ -59,6 +61,7 @@ export const UserChatModal: React.FC<UserChatModalProps> = ({
       currentUser.email || '',
       (data) => {
         setMessages(data);
+        setErrorMsg(null);
         setIsLoading(false);
 
         // Keep selected thread in sync with incoming replies
@@ -71,6 +74,11 @@ export const UserChatModal: React.FC<UserChatModalProps> = ({
       },
       (err) => {
         console.error('Error subscribing to user messages:', err);
+        if (err.code === 'permission-denied') {
+          setErrorMsg('Firebase Rules অনুযায়ী পারমিশন মেলেনি। Firebase Console-এ নতুন Rules পাবলিশ করুন।');
+        } else {
+          setErrorMsg(err.message || 'মেসেজ লোড করা যায়নি।');
+        }
         setIsLoading(false);
       }
     );
@@ -210,6 +218,14 @@ export const UserChatModal: React.FC<UserChatModalProps> = ({
           </div>
         ) : (
           <>
+            {/* Error notice if security rules block */}
+            {errorMsg && (
+              <div className="p-3 mx-4 my-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2 shrink-0">
+                <span className="font-bold">⚠️</span>
+                <span>{errorMsg}</span>
+              </div>
+            )}
+
             {/* Conversation Threads Selector (if user has multiple topics) */}
             {messages.length > 1 && (
               <div className="px-4 py-2 bg-slate-50 border-b border-slate-200/80 flex items-center gap-2 overflow-x-auto no-scrollbar shrink-0 text-xs">

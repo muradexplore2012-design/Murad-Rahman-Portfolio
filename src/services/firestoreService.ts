@@ -495,6 +495,7 @@ export function subscribeToContactMessages(
 
 /**
  * Real-time subscription to a specific user's conversation threads
+ * Combines queries by email (exact & lowercase) and userId to ensure all client messages match!
  */
 export function subscribeToUserMessages(
   userId: string,
@@ -508,33 +509,73 @@ export function subscribeToUserMessages(
   }
 
   const colRef = collection(db, COLLECTIONS.CONTACT_MESSAGES);
-  // Prefer querying by userId if present, otherwise by email
-  const q = userId
-    ? query(colRef, where('userId', '==', userId))
-    : query(colRef, where('email', '==', userEmail.trim().toLowerCase()));
+  const emailRaw = (userEmail || '').trim();
+  const emailLower = emailRaw.toLowerCase();
 
-  return onSnapshot(
-    q,
-    (snapshot) => {
-      const messages = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as ContactMessage[];
+  const resultsMap = new Map<string, ContactMessage>();
 
-      // Sort client-side by createdAt descending to avoid requiring composite Firestore indexes
-      messages.sort((a, b) => {
-        const timeA = a.createdAt?.seconds ? a.createdAt.seconds * 1000 : new Date(a.createdAt || 0).getTime();
-        const timeB = b.createdAt?.seconds ? b.createdAt.seconds * 1000 : new Date(b.createdAt || 0).getTime();
-        return timeB - timeA;
-      });
+  const emitCombined = () => {
+    const list = Array.from(resultsMap.values());
+    list.sort((a, b) => {
+      const timeA = a.createdAt?.seconds ? a.createdAt.seconds * 1000 : new Date(a.createdAt || 0).getTime();
+      const timeB = b.createdAt?.seconds ? b.createdAt.seconds * 1000 : new Date(b.createdAt || 0).getTime();
+      return timeB - timeA;
+    });
+    callback(list);
+  };
 
-      callback(messages);
-    },
-    (err) => {
-      console.error("Real-time user messages subscription error:", err);
-      if (onError) onError(err);
+  const unsubs: (() => void)[] = [];
+
+  // 1. Query by email(s) - finds all messages sent by this client even before logging in!
+  const emailsToQuery = Array.from(new Set([emailRaw, emailLower])).filter(Boolean);
+  for (const em of emailsToQuery) {
+    try {
+      const qEmail = query(colRef, where('email', '==', em));
+      const unsub = onSnapshot(
+        qEmail,
+        (snapshot) => {
+          snapshot.docs.forEach((d) => {
+            resultsMap.set(d.id, { id: d.id, ...d.data() } as ContactMessage);
+          });
+          emitCombined();
+        },
+        (err) => {
+          console.error("User messages by email subscription error:", err);
+          if (onError) onError(err);
+        }
+      );
+      unsubs.push(unsub);
+    } catch (e) {
+      console.warn("Could not query messages by email:", e);
     }
-  );
+  }
+
+  // 2. Also query by userId if available
+  if (userId) {
+    try {
+      const qUser = query(colRef, where('userId', '==', userId));
+      const unsub = onSnapshot(
+        qUser,
+        (snapshot) => {
+          snapshot.docs.forEach((d) => {
+            resultsMap.set(d.id, { id: d.id, ...d.data() } as ContactMessage);
+          });
+          emitCombined();
+        },
+        (err) => {
+          console.error("User messages by userId subscription error:", err);
+          if (onError) onError(err);
+        }
+      );
+      unsubs.push(unsub);
+    } catch (e) {
+      console.warn("Could not query messages by userId:", e);
+    }
+  }
+
+  return () => {
+    unsubs.forEach((u) => u());
+  };
 }
 
 /**
