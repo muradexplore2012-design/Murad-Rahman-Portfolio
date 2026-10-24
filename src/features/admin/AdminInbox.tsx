@@ -8,9 +8,13 @@ import {
   Phone,
   Calendar,
   AlertCircle,
-  Eye,
   RefreshCw,
-  Search
+  Search,
+  Tag,
+  MessageSquare,
+  Copy,
+  Check,
+  Send
 } from 'lucide-react';
 import type { ContactMessage } from '../../types';
 import {
@@ -24,10 +28,49 @@ export const AdminInbox: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
   const [status, setStatus] = useState<{ type: 'idle' | 'success' | 'error'; message: string }>({
     type: 'idle',
     message: '',
   });
+
+  const handleCopy = (text: string, field: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 2000);
+  };
+
+  const formatDateTime = (ts: any) => {
+    if (!ts) return 'N/A';
+    try {
+      const d = ts?.toDate ? ts.toDate() : ts?.seconds ? new Date(ts.seconds * 1000) : new Date(ts);
+      if (isNaN(d.getTime())) return 'N/A';
+      return d.toLocaleString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+      });
+    } catch {
+      return 'N/A';
+    }
+  };
+
+  const getWhatsAppUrl = (phone?: string, name?: string, subject?: string) => {
+    if (!phone) return null;
+    const digits = phone.replace(/[^0-9]/g, '');
+    if (!digits) return null;
+    const intlDigits = digits.startsWith('880')
+      ? digits
+      : digits.startsWith('0')
+      ? '88' + digits
+      : digits;
+    const text = `Hello ${name || ''}, Murad Rahman here regarding your portfolio inquiry: ${subject || ''}`;
+    return `https://wa.me/${intlDigits}?text=${encodeURIComponent(text)}`;
+  };
 
   const loadMessages = async () => {
     try {
@@ -205,52 +248,227 @@ export const AdminInbox: React.FC = () => {
         )}
       </div>
 
-      {/* Message Detail Modal */}
+      {/* Premium Message Detail Modal */}
       {selectedMessage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
-          <div className="relative w-full max-w-2xl rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-2xl text-slate-800">
-            <button
-              onClick={() => setSelectedMessage(null)}
-              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="pb-4 border-b border-slate-100 mb-6">
-              <span className="text-xs font-semibold text-[#0284c7] uppercase tracking-wider block mb-1">
-                মেসেজ বিবরণ
-              </span>
-              <h2 className="text-xl font-bold text-slate-900">{selectedMessage.subject}</h2>
-              <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 mt-2">
-                <span>প্রেরক: <strong className="text-slate-900">{selectedMessage.name}</strong></span>
-                <a href={`mailto:${selectedMessage.email}`} className="text-[#0284c7] hover:underline">
-                  {selectedMessage.email}
-                </a>
-                {selectedMessage.phone && (
-                  <span className="text-[#0284c7] font-medium">ফোন: {selectedMessage.phone}</span>
-                )}
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={() => setSelectedMessage(null)}
+        >
+          <div 
+            className="relative w-full max-w-2xl rounded-3xl overflow-hidden bg-white shadow-2xl border border-slate-200 flex flex-col max-h-[92vh] text-slate-800 animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Top Brand Banner matching the Email Notification header */}
+            <div className="bg-gradient-to-r from-[#0284c7] via-[#0369a1] to-[#0284c7] px-6 py-5 text-white relative flex items-center justify-between shadow-sm">
+              <div className="flex items-center gap-3.5">
+                <div className="w-11 h-11 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center text-white shrink-0 shadow-inner">
+                  <Mail className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-lg sm:text-xl font-black text-white tracking-tight">
+                      Murad Rahman Portfolio
+                    </h2>
+                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-white/20 text-white border border-white/30 uppercase tracking-wider">
+                      ইনবক্স বার্তা
+                    </span>
+                  </div>
+                  <p className="text-xs text-sky-100 font-medium mt-0.5">
+                    নতুন ক্লায়েন্ট যোগাযোগ ও ইনকোয়ারি মেসেজ
+                  </p>
+                </div>
               </div>
-            </div>
 
-            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-800 leading-relaxed whitespace-pre-wrap font-normal mb-6 max-h-96 overflow-y-auto">
-              {selectedMessage.message}
-            </div>
-
-            <div className="flex justify-between items-center pt-2">
-              <a
-                href={`mailto:${selectedMessage.email}?subject=Re: ${encodeURIComponent(selectedMessage.subject || '')}`}
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors"
-              >
-                <Mail className="w-3.5 h-3.5" />
-                <span>ইমেইলে উত্তর দিন</span>
-              </a>
-
+              {/* Close Button */}
               <button
                 onClick={() => setSelectedMessage(null)}
-                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer"
+                className="w-9 h-9 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center transition-all cursor-pointer backdrop-blur-md border border-white/20 shrink-0"
+                title="বন্ধ করুন"
               >
-                বন্ধ করুন
+                <X className="w-5 h-5" />
               </button>
+            </div>
+
+            {/* Scrollable Modal Content */}
+            <div className="overflow-y-auto p-5 sm:p-6 space-y-5 flex-1">
+              
+              {/* Structured Key-Value Details Card */}
+              <div className="bg-slate-50/90 border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-2xs space-y-3.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  
+                  {/* Client Name */}
+                  <div className="flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-sky-100 text-[#0284c7] font-black flex items-center justify-center shrink-0 text-xs">
+                      {selectedMessage.name ? selectedMessage.name.slice(0, 2).toUpperCase() : 'CL'}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+                        ক্লায়েন্ট নাম:
+                      </span>
+                      <span className="font-extrabold text-slate-900 text-sm sm:text-base truncate block mt-0.5">
+                        {selectedMessage.name}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Email */}
+                  <div className="flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-sky-100 text-[#0284c7] flex items-center justify-center shrink-0">
+                      <Mail className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+                        ইমেইল:
+                      </span>
+                      <a
+                        href={`mailto:${selectedMessage.email}`}
+                        className="font-bold text-[#0284c7] hover:underline text-xs sm:text-sm truncate block mt-0.5"
+                        title={selectedMessage.email}
+                      >
+                        {selectedMessage.email}
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Phone / WhatsApp */}
+                  <div className="flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                      <Phone className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+                        ফোন / WhatsApp:
+                      </span>
+                      {selectedMessage.phone ? (
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="font-bold text-slate-900 text-xs sm:text-sm">
+                            {selectedMessage.phone}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleCopy(selectedMessage.phone || '', 'phone')}
+                            className="text-[10px] text-slate-500 hover:text-slate-800 px-1.5 py-0.5 bg-white border border-slate-200 rounded cursor-pointer"
+                            title="ফোন নাম্বার কপি করুন"
+                          >
+                            {copiedField === 'phone' ? 'কপি হয়েছে' : 'কপি'}
+                          </button>
+                        </div>
+                      ) : (
+                        <span className="text-slate-400 text-xs mt-0.5 block">প্রদান করা হয়নি</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Received Time */}
+                  <div className="flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
+                      <Calendar className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+                        সময়:
+                      </span>
+                      <span className="font-semibold text-slate-700 text-xs sm:text-sm block mt-0.5">
+                        {formatDateTime(selectedMessage.createdAt)}
+                      </span>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Inquiry Subject */}
+                <div className="pt-3 border-t border-slate-200/80 flex items-center gap-2.5 flex-wrap">
+                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                    বিষয়:
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-sky-100 text-[#0284c7] font-bold text-xs sm:text-sm border border-sky-200">
+                    <Tag className="w-3.5 h-3.5" />
+                    {selectedMessage.subject || 'সাধারণ যোগাযোগ'}
+                  </span>
+                </div>
+
+              </div>
+
+              {/* Message Box with Accent Border */}
+              <div className="rounded-2xl border border-sky-200/80 bg-white p-4 sm:p-5 shadow-xs relative border-l-4 border-l-[#0284c7]">
+                <div className="flex items-center justify-between mb-3 pb-2.5 border-b border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4 text-[#0284c7]" />
+                    <span className="text-xs sm:text-sm font-black text-slate-900 tracking-tight">
+                      মেসেজ বিবরণ:
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(selectedMessage.message, 'message')}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold text-slate-600 hover:text-[#0284c7] hover:bg-sky-50 transition-colors cursor-pointer border border-transparent hover:border-sky-200"
+                  >
+                    {copiedField === 'message' ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-600" />
+                        <span className="text-emerald-600 font-bold">কপি হয়েছে!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>কপি করুন</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="text-slate-800 text-xs sm:text-sm leading-relaxed whitespace-pre-wrap font-medium select-text">
+                  {selectedMessage.message}
+                </div>
+              </div>
+
+            </div>
+
+            {/* Modal Action Footer */}
+            <div className="px-5 sm:px-6 py-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={(e) => handleToggleRead(selectedMessage, e)}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold transition-colors cursor-pointer"
+                  title={selectedMessage.isRead ? 'অপঠিত হিসেবে চিহ্নিত করুন' : 'পঠিত হিসেবে চিহ্নিত করুন'}
+                >
+                  <CheckCircle2 className={`w-3.5 h-3.5 ${selectedMessage.isRead ? 'text-slate-400' : 'text-[#0284c7]'}`} />
+                  <span>{selectedMessage.isRead ? 'অপঠিত চিহ্নিত করুন' : 'পঠিত চিহ্নিত করুন'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={(e) => handleDelete(selectedMessage.id, e)}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-rose-200 bg-white hover:bg-rose-50 text-rose-600 text-xs font-semibold transition-colors cursor-pointer"
+                  title="মেসেজটি মুছে ফেলুন"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>মুছে ফেলুন</span>
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2 ml-auto">
+                {selectedMessage.phone && (
+                  <a
+                    href={getWhatsAppUrl(selectedMessage.phone, selectedMessage.name, selectedMessage.subject) || '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>WhatsApp রিপ্লাই</span>
+                  </a>
+                )}
+
+                <a
+                  href={`mailto:${selectedMessage.email}?subject=Re: ${encodeURIComponent(selectedMessage.subject || '')}`}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white text-xs sm:text-sm font-bold rounded-xl shadow-xs transition-colors cursor-pointer"
+                >
+                  <Mail className="w-3.5 h-3.5" />
+                  <span>সরাসরি রিপ্লাই দিন</span>
+                </a>
+              </div>
             </div>
 
           </div>
