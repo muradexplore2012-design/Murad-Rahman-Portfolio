@@ -29,7 +29,7 @@ export const Footer: React.FC<FooterProps> = ({ profile, settings }) => {
   const returnText = `ডিজিটাল ডিজাইন ও ওয়েব ডেভেলপমেন্ট প্রজেক্টের ক্ষেত্রে প্রতিটি ধাপে ক্লায়েন্টের মতামত ও রিভিশন নিয়ে কাজ সম্পন্ন করা হয়। কাজ শুরু করার পূর্বে স্পষ্ট ব্রিফিং নেওয়া হয় যাতে সন্তোষজনক ফলাফল নিশ্চিত করা সম্ভব হয়। রিভিশন ও ডেলিভারি সংক্রান্ত নিয়ম আলোচনা সাপেক্ষে নির্ধারিত থাকে।`;
 
   return (
-    <footer className="relative bg-[#0284c7] text-white overflow-hidden">
+    <footer id="site-footer" className="relative bg-[#0284c7] text-white overflow-hidden">
       
       {/* Top Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-8 sm:pb-12">

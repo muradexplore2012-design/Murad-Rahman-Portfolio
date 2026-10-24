@@ -19,7 +19,9 @@ export const FloatingInboxButton: React.FC<FloatingInboxButtonProps> = ({
   currentUser,
 }) => {
   const [unreadCount, setUnreadCount] = useState(0);
+  const [isFooterVisible, setIsFooterVisible] = useState(false);
 
+  // Real-time unread messages listener
   useEffect(() => {
     if (!currentUser) {
       setUnreadCount(0);
@@ -39,14 +41,68 @@ export const FloatingInboxButton: React.FC<FloatingInboxButtonProps> = ({
     return () => unsub();
   }, [currentUser]);
 
+  // Hide button with animation when scrolled into footer area
+  useEffect(() => {
+    let observer: IntersectionObserver | null = null;
+    let removeScrollListener: (() => void) | null = null;
+
+    const setupFooterDetection = () => {
+      const footer = document.querySelector('footer') || document.getElementById('site-footer');
+      if (!footer) return false;
+
+      // 1. IntersectionObserver for high-performance viewport detection
+      try {
+        observer = new IntersectionObserver(
+          ([entry]) => {
+            setIsFooterVisible(entry.isIntersecting);
+          },
+          {
+            root: null,
+            threshold: 0,
+            rootMargin: '0px 0px -15px 0px',
+          }
+        );
+        observer.observe(footer);
+      } catch {}
+
+      // 2. High-precision scroll listener fallback
+      const handleScroll = () => {
+        const rect = footer.getBoundingClientRect();
+        const isTouchingFooter = rect.top < window.innerHeight - 15;
+        setIsFooterVisible(isTouchingFooter);
+      };
+
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      handleScroll();
+
+      removeScrollListener = () => {
+        window.removeEventListener('scroll', handleScroll);
+      };
+
+      return true;
+    };
+
+    if (!setupFooterDetection()) {
+      const timer = setTimeout(setupFooterDetection, 250);
+      return () => clearTimeout(timer);
+    }
+
+    return () => {
+      if (observer) observer.disconnect();
+      if (removeScrollListener) removeScrollListener();
+    };
+  }, []);
+
+  const shouldHide = isOpen || isFooterVisible;
+
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`fixed bottom-6 right-6 z-40 group flex flex-col items-center justify-center w-16 h-16 rounded-full bg-gradient-to-tr from-[#0284c7] via-[#0369a1] to-[#0284c7] bg-[length:200%_auto] hover:bg-right text-white shadow-xl shadow-sky-600/35 hover:shadow-2xl hover:shadow-sky-600/50 hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer border-2 border-white/50 backdrop-blur-xs select-none ${
-        isOpen
-          ? 'opacity-0 pointer-events-none scale-75'
-          : 'opacity-100 scale-100 animate-in fade-in zoom-in duration-300'
+      className={`fixed bottom-6 right-6 z-40 group flex flex-col items-center justify-center w-16 h-16 rounded-full bg-gradient-to-tr from-[#0284c7] via-[#0369a1] to-[#0284c7] bg-[length:200%_auto] hover:bg-right text-white shadow-xl shadow-sky-600/35 hover:shadow-2xl hover:shadow-sky-600/50 hover:scale-105 active:scale-95 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer border-2 border-white/50 backdrop-blur-xs select-none ${
+        shouldHide
+          ? 'opacity-0 translate-y-12 scale-50 pointer-events-none'
+          : 'opacity-100 translate-y-0 scale-100 pointer-events-auto'
       }`}
       title="Live chat - সরাসরি চ্যাট করুন"
       aria-label="Open Live Chat"
