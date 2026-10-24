@@ -3,6 +3,15 @@
   publish = "dist"
   command = "npm run build"
 
+[build.environment]
+  NETLIFY_DRAWER_ENABLED = "false"
+
+[context.production.environment]
+  NETLIFY_DRAWER_ENABLED = "false"
+
+[context.deploy-preview.environment]
+  NETLIFY_DRAWER_ENABLED = "false"
+
 # SPA Fallback: Ensures /admin, /contact, etc. work without 404 on refresh
 [[redirects]]
   from = "/*"

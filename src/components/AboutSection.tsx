@@ -61,12 +61,12 @@ const CounterBox: React.FC<CounterBoxProps> = ({ targetValue, suffix = '+', labe
   const formattedCount = hasLeadingZero && count < 10 ? `0${count}` : `${count}`;
 
   return (
-    <div className="border border-[#0284c7]/40 p-2.5 sm:p-4 md:p-5 bg-white text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-[#0284c7] rounded-xl shadow-2xs group flex flex-col justify-between h-full">
-      <div className="text-lg sm:text-2xl md:text-3xl font-black text-[#0284c7] leading-none mb-1.5 sm:mb-2 tabular-nums">
+    <div className="bg-gradient-to-b from-sky-50/70 via-sky-50/20 to-white border border-sky-200/90 rounded-2xl p-3 sm:p-4.5 md:p-5 text-left shadow-sm hover:shadow-md hover:border-[#0284c7] transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between h-full group">
+      <div className="text-xl sm:text-2xl md:text-3xl font-black text-[#0284c7] leading-none mb-1.5 sm:mb-2 tabular-nums tracking-tight">
         {formattedCount}
         {suffix}
       </div>
-      <div className="text-[10px] sm:text-xs md:text-sm font-bold text-slate-800 leading-tight">
+      <div className="text-[11px] sm:text-xs md:text-sm font-bold text-slate-900 leading-snug">
         {label}
       </div>
     </div>
@@ -189,15 +189,18 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
             <div className="mb-8">
               <a
                 href={profile.resumeUrl || "#contact"}
-                className="inline-flex items-center justify-center px-6 py-2.5 border-2 border-[#0284c7] text-[#0284c7] hover:bg-[#0284c7] hover:text-white font-bold text-sm rounded-lg transition-all duration-200 shadow-2xs hover:scale-105 active:scale-95 cursor-pointer"
+                target={profile.resumeUrl && profile.resumeUrl.startsWith('http') ? '_blank' : undefined}
+                rel={profile.resumeUrl && profile.resumeUrl.startsWith('http') ? 'noopener noreferrer' : undefined}
+                className="inline-flex items-center gap-2 px-6 sm:px-7 py-3 bg-[#0284c7] hover:bg-[#0369a1] active:bg-[#075985] text-white font-bold text-sm sm:text-base rounded-xl shadow-md hover:shadow-lg shadow-sky-600/25 transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer group"
               >
-                More About Me
+                <span>More About Me</span>
+                <span className="text-base font-bold transition-transform duration-200 group-hover:translate-x-1">→</span>
               </a>
             </div>
 
             {/* 3 Counter Boxes in a Row with smooth staggered rise-up & count-up */}
             {visibleCounters.length > 0 && (
-              <div ref={countersRef} className="grid grid-cols-3 gap-2 sm:gap-4 w-full">
+              <div ref={countersRef} className="grid grid-cols-3 gap-2.5 sm:gap-4 md:gap-5 w-full">
                 {visibleCounters.map((counter, idx) => (
                   <div
                     key={counter.id}

@@ -341,3 +341,30 @@
     filter: none !important;
   }
 }
+
+/* =============================================================================
+   🔥 OBLITERATE "POWERED BY NETLIFY" BADGE & NETLIFY DRAWER
+============================================================================= */
+iframe[src*="netlify"],
+iframe[title*="Netlify"],
+iframe#netlify-badge,
+#netlify-drawer,
+netlifydrawer-app,
+.netlify-badge,
+[class*="netlify-drawer"],
+[class*="NetlifyDrawer"],
+[id*="netlify-drawer"],
+div[data-netlify-deploy-id],
+div[style*="z-index: 2147483647"]:has(iframe),
+div[style*="z-index: 2147483647"]:has(a[href*="netlify.com"]),
+div:has(> iframe[src*="netlify"]) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  left: -99999px !important;
+  bottom: -99999px !important;
+}

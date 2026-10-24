@@ -29,6 +29,29 @@
 
     <!-- Google Fonts for English & Bangla -->
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Netlify Badge & Drawer Auto-Suppressor -->
+    <script>
+      (function() {
+        try {
+          localStorage.setItem('netlify-badge-dismissed', 'true');
+          localStorage.setItem('netlify-drawer-dismissed', 'true');
+        } catch(e) {}
+        var removeNetlify = function() {
+          var sel = 'iframe[src*="netlify"], iframe[title*="Netlify"], #netlify-drawer, netlifydrawer-app, .netlify-badge, [class*="netlify-drawer"], [class*="NetlifyDrawer"]';
+          document.querySelectorAll(sel).forEach(function(el) {
+            try { el.remove(); } catch(e) { el.style.display = 'none'; }
+          });
+        };
+        if (typeof window !== 'undefined') {
+          window.addEventListener('DOMContentLoaded', removeNetlify);
+          window.addEventListener('load', removeNetlify);
+          if (typeof MutationObserver !== 'undefined') {
+            new MutationObserver(removeNetlify).observe(document.documentElement, { childList: true, subtree: true });
+          }
+        }
+      })();
+    </script>
   </head>
   <body class="bg-white text-slate-800 antialiased selection:bg-[#0284c7] selection:text-white">
     <div id="root"></div>
