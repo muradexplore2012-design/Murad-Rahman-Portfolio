@@ -19,6 +19,7 @@ import { auth } from '../lib/firebase';
 import { signInWithGoogle, signOutUser } from '../lib/auth';
 import { GoogleSignInButton } from '../components/GoogleSignInButton';
 import { UserChatModal } from '../components/UserChatModal';
+import { FloatingInboxButton } from '../components/FloatingInboxButton';
 import { submitContactMessage, getSiteProfile, getSiteSettings } from '../services/firestoreService';
 import { starterProfile, starterSettings } from '../services/starterData';
 import type { SiteProfile, SiteSettings } from '../types';
@@ -644,6 +645,13 @@ export const ContactPage: React.FC = () => {
           setIsSignInModalOpen(false);
           setStatus({ type: 'success', message: 'সফলভাবে সাইন-ইন সম্পন্ন হয়েছে!' });
         }}
+      />
+
+      {/* Floating Action Button (FAB) for Inbox / Live Chat */}
+      <FloatingInboxButton
+        onClick={() => setIsChatModalOpen(true)}
+        isOpen={isChatModalOpen}
+        currentUser={currentUser}
       />
 
       {/* Real-time 2-Way Client Chat / Inbox Modal */}

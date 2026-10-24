@@ -4,6 +4,7 @@ import { Menu, X, ChevronDown, LogOut, Shield, User, MessageSquare } from 'lucid
 import type { SiteProfile } from '../types';
 import { SignInModal } from './SignInModal';
 import { UserChatModal } from './UserChatModal';
+import { FloatingInboxButton } from './FloatingInboxButton';
 import { UserAvatar, getUserDisplayName } from './UserAvatar';
 import { subscribeToAuthState, signOutUser, verifyAdminStatus } from '../lib/auth';
 import type { User as FirebaseUser } from 'firebase/auth';
@@ -532,6 +533,13 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
       <SignInModal
         isOpen={isSignInOpen}
         onClose={() => setIsSignInOpen(false)}
+      />
+
+      {/* Floating Action Button (FAB) for Inbox / Live Chat */}
+      <FloatingInboxButton
+        onClick={() => setIsChatModalOpen(true)}
+        isOpen={isChatModalOpen}
+        currentUser={currentUser}
       />
 
       {/* Real-time 2-Way Client Chat / Inbox Modal */}
