@@ -404,6 +404,7 @@ export async function submitContactMessage(params: {
   message: string;
   userId?: string;
   userPhoto?: string;
+  replies?: ChatReply[];
 }): Promise<string> {
   if (!db) throw new Error("Database is not connected. Please try again later.");
 
@@ -441,6 +442,9 @@ export async function submitContactMessage(params: {
     userPhoto: resolvedUserPhoto,
     isRead: false,
     isArchived: false,
+    replies: params.replies || [],
+    lastMessage: params.replies && params.replies.length > 0 ? params.replies[params.replies.length - 1].text : params.message.trim(),
+    lastSender: params.replies && params.replies.length > 0 ? params.replies[params.replies.length - 1].sender : 'user',
     createdAt: serverTimestamp()
   });
 

@@ -7,7 +7,12 @@ import {
   Eye,
   EyeOff,
   Sliders,
-  Share2
+  Share2,
+  Bot,
+  Sparkles,
+  MessageSquare,
+  Phone,
+  ExternalLink
 } from 'lucide-react';
 import type { SiteSettings } from '../../types';
 import {
@@ -52,7 +57,7 @@ const YoutubeLogo: React.FC = () => (
 );
 
 export const AdminSettings: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'general' | 'social'>('general');
+  const [activeTab, setActiveTab] = useState<'general' | 'social' | 'ai-reply'>('general');
   const [settings, setSettings] = useState<SiteSettings>(starterSettings);
   const [socialLinks, setSocialLinks] = useState({
     facebook: starterProfile.socialLinks.facebook || '',
@@ -206,6 +211,22 @@ export const AdminSettings: React.FC = () => {
         >
           <Share2 className="w-4 h-4" />
           <span>সোশ্যাল লিংক (Social Links)</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setActiveTab('ai-reply');
+            setStatus({ type: 'idle', message: '' });
+          }}
+          className={`flex items-center gap-2 px-5 py-3 text-xs sm:text-sm font-bold border-b-2 transition-all cursor-pointer ${
+            activeTab === 'ai-reply'
+              ? 'border-[#0284c7] text-[#0284c7] bg-sky-50/70 rounded-t-xl'
+              : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300'
+          }`}
+        >
+          <Bot className="w-4 h-4" />
+          <span>এআই অটো-রিপ্লাই (AI Auto-Reply)</span>
         </button>
       </div>
 
@@ -482,7 +503,9 @@ export const AdminSettings: React.FC = () => {
                 ? 'সেভ হচ্ছে...'
                 : activeTab === 'general'
                 ? 'জেনারেল সেটিংস সেভ করুন'
-                : 'সোশ্যাল লিংক সেভ করুন'}
+                : activeTab === 'social'
+                ? 'সোশ্যাল লিংক সেভ করুন'
+                : 'এআই অটো-রিপ্লাই সেটিংস সেভ করুন'}
             </span>
           </button>
         </div>

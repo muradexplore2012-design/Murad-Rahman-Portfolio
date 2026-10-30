@@ -52,6 +52,7 @@ export const AdminProfile: React.FC = () => {
       setStatus({ type: 'error', message: err.message || 'ইমেজ আপলোড ব্যর্থ হয়েছে।' });
     } finally {
       setIsUploadingProfile(false);
+      e.target.value = '';
     }
   };
 
@@ -68,6 +69,7 @@ export const AdminProfile: React.FC = () => {
       setStatus({ type: 'error', message: err.message || 'ইমেজ আপলোড ব্যর্থ হয়েছে।' });
     } finally {
       setIsUploadingAbout(false);
+      e.target.value = '';
     }
   };
 
@@ -135,7 +137,7 @@ export const AdminProfile: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-center gap-6">
             <div className="w-24 h-24 rounded-2xl overflow-hidden border-2 border-slate-200 bg-slate-50 shrink-0">
               <img
-                src={profile.profileImage || "/images/murad-rahman.jpg"}
+                src={profile.profileImage || "/images/murad-rahman-hero.png"}
                 alt={profile.name}
                 className="w-full h-full object-cover"
               />
@@ -148,7 +150,7 @@ export const AdminProfile: React.FC = () => {
                 type="text"
                 value={profile.profileImage}
                 onChange={(e) => setProfile({ ...profile, profileImage: e.target.value })}
-                placeholder="/images/murad-rahman.jpg"
+                placeholder="/images/murad-rahman-hero.png"
                 className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
               />
               <div className="pt-1">

@@ -47,7 +47,7 @@ export function getCandidateAvatarUrl(user: User | null, adminFallbackImage?: st
     emailLower === ADMIN_EMAIL.toLowerCase() ||
     emailLower === 'muradrahman2026@gmail.com'
   ) {
-    return adminFallbackImage || '/images/murad-rahman.jpg';
+    return adminFallbackImage || '/images/murad-rahman-hero.png';
   }
 
   // 5. Any email user: Try public Gravatar / unavatar fetcher
@@ -105,7 +105,7 @@ export function getUserDisplayName(user: User | null, siteOwnerName = 'Murad Rah
 export const UserAvatar: React.FC<UserAvatarProps> = ({
   user,
   className = 'w-7 h-7',
-  adminFallbackImage = '/images/murad-rahman.jpg'
+  adminFallbackImage = '/images/murad-rahman-hero.png'
 }) => {
   const [hasError, setHasError] = useState(false);
   const avatarUrl = getCandidateAvatarUrl(user, adminFallbackImage);
@@ -130,7 +130,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   ) {
     return (
       <img
-        src="/images/murad-rahman.jpg"
+        src="/images/murad-rahman-hero.png"
         alt="Murad Rahman"
         className={`${className} rounded-full object-cover border border-slate-200 shrink-0 bg-slate-100 shadow-2xs`}
       />

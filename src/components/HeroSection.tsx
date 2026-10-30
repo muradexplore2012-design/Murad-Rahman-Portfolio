@@ -181,11 +181,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ profile, onOpenInbox }
                 {/* Floating wrapper once settled */}
                 <div className={`w-full h-full relative ${hasSettled ? 'animate-hero-float' : ''}`}>
                   <img
-                    src={profile.profileImage || "/images/murad-rahman.jpg"}
+                    src={profile.profileImage || "/images/murad-rahman-hero.png"}
                     alt={profile.name || "Murad Rahman"}
                     className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = "/images/murad-rahman.jpg";
+                      (e.target as HTMLImageElement).src = "/images/murad-rahman-hero.png";
                     }}
                   />
 

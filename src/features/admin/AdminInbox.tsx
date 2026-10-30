@@ -11,7 +11,8 @@ import {
   Send,
   ArrowLeft,
   Sparkles,
-  CheckCheck
+  CheckCheck,
+  Bot
 } from 'lucide-react';
 import type { ContactMessage } from '../../types';
 import {
@@ -636,6 +637,7 @@ export const AdminInbox: React.FC = () => {
                 {/* 2. Thread Replies (Client vs Admin conversation) */}
                 {selectedMessage.replies?.map((rep, idx) => {
                   const isAdmin = rep.sender === 'admin';
+                  const isAi = isAdmin && (rep.senderName?.toLowerCase().includes('ai') || false);
 
                   return (
                     <div
@@ -645,11 +647,20 @@ export const AdminInbox: React.FC = () => {
                       }`}
                     >
                       {isAdmin ? (
-                        <img
-                          src="/images/murad-rahman.jpg"
-                          alt="Murad Rahman"
-                          className="w-7 h-7 rounded-xl object-cover border border-sky-300 mt-4 shrink-0 shadow-2xs"
-                        />
+                        <div className="relative mt-4 shrink-0">
+                          <img
+                            src="/images/murad-rahman.jpg"
+                            alt="Murad Rahman"
+                            className={`w-7 h-7 rounded-xl object-cover border shadow-2xs ${
+                              isAi ? 'border-purple-300 ring-2 ring-purple-100' : 'border-sky-300'
+                            }`}
+                          />
+                          {isAi && (
+                            <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-gradient-to-tr from-purple-600 to-indigo-500 rounded-full flex items-center justify-center text-white ring-1 ring-white" title="এআই অটো-রিপ্লাই">
+                              <Bot className="w-2.5 h-2.5" />
+                            </span>
+                          )}
+                        </div>
                       ) : (
                         <ClientAvatar
                           name={rep.senderName || selectedMessage.name}
@@ -661,18 +672,34 @@ export const AdminInbox: React.FC = () => {
                       )}
 
                       <div className={`flex flex-col ${isAdmin ? 'items-end' : 'items-start'} space-y-1 min-w-0`}>
-                        <span
-                          className={`text-[10px] font-bold ${
+                        <div
+                          className={`flex items-center gap-1.5 text-[10px] font-bold ${
                             isAdmin ? 'text-[#0284c7] mr-2' : 'text-slate-500 ml-2'
                           }`}
                         >
-                          {isAdmin ? 'মুরাদ রহমান (Admin)' : rep.senderName || 'ক্লায়েন্ট'}
-                        </span>
+                          {isAdmin ? (
+                            isAi ? (
+                              <>
+                                <span className="text-purple-600 font-semibold">{rep.senderName || 'মুরাদ রহমান (AI Assistant)'}</span>
+                                <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-700 font-bold border border-purple-200 flex items-center gap-0.5">
+                                  <Sparkles className="w-2.5 h-2.5 text-purple-600" />
+                                  Auto AI
+                                </span>
+                              </>
+                            ) : (
+                              'মুরাদ রহমান (Admin)'
+                            )
+                          ) : (
+                            rep.senderName || 'ক্লায়েন্ট'
+                          )}
+                        </div>
 
                         <div
                           className={`p-3.5 sm:p-4 rounded-2xl shadow-sm text-xs sm:text-sm leading-relaxed whitespace-pre-wrap select-text relative group ${
                             isAdmin
-                              ? 'bg-[#0284c7] text-white rounded-tr-xs'
+                              ? isAi
+                                ? 'bg-gradient-to-r from-[#0284c7] to-indigo-600 text-white rounded-tr-xs'
+                                : 'bg-[#0284c7] text-white rounded-tr-xs'
                               : 'bg-white text-slate-900 rounded-tl-xs border border-slate-200/90'
                           }`}
                         >

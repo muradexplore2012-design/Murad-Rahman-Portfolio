@@ -136,6 +136,10 @@ export interface SiteSettings {
   accentColor?: string;
   copyrightText: string;
   footerBio?: string;
+  aiAutoReplyEnabled?: boolean;
+  aiAssistantName?: string;
+  autoReplyWhatsapp?: string;
+  autoReplyFacebook?: string;
   sectionVisibility: {
     hero: boolean;
     about: boolean;
