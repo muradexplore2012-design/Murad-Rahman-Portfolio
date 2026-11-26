@@ -67,6 +67,7 @@ export const AdminSettings: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [showGeminiKey, setShowGeminiKey] = useState(false);
   const [status, setStatus] = useState<{ type: 'idle' | 'success' | 'error'; message: string }>({
     type: 'idle',
     message: '',
@@ -486,6 +487,184 @@ export const AdminSettings: React.FC = () => {
                 <p className="text-[11px] text-slate-500">
                   হেডার ও ফুটারের ইউটিউব আইকন ক্লিক করলে সরাসরি চ্যানেলে নিয়ে যাবে।
                 </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* =================================================================== */}
+        {/* TAB 3: AI AUTO-REPLY SETTINGS */}
+        {/* =================================================================== */}
+        {activeTab === 'ai-reply' && (
+          <div className="space-y-6">
+            {/* Activation Switch Card */}
+            <div className="rounded-2xl p-6 border border-slate-200 bg-white shadow-xs space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-center text-[#0284c7]">
+                    <Bot className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                      ২৪/৭ এআই অটো-রিপ্লাই ইঞ্জিন (24/7 AI Auto-Reply)
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      ভিজিটররা চ্যাটবক্সে প্রশ্ন বা মেসেজ পাঠালে এআই তাৎক্ষণিকভাবে প্রাসঙ্গিক উত্তর দেবে।
+                    </p>
+                  </div>
+                </div>
+
+                <label className="relative inline-flex items-center cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={settings.aiAutoReplyEnabled !== false}
+                    onChange={(e) =>
+                      setSettings({ ...settings, aiAutoReplyEnabled: e.target.checked })
+                    }
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0284c7]"></div>
+                  <span className="ml-3 text-xs font-bold text-slate-700">
+                    {settings.aiAutoReplyEnabled !== false ? 'অ্যাক্টিভ' : 'নিষ্ক্রিয়'}
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            {/* Assistant Name & Contact Links Card */}
+            <div className="rounded-2xl p-6 border border-slate-200 bg-white shadow-xs space-y-5">
+              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                <MessageSquare className="w-4 h-4 text-[#0284c7]" />
+                <span>অ্যাসিস্ট্যান্ট তথ্য ও যোগাযোগ লিংক</span>
+              </h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Assistant Display Name */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    এআই অ্যাসিস্ট্যান্টের নাম (Assistant Name)
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.aiAssistantName || ''}
+                    onChange={(e) => setSettings({ ...settings, aiAssistantName: e.target.value })}
+                    placeholder="মুরাদ রহমান (AI Assistant)"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
+                  />
+                  <p className="text-[11px] text-slate-500 mt-1">
+                    চ্যাটে ভিজিটরদের কাছে এই নামটি প্রদর্শিত হবে।
+                  </p>
+                </div>
+
+                {/* WhatsApp Number */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    অটো-রিপ্লাই হোয়াটসঅ্যাপ নাম্বার (WhatsApp Number)
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.autoReplyWhatsapp || ''}
+                    onChange={(e) => setSettings({ ...settings, autoReplyWhatsapp: e.target.value })}
+                    placeholder="01566088159"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
+                  />
+                  <p className="text-[11px] text-slate-500 mt-1">
+                    জরুরি কাজের অর্ডারের সময় এই নাম্বারে সরাসরি WhatsApp চ্যাট লিংক তৈরি হবে।
+                  </p>
+                </div>
+
+                {/* Facebook Profile */}
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    ফেসবুক প্রোফাইল লিংক (Facebook Profile URL)
+                  </label>
+                  <input
+                    type="url"
+                    value={settings.autoReplyFacebook || ''}
+                    onChange={(e) => setSettings({ ...settings, autoReplyFacebook: e.target.value })}
+                    placeholder="https://www.facebook.com/profile.php?id=100085471628384"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Google Gemini AI API Configuration Card */}
+            <div className="rounded-2xl p-6 border border-sky-100 bg-gradient-to-br from-sky-50/50 via-white to-blue-50/30 shadow-xs space-y-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-sky-600 text-white flex items-center justify-center shadow-xs">
+                    <Sparkles className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                      <span>Google Gemini AI ইন্টিগ্রেশন</span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-sky-100 text-sky-800 border border-sky-200">
+                        সম্পূর্ণ ফ্রি (Free)
+                      </span>
+                    </h3>
+                    <p className="text-xs text-slate-600 mt-0.5">
+                      গুগল জেমিনাই (Gemini 1.5 Flash) যুক্ত করলে ভিজিটর যেভাবেই প্রশ্ন করুক, এআই মানুষের মতো নির্ভুল ও রিয়েল উত্তর দিতে পারে।
+                    </p>
+                  </div>
+                </div>
+
+                <a
+                  href="https://aistudio.google.com/app/apikey"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-100 hover:bg-sky-200 text-[#0284c7] font-bold text-xs transition-colors shrink-0"
+                >
+                  <span>ফ্রি API Key নিন</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              </div>
+
+              {/* API Key Input */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Gemini API Key (ঐচ্ছিক / Optional)
+                </label>
+                <div className="relative">
+                  <input
+                    type={showGeminiKey ? 'text' : 'password'}
+                    value={settings.geminiApiKey || ''}
+                    onChange={(e) => setSettings({ ...settings, geminiApiKey: e.target.value })}
+                    placeholder="AIzaSy..."
+                    className="w-full px-3.5 py-2.5 pr-10 rounded-xl bg-white border border-slate-300 text-sm font-mono text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0284c7] focus:border-[#0284c7]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowGeminiKey(!showGeminiKey)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                    title={showGeminiKey ? 'হাইড করুন' : 'দেখুন'}
+                  >
+                    {showGeminiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+                <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                  💡 API Key খালি রাখলেও আপনার সিস্টেমের সুপার-স্মার্ট <strong>বিল্ট-ইন কনভারসেশনাল ইঞ্জিন</strong> কাজ করবে এবং যেকোনো প্রশ্ন বুঝে প্রাসঙ্গিক ও মানবিক উত্তর দেবে।
+                </p>
+              </div>
+
+              {/* Status Indicator */}
+              <div className="p-3.5 rounded-xl border flex items-center gap-3 text-xs leading-relaxed bg-white/80 border-slate-200">
+                <div
+                  className={`w-2.5 h-2.5 rounded-full shrink-0 ${
+                    settings.geminiApiKey?.trim() ? 'bg-emerald-500 animate-pulse' : 'bg-sky-500'
+                  }`}
+                />
+                <span className="text-slate-700">
+                  {settings.geminiApiKey?.trim() ? (
+                    <>
+                      <strong>Google Gemini 1.5 Flash সক্রিয়:</strong> ভিজিটরদের প্রশ্নের জন্য গুগল জেমিনাই রিয়েল-টাইমে প্রাকৃতিক ভাষায় ডাইনামিক উত্তর প্রদান করবে।
+                    </>
+                  ) : (
+                    <>
+                      <strong>স্মার্ট লোকাল কনভারসেশনাল ইঞ্জিন সক্রিয়:</strong> গ্রাফিক্স, থাম্বনেইল, ওয়েবসাইট, দাম ও ডেলিভারি সম্পর্কিত যেকোনো প্রশ্নে বুদ্ধিমান ও স্বাভাবিক উত্তর দেবে।
+                    </>
+                  )}
+                </span>
               </div>
             </div>
           </div>

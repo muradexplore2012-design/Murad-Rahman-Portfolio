@@ -190,6 +190,8 @@ export const starterSettings: SiteSettings = {
   aiAssistantName: "মুরাদ রহমান (AI Assistant)",
   autoReplyWhatsapp: "01566088159",
   autoReplyFacebook: "https://www.facebook.com/profile.php?id=100085471628384",
+  geminiApiKey: "",
+  aiSystemPrompt: "",
   sectionVisibility: {
     hero: true,
     about: true,

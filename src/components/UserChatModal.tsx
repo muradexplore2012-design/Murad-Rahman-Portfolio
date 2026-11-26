@@ -20,7 +20,7 @@ import {
   getSiteSettings
 } from '../services/firestoreService';
 import { starterSettings } from '../services/starterData';
-import { generateAiAutoReply, QUICK_PROMPTS } from '../services/aiReplyService';
+import { generateAiAutoReply, formatWhatsappUrl, QUICK_PROMPTS } from '../services/aiReplyService';
 import { GoogleSignInButton } from './GoogleSignInButton';
 import { FormattedMessageText } from './FormattedMessageText';
 
@@ -40,8 +40,8 @@ const createInitialWelcomeReply = (
   user?: FirebaseUser | null
 ): ChatReply => {
   const name = user?.displayName ? `, ${user.displayName}` : '';
-  const wa = settings.autoReplyWhatsapp || 'https://wa.me/8801566088159';
-  const fb = settings.autoReplyFacebook || 'https://www.facebook.com/profile.php?id=100085471628384';
+  const wa = formatWhatsappUrl(settings.autoReplyWhatsapp || profile?.whatsapp || profile?.phone);
+  const fb = settings.autoReplyFacebook || profile?.socialLinks?.facebook || 'https://www.facebook.com/profile.php?id=100085471628384';
 
   return {
     id: 'welcome_init',
@@ -260,7 +260,7 @@ export const UserChatModal: React.FC<UserChatModalProps> = ({
       // Realistic typing indicator delay (850ms) for natural responsiveness
       await new Promise((resolve) => setTimeout(resolve, 850));
 
-      const aiReplyText = generateAiAutoReply(
+      const aiReplyText = await generateAiAutoReply(
         text,
         profile,
         settings,

@@ -140,6 +140,8 @@ export interface SiteSettings {
   aiAssistantName?: string;
   autoReplyWhatsapp?: string;
   autoReplyFacebook?: string;
+  geminiApiKey?: string;
+  aiSystemPrompt?: string;
   sectionVisibility: {
     hero: boolean;
     about: boolean;
